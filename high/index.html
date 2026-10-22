@@ -351,23 +351,23 @@ const hm=t=>t?t.slice(0,5):"";
 
 /* ================= 수업 구조 (지도안 4장 v5) ================= */
 const STAGES=[
- {n:1,ses:1,t:"AI 페르소나를 통한 사건 경험",g:"Y",tool:"유수프와의 대화",ws:"기록지 1-1~1-3",min:12,def:"유수프의 편지를 읽고, 모둠이 합의한 질문으로 페르소나와 두 차례 대화하며 사건을 재구성한다."},
- {n:2,ses:1,t:"사건의 배경 확인 및 문제 원인 탐색",g:"N",ws:"기록지 2-1~2-5",min:14,def:"선생님이 공개한 실제 사건 기사를 읽고 사실 확인 질문에 답한 뒤, 유수프의 이야기와 대조한다. 사건과 나의 삶을 잇고, AI 없이 원인을 추측해 모둠원이 한 개씩 맡을 원인 확인 질문을 4개 이상 만들어 봉인한다."},
- {n:3,ses:1,t:"검증을 통한 핵심 원인 도출",g:"Y",tool:"자료 탐색 도우미",ws:"기록지 3-1~3-3",min:14,def:"모둠원이 각자 맡은 원인 확인 질문으로 AI에게 정보와 출처를 얻고, 출처를 직접 확인해 수용·보류·불수용을 판정한다. 수용한 정보로 원인 간 관계를 그려 핵심 원인을 정한다."},
- {n:4,ses:2,t:"해결 대안 구상 및 보완",g:"Y",tool:"대안 검토 도우미",ws:"기록지 4-1~4-6",min:13,def:"공개된 유사 사례에서 아이디어를 얻고, 핵심 원인을 해결할 행위 주체별 대안을 3개 이상 만든다. AI의 강점·약점 피드백을 판단하고 비교표로 1순위 대안을 정한다."},
- {n:5,ses:2,t:"AI 시뮬레이션 기반 미래 시나리오 탐색",g:"Y",tool:"시나리오 생성기",ws:"기록지 5-1~5-5",min:12,def:"1순위 대안에 대한 이해관계자의 반응을 먼저 예측한다. AI가 보여 준 시나리오 A·B·C 가운데 가장 개연성 있는 것을 고르고, 이야기 속에서 예상하지 못한 문제를 찾는다."},
+ {n:1,ses:1,t:"AI 페르소나를 통한 사건 경험",g:"Y",tool:"유수프와의 대화",role:"경험 전달자",ws:"기록지 1-1~1-3",min:15,def:"유수프의 편지를 읽고, 모둠이 합의한 질문으로 페르소나와 두 차례 대화하며 사건을 재구성한다."},
+ {n:2,ses:1,t:"사건의 배경 확인 및 문제 원인 탐색",g:"N",ws:"기록지 2-1~2-5",min:14,def:"선생님이 공개한 실제 사건 기사를 읽고 사실 확인 질문에 답한 뒤, 유수프의 이야기와 대조한다. 사건과 나의 삶을 잇고, AI 없이 원인을 3개 이상 추측해 원인마다 원인 확인 질문을 만들어 봉인한다."},
+ {n:3,ses:1,t:"검증을 통한 핵심 원인 도출",g:"Y",tool:"자료 탐색 도우미",role:"검색 보조자",ws:"기록지 3-1~3-3",min:16,def:"봉인한 원인 확인 질문의 AI 응답을 모둠이 함께 확인하고, 응답을 나누어 맡아 우리 말로 요약한다. 각자 출처를 직접 확인해 검증하고, 출처 신뢰성·정확성·최신성을 기준으로 모둠이 수용·보류·불수용을 판정한다. 수용한 정보로 원인 간 관계를 그려 핵심 원인을 정한다."},
+ {n:4,ses:2,t:"해결 대안 구상 및 보완",g:"Y",tool:"대안 검토 도우미",role:"대안 검토자",ws:"기록지 4-1~4-6",min:16,def:"공개된 유사 사례에서 아이디어를 얻고, 핵심 원인을 해결할 행위 주체별 대안을 3개 이상 만든다. AI의 강점·약점 피드백을 판단하고 비교표로 1순위 대안을 정한다."},
+ {n:5,ses:2,t:"AI 시뮬레이션 기반 미래 시나리오 탐색",g:"Y",tool:"시나리오 생성기",role:"미리보기 제공자",ws:"기록지 5-1~5-5",min:12,def:"1순위 대안에 대한 이해관계자의 반응을 먼저 예측한다. AI가 보여 준 시나리오 A·B·C 가운데 가장 개연성 있는 것을 고르고, 이야기 속에서 예상하지 못한 문제를 찾는다."},
  {n:6,ses:2,t:"행동계획 수립 및 실행",g:"N",ws:"기록지 6-1~6-6",min:9,def:"예상하지 못한 문제의 수준을 진단하고 행동 유형을 고른다. 행동계획표에 대상·내용·방법·제출 경로와 실행 범위, 결과 확인 시점, 돌아갈 단계를 정한다. 제도 제안·요청이나 설득을 고른 모둠은 제안서를 쓴다[선택]."},
  {n:7,ses:2,t:"공유 및 성찰",g:"N",ws:"기록지 7-1~7-4",min:8,def:"문제 해결 과정을 공유 게시판에 올리고 다른 모둠 두 곳을 평가한다. 로그와 기록지를 보며 AI 활용을 성찰한다."}
 ];
 const ROLES=["진행자","AI 입력자","모둠활동 점검자","개인활동 도우미"];
-const NEED=()=>Math.max(3,ROSTER[1].length); /* 원인 수 = 질문 수 = 모둠원 수(최소 3) */
+const NEED=()=>3; /* 합의한 원인 3개 이상, 원인마다 원인 확인 질문 1개(지도안 v25) */
 const ROSTER={1:["지민","현우","서연","도윤"],2:["도윤","지민","현우","서연"]};
 const QTYPES=["경험·감정","이동 과정·제도","주변 사회의 반응"];
 const ACTORS=["국가","국제기구","비정부 기구","세계시민"];
 const CRIT=["실현 가능성","원인 해결 정도","이해관계자 수용성"];
 const LEVELS=["개인","학교·지역","제도·국가 간"];
 const ACTT=[{n:"제도 제안·요청",ex:"국민신문고 정책 제안, 기관 건의문"},{n:"설득",ex:"이해관계자에게 보내는 편지"},{n:"자기 실천",ex:"나와 우리 반이 직접 하는 일"}];
-const SCOPES=[{n:"수업 중 실행",d:"수업 시간 안에 실제로 해 본다"},{n:"실행 준비",d:"제출 직전 초안까지 만들고 6차시에 공유한다"},{n:"후속 탐구",d:"더 알아볼 것을 정리해 다음 탐구로 넘긴다"}];
+const SCOPES=[{n:"수업 중 실행",d:"수업 시간 안에 실제로 해 본다"},{n:"실행 준비",d:"제출 직전 초안까지 만들고, 제출은 선생님 확인 뒤에 한다"},{n:"후속 탐구",d:"더 알아볼 것을 정리해 다음 탐구로 넘긴다"}];
 const BACK=["원인(2·3단계)","대안(4단계)","예측(5단계)"];
 const CHK6=["특정 국가·종교·집단을 낙인찍거나 일반화하는 표현이 없다","실명, 연락처 같은 개인정보가 들어 있지 않다"];
 const VERIFY=["신뢰성 · 출처가 실제로 있고 직접 접속했다","신뢰성 · 공공기관·언론 원문·교과서 같은 확인 가능한 자료다","정확성 · 수치·날짜가 원자료와 일치한다","최신성 · 자료 시점이 질문의 시점과 맞는다"];
@@ -505,7 +505,7 @@ const SEARCH=[
 ];
 const SEARCH_DEF={a:"2018년 6월까지 무사증으로 제주에 들어온 예멘인은 561명이고, 그중 549명이 난민 인정을 신청했다고 보도되었습니다. 질문에 직접 답할 수 있는 자료는 확인 불가입니다. 질문을 더 구체적으로(대상·시점·필요한 정보) 바꾸어 보세요.",src:["뉴시스, 2018. 6. 25."]};
 /* 질문에 여러 낱말이 섞이면 앞의 규칙이 먼저 걸린다. 구체적인 물음(인원·기간)을 먼저 본다. */
-const SEARCH_RULES=[[/출도|제주 밖|섬 밖|이동/,0],[/몇 명|인원|비율|인정률|통계|결과/,1],[/기간|연장|얼마 동안|지원|혜택/,2],[/반대|여론|청원|집회|찬성/,3],[/왜 제주|직항|무사증|비자|말레이시아|늘어/,4],[/인정|심사|불인정/,1],[/체류|인도적/,2]];
+const SEARCH_RULES=[[/반대|여론|청원|집회|찬성/,3],[/출도|제주 밖|섬 밖|이동/,0],[/몇 명|인원|비율|인정률|통계|결과/,1],[/기간|연장|얼마 동안|지원|혜택/,2],[/왜 제주|직항|무사증|비자|말레이시아|늘어/,4],[/인정|심사|불인정/,1],[/체류|인도적/,2]];
 function searchCanned(q){for(const [re,k] of SEARCH_RULES)if(re.test(q))return SEARCH[k][1];return SEARCH_DEF}
 const FOLLOW="앞의 답에 쓴 수치와 날짜는 위에 적은 출처에서 가져왔습니다. 저는 원문 링크를 열어 볼 수 없으므로, 기관 누리집이나 언론사 누리집에서 같은 날짜의 원문을 직접 찾아 비교하세요. 출처 가운데 '확인 불가'로 적힌 것은 근거로 쓰지 마세요.";
 
@@ -630,7 +630,7 @@ function renderStudent(){
   });
   rail+=`</nav>`;
   const st=STAGES[S.stage-1];
-  const head=`<div class="stage-head"><h2>${st.n}단계 · ${esc(st.t)}</h2><span class="chip ${st.g}">${st.g==="Y"?"YELLOW":"AI 미사용"}</span><span class="ws">${esc(st.ws)}</span><span class="mins">${st.min}분</span>${st.tool?`<span class="small">AI 기능: ${esc(st.tool)}</span>`:""}<button class="demo-btn" data-act="demo" data-n="${st.n}" style="margin-left:auto">시연용 예시 넣기</button></div><p class="stage-def">${esc(st.def)}</p>${signal(st.g)}`;
+  const head=`<div class="stage-head"><h2>${st.n}단계 · ${esc(st.t)}</h2><span class="chip ${st.g}">${st.g==="Y"?"YELLOW":"AI 미사용"}</span><span class="ws">${esc(st.ws)}</span><span class="mins">${st.min}분</span>${st.role?`<span class="small">AI 역할: ${esc(st.role)}</span>`:""}${st.tool?`<span class="small">AI 기능: ${esc(st.tool)}</span>`:""}<button class="demo-btn" data-act="demo" data-n="${st.n}" style="margin-left:auto">시연용 예시 넣기</button></div><p class="stage-def">${esc(st.def)}</p>${signal(st.g)}`;
   const nx=S.stage+1;
   const next=nx>7?"":nx<=S.open?`<div class="nextbar"><button class="btn primary" data-stage="${nx}">${nx}단계로 이동</button></div>`:`<div class="nextbar"><span class="small">${nx}단계는 선생님이 아직 열지 않았습니다.</span><span class="small demo-hint">시연: 교사 화면 → 단계 개방에서 ${nx}을 누르세요.</span></div>`;
   return `<div class="student">${rail}<section class="panel">${head}${[null,s1,s2,s3,s4,s5,s6,s7][S.stage]()}${next}</section></div>`;
@@ -694,18 +694,18 @@ function s2(){
    <div class="grid2">${LQ.map(([k,q,ph])=>`<div class="field"><label for="s2-${k}">${q}</label><textarea id="s2-${k}" data-bind="s2.life.${k}" placeholder="${esc(ph)}">${esc(L[k])}</textarea></div>`).join("")}</div>
    ${PI.test(Object.values(L).join(" "))?`<div class="warnline r">전화번호나 이메일 같은 개인정보가 들어 있습니다.</div>`:""}</div>`;
   const biasHit=d.guesses.some(g=>BIAS.test(g.t));
-  const guess=`<div class="block"><h3>원인 추측하기 <span class="ws">2-4</span> <span class="mins">2'</span> <span class="chip N">AI 미사용</span></h3><p class="hint">유수프는 전쟁을 피해 왔는데 왜 여기서도 안정적으로 지내기 어려울까요? 각자 기록지 2-4에 먼저 추측한 뒤, 모둠에서 비교해 합의한 원인을 모둠원 수만큼(${NEED()}개) 이상 입력합니다. 원인을 한 사람이 하나씩 맡아 검증합니다.</p>
+  const guess=`<div class="block"><h3>원인 추측하기 <span class="ws">2-4</span> <span class="mins">2'</span> <span class="chip N">AI 미사용</span></h3><p class="hint">유수프는 전쟁을 피해 왔는데 왜 여기서도 안정적으로 지내기 어려울까요? 각자 기록지 2-4에 먼저 추측한 뒤, 모둠에서 비교해 합의한 원인을 ${NEED()}개 이상 입력합니다.</p>
    <ul class="list">${d.guesses.map((g,i)=>`<li><span class="tag">원인 ${i+1}</span><span class="txt">${esc(g.t)}</span>${S.s3.sealed?"":`<button class="x" data-act="del" data-k="s2.guesses" data-i="${i}">삭제</button>`}</li>`).join("")}</ul>
    ${S.s3.sealed?"":`<div class="addrow"><input type="text" id="s2-g" placeholder="모둠이 합의한 원인"><button class="btn" data-act="s2g">추가</button></div>`}
    <p class="small" style="margin:6px 0 0">${d.guesses.length}/${NEED()}개 이상${d.guesses.length<NEED()?` · ${NEED()}개가 되면 원인 확인 질문을 정할 수 있습니다.`:""}</p>
    ${biasHit?`<div class="warnline">선생님 질문: 같은 예멘인 신청자도 결과가 달랐던 이유는 무엇일까요? 개인의 노력만으로 해결될 수 있을까요? 원인을 제도와 여론의 층위에서 다시 생각해 봅시다.</div>`:""}</div>`;
-  const vq=`<div class="block"><h3>원인 확인 질문 정하기 <span class="ws">2-5</span> <span class="mins">3'</span> ${S.s3.sealed?`<span class="seal">봉인 ${hm(S.s3.sealT)}</span>`:""}</h3><p class="hint">추측한 원인이 맞는지 확인하려면 어떤 정보가 필요할까요? 개인의 노력만으로 해결될 수 있는지, 제도나 여론이 어떤 영향을 주었는지 생각해 봅니다. 모둠원이 원인을 하나씩 나누어 맡고, 맡은 원인마다 질문을 1개씩(모두 ${NEED()}개) 정합니다. 확인할 것이 여럿이면 한 질문에 묶고, 더 필요한 근거는 3단계의 ‘근거 다시 묻기’로 보충합니다. 저장하고 칠판에도 붙여 다른 모둠과 겹치거나 충돌하는 질문을 확인합니다. 3단계에서는 각자 맡은 질문만 AI에게 물을 수 있습니다.</p>
-   <ul class="list">${d.vq.map((x,i)=>`<li><span class="tag">질문 ${i+1}</span><span class="txt">${esc(x.q)}${x.cause?`<br><span class="small">확인하려는 원인: ${esc(x.cause)}${x.who?` · 맡은 사람: ${esc(x.who)}`:""}</span>`:""}${aftTag(x)}</span>${S.s3.sealed?"":`<button class="x" data-act="del" data-k="s2.vq" data-i="${i}">삭제</button>`}</li>`).join("")}</ul>
-   ${S.s3.sealed?"":d.vq.length<NEED()?`<div class="addrow"><select id="s2-vc" class="narrow" aria-label="이 질문으로 확인할 원인"><option value="">이 질문으로 확인할 원인</option>${d.guesses.map((g,k)=>d.vq.some(v=>v.cause===g.t)?"":`<option value="${esc(g.t)}">원인 ${k+1}. ${esc(g.t)}</option>`).join("")}</select><select id="s2-vw" class="narrow" aria-label="이 질문을 맡을 사람"><option value="">맡을 사람</option>${ROSTER[1].map(w=>d.vq.some(v=>v.who===w)?"":`<option>${esc(w)}</option>`).join("")}</select><input type="text" id="s2-v" placeholder="대상·시점·필요한 정보가 드러나게"><button class="btn" data-act="s2v">추가</button></div><p class="small" style="margin:6px 0 0">이미 맡은 원인과 사람은 목록에서 빠집니다. 검증하지 않고 남는 원인은 관계도에서 ‘미확인’으로 둡니다.</p>`:""}
+  const vq=`<div class="block"><h3>원인 확인 질문 정하기 <span class="ws">2-5</span> <span class="mins">3'</span> ${S.s3.sealed?`<span class="seal">봉인 ${hm(S.s3.sealT)}</span>`:""}</h3><p class="hint">추측한 원인이 맞는지 확인하려면 어떤 정보가 필요할까요? 개인의 노력만으로 해결될 수 있는지, 제도나 여론이 어떤 영향을 주었는지 생각해 봅니다. 모둠원이 상의하여 합의한 원인마다 질문을 1개씩 정하고, AI 입력자가 저장·봉인합니다. 확인할 것이 여럿이면 한 질문에 묶고, 더 필요한 근거는 3단계의 ‘근거 다시 묻기’로 보충합니다. 저장하고 칠판에도 붙여 다른 모둠과 겹치거나 충돌하는 질문을 확인합니다. 3단계에서는 봉인한 질문만 AI에게 물을 수 있습니다.</p>
+   <ul class="list">${d.vq.map((x,i)=>`<li><span class="tag">질문 ${i+1}</span><span class="txt">${esc(x.q)}${x.cause?`<br><span class="small">확인하려는 원인: ${esc(x.cause)}</span>`:""}${aftTag(x)}</span>${S.s3.sealed?"":`<button class="x" data-act="del" data-k="s2.vq" data-i="${i}">삭제</button>`}</li>`).join("")}</ul>
+   ${S.s3.sealed?"":d.vq.length<d.guesses.length?`<div class="addrow"><select id="s2-vc" class="narrow" aria-label="이 질문으로 확인할 원인"><option value="">이 질문으로 확인할 원인</option>${d.guesses.map((g,k)=>d.vq.some(v=>v.cause===g.t)?"":`<option value="${esc(g.t)}">원인 ${k+1}. ${esc(g.t)}</option>`).join("")}</select><input type="text" id="s2-v" placeholder="대상·시점·필요한 정보가 드러나게"><button class="btn" data-act="s2v">추가</button></div><p class="small" style="margin:6px 0 0">이미 질문을 정한 원인은 목록에서 빠집니다.</p>`:""}
    ${S.s3.sealed?"":helpVis("q2")?`<div class="exbox"><b class="small">선생님이 공개한 원인 탐색 질문 예시</b> <span class="small">우리가 추측한 원인에 맞게 바꿔 씁니다.</span><ul>${Q2_EX.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:pendBox("원인 탐색 질문 예시")}
-   ${S.s3.sealed?"":`<div class="row"><button class="btn primary" data-act="s3seal" ${d.vq.length===NEED()&&d.vq.every(v=>v.who)?"":"disabled"}>원인 확인 질문 저장 · 봉인</button><span class="small">${d.vq.length}/${NEED()}개 · 모둠원마다 원인 1개, 질문 1개를 맡아야 합니다. 봉인한 뒤 선생님이 3단계를 열어야 질문할 수 있습니다.</span></div>`}
+   ${S.s3.sealed?"":`<div class="row"><button class="btn primary" data-act="s3seal" ${d.guesses.length>=NEED()&&d.vq.length===d.guesses.length?"":"disabled"}>원인 확인 질문 저장 · 봉인</button><span class="small">${d.vq.length}/${d.guesses.length}개 · 합의한 원인마다 질문을 1개씩 정해야 합니다. 봉인한 뒤 선생님이 3단계를 열어야 질문할 수 있습니다.</span></div>`}
    ${gateBox(3,S.s3.sealed,"원인 확인 질문")}</div>`;
-  return fl+facts+cmp+life+guess+lockWrap(d.guesses.length<NEED()&&!S.s3.sealed,`2-4에서 모둠이 합의한 원인을 모둠원 수만큼(${NEED()}개) 이상 적어야 원인 확인 질문을 정할 수 있습니다.`,vq);
+  return fl+facts+cmp+life+guess+lockWrap(d.guesses.length<NEED()&&!S.s3.sealed,`2-4에서 모둠이 합의한 원인을 ${NEED()}개 이상 적어야 원인 확인 질문을 정할 수 있습니다.`,vq);
 }
 
 /* ---------- 3단계 ---------- */
@@ -716,16 +716,16 @@ function syncRows(){
 }
 function s3(){
   const d=S.s3;syncRows();
-  if(!d.rows.length)return `<div class="pend"><b>원인 확인 질문이 없습니다</b><span>2단계에서 원인 확인 질문을 4개 이상 먼저 만듭니다.</span></div>`;
+  if(!d.rows.length)return `<div class="pend"><b>원인 확인 질문이 없습니다</b><span>2단계에서 원인 확인 질문을 먼저 만듭니다.</span></div>`;
   const asked=d.rows.every(r=>r.ans),judged=asked&&d.rows.every(r=>r.j&&r.res.trim()&&r.sum.trim()&&(r.why||"").trim());
-  const fl=flowList([["질문 봉인(2-5)",d.sealed?"ok":"now"],["AI로 정보 수집 3'",d.sealed&&!asked?"now":asked?"ok":""],["출처 확인·판정 5'",asked&&!judged?"now":judged?"ok":""],["원인 관계도 4'",judged&&!d.root?"now":d.root?"ok":""],["핵심 원인 2'",d.root&&!d.done?"now":d.done?"ok":""]]);
+  const fl=flowList([["질문 봉인(2-5)",d.sealed?"ok":"now"],["정보 탐색 3'",d.sealed&&!asked?"now":asked?"ok":""],["정보 검증·판정 5'",asked&&!judged?"now":judged?"ok":""],["원인 관계도 4'",judged&&!d.root?"now":d.root?"ok":""],["핵심 원인 2'",d.root&&!d.done?"now":d.done?"ok":""]]);
   const seal=`<div class="block first"><h3>원인 확인 질문 <span class="small">2단계 2-5</span> ${d.sealed?`<span class="seal">봉인 ${hm(d.sealT)}</span>`:""}</h3>
    <ul class="list">${d.rows.map((r,i)=>`<li><span class="tag">질문 ${i+1}</span><span class="txt">${esc(r.q)}${r.who?`<br><span class="small">맡은 사람: ${esc(r.who)}</span>`:""}</span></li>`).join("")}</ul>
    ${d.sealed?gateBox(3,d.sealed,"원인 확인 질문"):`<div class="pend"><b>아직 봉인 전입니다</b><span>2단계 2-5에서 원인 확인 질문을 저장·봉인합니다.</span></div>`}</div>`;
-  const tbl=`<div class="block"><h3>원인 확인 질문으로 얻은 정보 검증하기 <span class="ws">3-1</span></h3><p class="hint">질문 입력창은 없습니다. 모둠원은 각자 맡은 질문을 학생용 프롬프트 형식 그대로 보내고, AI가 제시한 출처에 직접 접속해 확인합니다. 출처가 미비하면 검증 자료 목록과 추가 검색으로 확인합니다. 판정은 출처 신뢰성·정확성·최신성을 기준으로 모둠원이 함께 논의해 정합니다. AI가 말한 출처는 직접 확인하기 전까지 믿지 않습니다.</p>
+  const tbl=`<div class="block"><h3>원인 확인 질문으로 얻은 정보 검증하기 <span class="ws">3-1</span></h3><p class="hint">질문 입력창은 없습니다. ‘AI 응답’ 버튼을 눌러 AI 응답을 모둠원이 함께 확인합니다. 응답마다 맡은 사람을 정하고, 맡은 사람은 응답을 우리 말로 요약해 AI 입력자에게 넘깁니다. 각자 AI가 제시한 출처에 직접 접속해 확인하고, 출처가 없거나 확인되지 않으면 검증 자료 목록과 추가 검색으로 검증합니다. 검증 결과를 모둠에 설명한 뒤 출처 신뢰성·정확성·최신성을 기준으로 함께 논의해 판정합니다. AI의 답은 정답이 아니며, 출처를 확인하지 못한 정보는 근거로 쓸 수 없습니다.</p>
    <div class="tablewrap"><table style="min-width:1040px"><thead><tr><th style="width:14%">원인 확인 질문</th><th style="width:21%">AI 응답과 제시한 출처</th><th style="width:17%">AI 응답의 핵심(우리 말로)</th><th style="width:17%">직접 확인한 결과</th><th style="width:16%">검증 체크리스트</th><th>판정과 이유</th></tr></thead><tbody>${d.rows.map((r,i)=>`<tr>
-    <td><span class="small">질문 ${i+1}${r.who?` · ${esc(r.who)}`:""}</span><br>${esc(r.q)}</td>
-    <td>${r.ans?`<div class="ai-ans">${esc(r.ans)}<span class="srcs">출처: ${r.src.map(esc).join(" / ")||"없음"}</span>${r.fu?`<span class="srcs" style="color:var(--ink)">근거 다시 묻기 → ${esc(r.fu)}</span>`:`<button class="btn sm" style="margin-top:6px" data-act="s3fu" data-i="${i}" ${r.wait?"disabled":""}>근거 다시 묻기</button>`}</div>`:r.wait?`<span class="thinking">답을 쓰는 중…</span>`:`<button class="btn primary sm" data-act="s3ask" data-i="${i}">AI에게 질의</button><span class="small" style="display:block;margin-top:4px">"…답의 근거가 된 자료의 기관명·자료명·날짜를 함께 제시해 줘. 확인할 수 없는 내용은 '확인 불가'라고 표시해 줘. 원인이 무엇인지 판단하지는 마."</span>`}${r.err?`<div class="warnline">${esc(r.err)}</div>`:""}</td>
+    <td><span class="small">질문 ${i+1}</span><br>${esc(r.q)}${r.ans?`<label class="small" style="display:block;margin-top:8px">맡은 사람<select data-bind="s3.rows.${i}.who" aria-label="질문 ${i+1} 응답을 맡은 사람" style="margin-top:2px"><option value="">선택</option>${ROSTER[1].map(w=>`<option ${r.who===w?"selected":""}>${esc(w)}</option>`).join("")}</select></label>`:""}</td>
+    <td>${r.ans?`<div class="ai-ans">${esc(r.ans)}<span class="srcs">출처: ${r.src.map(esc).join(" / ")||"없음"}</span>${r.fu?`<span class="srcs" style="color:var(--ink)">근거 다시 묻기 → ${esc(r.fu)}</span>`:`<button class="btn sm" style="margin-top:6px" data-act="s3fu" data-i="${i}" ${r.wait?"disabled":""}>근거 다시 묻기</button>`}</div>`:r.wait?`<span class="thinking">답을 쓰는 중…</span>`:`<button class="btn primary sm" data-act="s3ask" data-i="${i}">AI 응답</button><span class="small" style="display:block;margin-top:4px">"…답의 근거가 된 자료의 기관명·자료명·날짜를 함께 제시해 줘. 확인할 수 없는 내용은 '확인 불가'라고 표시해 줘. 원인이 무엇인지 판단하지는 마."</span>`}${r.err?`<div class="warnline">${esc(r.err)}</div>`:""}</td>
     <td><textarea id="s3-sum-${i}" data-bind="s3.rows.${i}.sum" data-red="s3-sum-${i}" data-st="3" ${r.ans?"":"disabled"} aria-label="AI 응답의 핵심" placeholder="우리 말로 한 줄">${esc(r.sum)}</textarea>${r.ans?redHtml("s3-sum-"+i,r.sum):""}</td>
     <td><textarea data-bind="s3.rows.${i}.res" ${r.ans?"":"disabled"} placeholder="자료 내용 / 출처(기관·문서명, 날짜)" aria-label="직접 확인한 결과">${esc(r.res)}</textarea></td>
     <td><div class="checks">${VERIFY.map((c,k)=>`<label><input type="checkbox" data-bind="s3.rows.${i}.ck.${k}" ${r.ck[k]?"checked":""} ${r.ans?"":"disabled"}> ${esc(c)}</label>`).join("")}</div></td>
@@ -735,7 +735,7 @@ function s3(){
   const acc=d.rows.filter(r=>r.j==="수용");
   const causes=[...new Set([...S.s2.guesses.map(g=>g.t),...d.rows.map(r=>r.cause).filter(Boolean)])];
   const core=`<div class="block"><h3>원인 관계도 그리기 <span class="ws">3-2</span> <span class="mins">4'</span> <span class="chip N">AI 미사용</span></h3><p class="hint">수용한 정보만 근거로 원인들을 화살표로 연결합니다. 이것이 해결되면 다른 원인도 함께 풀리는 원인은 무엇인가요?</p>
-   ${(()=>{const un=S.s2.guesses.map(g=>g.t).filter(t=>!d.rows.some(r=>r.cause===t));return un.length?`<p class="small">미확인 원인(맡은 사람 없음): ${un.map(esc).join(" / ")} · 근거가 없으므로 화살표에 쓰지 않습니다.</p>`:""})()}<p class="small">수용한 정보 ${acc.length}건${acc.length?": "+acc.map(r=>esc(r.sum.slice(0,40))+(r.sum.length>40?"…":"")).join(" / "):""}</p>
+   ${(()=>{const un=S.s2.guesses.map(g=>g.t).filter(t=>!d.rows.some(r=>r.cause===t));return un.length?`<p class="small">미확인 원인(원인 확인 질문 없음): ${un.map(esc).join(" / ")} · 근거가 없으므로 화살표에 쓰지 않습니다.</p>`:""})()}<p class="small">수용한 정보 ${acc.length}건${acc.length?": "+acc.map(r=>esc(r.sum.slice(0,40))+(r.sum.length>40?"…":"")).join(" / "):""}</p>
    <ul class="links">${d.links.map((l,i)=>`<li><span>${esc(l[0])}</span><span class="arr">→</span><span>${esc(l[1])}</span><button class="btn sm" data-act="del" data-k="s3.links" data-i="${i}" style="margin-left:auto">삭제</button></li>`).join("")}</ul>
    <div class="addrow"><select id="s3-la" aria-label="원인 A"><option value="">원인 A</option>${causes.map(c=>`<option>${esc(c)}</option>`).join("")}</select><span class="arr" aria-hidden="true">→</span><select id="s3-lb" aria-label="원인 B"><option value="">원인 B (A 때문에 생기는 것)</option>${causes.map(c=>`<option>${esc(c)}</option>`).join("")}</select><button class="btn" data-act="s3link">화살표 추가</button></div>
    <div class="field" style="margin-top:10px"><label for="s3-root">다른 원인을 함께 풀 수 있는 원인</label><select id="s3-root" data-bind="s3.root"><option value="">선택</option>${causes.map(c=>`<option ${d.root===c?"selected":""}>${esc(c)}</option>`).join("")}</select></div>
@@ -849,7 +849,7 @@ function s6(){
    <div class="checks" style="font-size:14px;gap:6px">${CHK6.map((c,k)=>`<label><input type="checkbox" data-bind="s6.chk.${k}" ${d.chk[k]?"checked":""}> ${esc(c)}</label>`).join("")}</div>
    <div class="row">${d.tok?`<span class="seal">선생님 확인 ${hm(d.tokT)}</span>${d.tnote?`<span class="small">선생님: ${esc(d.tnote)}</span>`:""}`:all?`<span class="small">선생님 확인을 기다리는 중입니다.</span><button class="demo-btn" data-act="t6ok">시연: 선생님 확인</button>`:'<span class="small">두 항목을 모두 확인해야 선생님께 확인 요청이 갑니다.</span>'}</div></div>`;
   const r=d.res;
-  const result=`<div class="block"><h3>결과 기록 <span class="ws">6-6</span></h3><p class="hint">6-3에서 정한 결과 확인 시점에 씁니다. 결과를 함께 나눌 날짜는 모둠의 행동계획에 따라 선생님과 정합니다.</p>
+  const result=`<div class="block"><h3>결과 기록 <span class="ws">6-6</span></h3><p class="hint">결과 확인 시점에 씁니다. 결과를 함께 공유할 날짜는 6-3의 결과 확인 시점에 맞춰 선생님과 함께 정합니다.</p>
    ${d.resOpen?`<div style="display:grid;gap:8px"><div class="field"><label for="s6-rh">언제 어떻게 실행했나요?</label><textarea id="s6-rh" data-bind="s6.res.how">${esc(r.how||"")}</textarea></div>
     <div class="field"><label for="s6-rw">무슨 일이 있었나요?</label><textarea id="s6-rw" data-bind="s6.res.what">${esc(r.what)}</textarea></div></div>`
    :`<div class="pend"><b>아직 결과 확인 시점이 아닙니다</b><span>6-3에서 정한 결과 확인 시점에 선생님이 엽니다.</span><button class="demo-btn" style="margin:6px 0 0;align-self:flex-start" data-act="s6res">시연: 6차시로 가정하기</button></div>`}</div>`;
@@ -907,7 +907,7 @@ function renderTeacher(){
    <div class="row"><button class="demo-btn" data-act="fillAll">시연: 3모둠의 두 차시 흐름을 예시로 채우기</button></div></section>`;
   const items=[
    {n:1,what:"질문 목록",sealed:S.s1.sealed,t:S.s1.sealT,body:S.s1.qs.map(q=>`[${QTYPES[q.type]}] ${q.t}${q.aft?" (공개 후)":""}`),ck:[["질문 4~5개",S.s1.qs.length>=4&&S.s1.qs.length<=5],["세 유형이 고루 들어감",QTYPES.every((t,i)=>S.s1.qs.some(q=>q.type===i))],["원인·해결책을 묻지 않음",!S.s1.qs.some(q=>/해결|원인|정책|어떻게 하면/.test(q.t))]]},
-   {n:3,what:"원인 확인 질문(2-5)",sealed:S.s3.sealed,t:S.s3.sealT,body:S.s2.vq.map(v=>v.q+(v.who?` (${v.who})`:"")+(v.aft?" (공개 후)":"")),ck:[["모둠원마다 질문 1개",S.s2.vq.length===NEED()&&new Set(S.s2.vq.map(v=>v.who)).size===NEED()],["합의한 원인이 모둠원 수 이상",S.s2.guesses.length>=NEED()],["원인이 겹치지 않음",new Set(S.s2.vq.map(v=>v.cause)).size===S.s2.vq.length],["질문마다 확인할 원인이 연결됨",S.s2.vq.every(v=>v.cause)],["질문마다 맡은 사람",S.s2.vq.every(v=>v.who)]]},
+   {n:3,what:"원인 확인 질문(2-5)",sealed:S.s3.sealed,t:S.s3.sealT,body:S.s2.vq.map(v=>v.q+(v.who?` (${v.who})`:"")+(v.aft?" (공개 후)":"")),ck:[["원인마다 질문 1개",S.s2.vq.length===S.s2.guesses.length],["합의한 원인 3개 이상",S.s2.guesses.length>=NEED()],["원인이 겹치지 않음",new Set(S.s2.vq.map(v=>v.cause)).size===S.s2.vq.length],["질문마다 확인할 원인이 연결됨",S.s2.vq.every(v=>v.cause)]]},
    {n:4,what:"대안표",sealed:S.s4.sealed,t:S.s4.sealT,body:S.s4.alts.map(a=>`[${a.actor}] ${a.txt}${a.aft?" (공개 후)":""}`),ck:[["대안 3개 이상",S.s4.alts.length>=3],["실행 주체 2종 이상",new Set(S.s4.alts.map(a=>a.actor)).size>=2]]},
    {n:5,what:"반응 예측",sealed:S.s5.sealed,t:S.s5.sealT,body:S.s5.preds.map(p=>`${p.who}${p.ex?"(목소리 내기 어려움)":""}: ${p.txt}${p.reason?" / 이유: "+p.reason:""}`),ck:[["이해관계자 2명 이상",S.s5.preds.filter(p=>!p.ex).length>=2],["목소리를 내기 어려운 이해관계자 포함",S.s5.preds.some(p=>p.ex)]]}
   ];
@@ -963,15 +963,23 @@ function evalPanel(){
 /* ================= 설계 메모 ================= */
 function renderPlan(){
   return `<div class="plan">
-  <section class="panel"><h2>이 견본이 따르는 자료 (4판, 지도안 4장 v15와 일치)</h2>
-   <p>고등 지도안 4장 v15와 그 부록인 나의 활동 기록지를 따른다. 단계 화면마다 기록지 번호와 지도안의 권장 시간을 표시했다. 활동지는 모둠 토의 자체를 선제 사고로 보고, 개인 칸은 1-2·2-4·3-1·4-3·5-5·7-3·7-4에만 둔다. 앱에는 모둠 합의(앱에 입력) 칸만 입력한다.</p>
-   <ul><li>1단계(12'): 편지(1-1) → 질문 4~5개 3유형 합의·봉인(1-2) → 교사 AI 열기 → 1차 대화 4분 → 멈춤·추가 질문 합의 1분 → 2차 대화 2분(1-3) → 로그 자동 제출. 일반화 표현 신고 시 대화 중단·교사 알림</li>
-   <li>2단계(14'): 교사가 단계 시작 때 기사 3건 공개 → 사실 확인 6문항(2-1, 4') → 유수프 이야기를 확인된 이야기/창작된 이야기로 대조(2-2, 2') → 삶 잇기 4칸(2-3, 3') → 모둠이 합의한 원인을 모둠원 수 이상(최소 3, 2-4, 2') → 원인 1개씩 나누어 맡고 질문 1개씩(원인 수 = 질문 수 = 모둠원 수), 질문마다 확인할 원인과 맡을 사람을 고름, 저장·봉인(2-5, 3')</li>
-   <li>3단계(14'): 교사 AI 열기 → 1인 1대 태블릿으로 각자 맡은 질문을 학생용 프롬프트 형식으로 질의(3'), 근거 다시 묻기 → AI 응답의 핵심(우리 말, Red 탐지), 직접 확인한 결과, 검증 체크리스트, 모둠 논의 후 판정과 이유(3-1, 5') → 원인 관계도(3-2) → 핵심 원인 1개(3-3)</li>
-   <li>4단계(13'): 핵심 원인 고정(4-1) → 유사 사례 순차 공개, 사례마다 핵심 아이디어(4-2) → 대안 3개 이상과 실행 주체 봉인, 사례 표현이 겹치면 알림(4-3) → 강점·약점 요약과 수용·수정·기각(4-4) → 비교표 1~3점(4-5) → 1순위와 보완 내용(4-6)</li>
+  <section class="panel"><h2>이 견본이 따르는 자료 (지도안 4장 v25와 일치)</h2>
+   <p>고등 지도안 4장 v25(2026. 10. 22.)와 그 부록인 나의 활동 기록지를 따른다. 단계 화면마다 기록지 번호와 지도안의 권장 시간을 표시했다. 활동지는 모둠 토의 자체를 선제 사고로 보고, 개인 칸은 1-2·2-4·3-1·4-3·5-5·7-3·7-4에만 둔다. 앱에는 모둠 합의(앱에 입력) 칸만 입력한다.</p>
+   <ul><li>1단계(15'): AI 신호등·모둠 역할 확인(3') → 편지(1-1) → 질문 4~5개 3유형 합의·봉인(1-2) → 교사 AI 열기 → 1차 대화 4분 → 멈춤·추가 질문 합의 1분 → 2차 대화 2분(1-3) → 로그 자동 제출. 일반화 표현 신고 시 대화 중단·교사 알림</li>
+   <li>2단계(14'): 교사가 단계 시작 때 기사 3건 공개 → 사실 확인 6문항(2-1, 4') → 유수프 이야기를 확인된 이야기/창작된 이야기로 대조(2-2, 2') → 삶 잇기 4칸(2-3, 3') → 모둠이 합의한 원인 3개 이상(2-4, 2') → 원인마다 원인 확인 질문 1개, AI 입력자가 저장·봉인(2-5, 3')</li>
+   <li>3단계(16'): 교사 AI 열기 → ‘AI 응답’ 버튼으로 응답을 모둠이 함께 확인, 응답마다 맡은 사람을 정해 우리 말로 요약하고 AI 입력자가 입력(3-1, 3'), 근거 다시 묻기 → 각자 출처 직접 확인·검증 자료 목록과 추가 검색, 검증 체크리스트, 출처 신뢰성·정확성·최신성 기준으로 모둠 판정(3-1, 5') → 원인 관계도(3-2, 4') → 핵심 원인 1개(3-3, 2') → 차시 정리(2')</li>
+   <li>4단계(16'): 핵심 원인 고정(4-1, 3') → 유사 사례 순차 공개, 사례마다 핵심 아이디어(4-2) → 대안 3개 이상과 실행 주체 봉인, 사례 표현이 겹치면 알림(4-3) → 강점·약점 요약과 수용·수정·기각(4-4) → 비교표 1~3점(4-5) → 1순위와 보완 내용(4-6)</li>
    <li>5단계(12'): 모둠 토의로 이해관계자 2명 이상의 반응과 이유(5-1), 목소리를 내기 어려운 이해관계자 1명 이상(5-2) 봉인 → 시나리오 A·B·C(시점 표시 없음) → 시나리오 읽기 메모(5-3) → 고른 이유 20자 이상(5-4) → 예상하지 못한 문제(5-5)</li>
    <li>6단계(9'): 문제 수준(6-1) → 행동 유형과 이유(6-2) → 행동계획표 대상·내용·방법·제출 경로, 실행 범위, 결과 확인 시점, 돌아갈 단계(6-3) → 제안서 [선택](6-4) → 제출 전 점검 2항목과 교사 확인(6-5) → 결과 기록: 언제 어떻게 실행했나 / 무슨 일이 있었나(6-6)</li>
    <li>7단계(8'): 흐름 정리 5칸 [선택](7-1) → 다른 모둠 두 곳 평가(7-2) → 성찰 체크리스트(7-3) → 서술 2문항(7-4)</li></ul></section>
+  <section class="panel"><h2>지도안 v25에 맞춰 바뀐 것</h2>
+   <ul><li>용어: '새로운 문제'를 '예상하지 못한 문제'로. 개념 자리(5단계 정의·5-5 제목·7단계 흐름)는 정식 용어로, 같은 맥락에서 반복되는 곳은 '문제'로 줄임</li>
+   <li>2-4·2-5: 원인 수를 모둠원 수에 맞추지 않음. 합의한 원인 3개 이상, 원인마다 원인 확인 질문 1개. 2-5에서 맡을 사람을 정하지 않음</li>
+   <li>3-1: ‘AI 응답’ 버튼으로 응답을 모둠이 함께 확인한 뒤, 응답마다 맡은 사람을 정해 요약·검증. 판정 기준은 출처 신뢰성·정확성·최신성</li>
+   <li>단계 머리에 AI 역할(경험 전달자·검색 보조자·대안 검토자·미리보기 제공자) 표시</li>
+   <li>권장 시간: 1단계 15'(수업 준비 3' 포함), 3단계 16'(차시 정리 2' 포함), 4단계 16'(핵심 원인 고정 3' 포함)</li>
+   <li>7-2 기준 4: '시나리오에서 발견한 문제를 행동계획에 반영하였다'</li>
+   <li>6-6: 결과 공유 날짜는 6-3의 결과 확인 시점에 맞춰 선생님과 함께 정함. 실행 준비는 '선생님 확인 뒤 제출'로</li></ul></section>
   <section class="panel"><h2>4판에서 바뀐 것 (지도안 v15 반영)</h2>
    <ul><li>모둠 역할: 진행자, AI 입력자, 모둠활동 점검자, 개인활동 도우미</li>
    <li>2-2 비교를 3분류에서 '확인된 이야기 / 창작된 이야기' 2분류로</li>
@@ -983,9 +991,7 @@ function renderPlan(){
    <li>6-6 결과 기록을 '언제 어떻게 실행했나 / 무슨 일이 있었나' 두 칸으로</li>
    <li>1-4(기억에 남은 말) 안내 삭제</li></ul></section>
   <section class="panel"><h2>결정이 남은 것</h2>
-   <ul><li><b>3-1 'AI 응답의 핵심(우리 말로)' 칸:</b> 활동지 3-1은 'AI 응답' 칸이지만, 앱은 노랑(YELLOW) 규칙과 Red 탐지를 위해 우리 말 요약 칸을 남겼다.</li>
-   <li><b>6-5 점검 3번째 항목:</b> '사실을 말한 부분에 근거 자료를 밝혔다'를 넣을지(활동지는 2항목).</li>
-   <li><b>6-6 공유 날짜(해결):</b> 날짜를 정해 두지 않고 모둠의 행동계획(6-3 결과 확인 시점)에 따라 학생과 정한다(지도안 v25).</li>
+   <ul><li><b>6-5 점검 3번째 항목:</b> '사실을 말한 부분에 근거 자료를 밝혔다'를 넣을지(활동지는 2항목).</li>
    <li><b>2단계 시간:</b> 기사 3건 읽기와 6문항을 4분에 마치기 빠듯하다. 모둠 안에서 1인 1기사로 나눠 읽는 방안이 있다.</li></ul></section>
   <section class="panel"><h2>Firebase로 옮길 때 확인할 것</h2>
    <ul><li>자료 탐색 도우미는 검색 연결이 없으면 존재하지 않는 출처를 만들 수 있다. 검색 도구를 붙일지, 출처 생성을 검증 활동의 재료로 둘지 정한다.</li>
@@ -1071,8 +1077,8 @@ const DEMO={
       const L=d.life;L.same=L.same||"유수프도 대학에 가고 싶어 했고, 가족이 걱정할까 봐 연락을 자주 하려 한다.";L.place=L.place||"폭격 소리를 들으며 학교에 가지 못했을 것이다. 지금 내가 겪지 않는 것은 노력 때문이 아니라 사는 곳이 달라서다.";L.impact=L.impact||"같은 학교나 동네에서 만나 함께 지내는 이웃이 된다. 내가 가진 생각을 다시 보게 될 것이다.";L.act=L.act||"확인하지 않은 말이나 댓글을 퍼뜨리면 여론이 나빠지고, 그 여론이 유수프가 머물 수 있는지에도 영향을 줄 수 있다.";
    if(!S.rev.art.all&&!S.rev.art.g){S.rev.art.all=true;S.rev.art.t=now()}
    if(!d.guesses.length)d.guesses=[{t:"난민 인정을 받기가 매우 어렵다"},{t:"인정받지 못하면 1년마다 체류를 연장해야 해서 오래 계획을 세우기 어렵다"},{t:"제주 밖으로 나갈 수 없어서 일자리를 구할 곳이 좁다"},{t:"뉴스와 댓글 때문에 반대 여론이 커졌다"}];
-   if(!S.s3.sealed&&d.vq.length<NEED()){const W=ROSTER[1],G=d.guesses.map(g=>g.t);d.vq=[{q:"2018년 제주의 예멘인 신청자 가운데 난민으로 인정된 사람은 몇 명이고, 어떤 이유로 인정되었나?",cause:G[0],who:W[0]},{q:"인도적 체류 허가를 받으면 한 번에 얼마 동안 머물 수 있고, 난민 인정자와 지원은 어떻게 다른가?",cause:G[1],who:W[1]},{q:"출도 제한은 언제부터였고, 그동안 예멘인 신청자가 일할 수 있었던 업종은 무엇인가?",cause:G[2],who:W[2]},{q:"2018년 여론조사에서 예멘 난민 수용에 찬성·반대한 비율은 얼마였나?",cause:G[3]||G[0],who:W[3]}]}},
- 3:()=>{const d=S.s3;syncRows();const SUM=["심사를 끝까지 받은 사람 중 난민으로 받아들여진 건 단 두 명이다. 나머지 대다수는 1년짜리 인도적 체류에 그쳤다.","인도적 체류는 1년이 최대라 해마다 연장해야 한다. 건강보험 조건은 AI도 확인하지 못했다.","4월 30일부터 제주 밖으로 나갈 수 없었다. 일할 수 있는 업종은 AI가 답하지 못했다.","6월 조사에서 반대가 찬성보다 10%p쯤 많았고, 폐지 청원에도 40만 명 넘게 참여했다."],RES=["제주출입국·외국인청 게시글과 뉴시스 기사에서 숫자가 같음","세계일보 2023 기사와 같음. 건강보험 조건은 찾지 못함","출도 날짜는 뉴시스 기사와 같음. 업종은 서울신문 2018. 7. 23. 기사에서 1차 산업·요식업으로 확인","뉴시스 2018. 6. 28. 기사와 수치가 같음"],WHY=["제주출입국·외국인청 원문과 수치가 같다.","세계일보 원문에서 1년 상한을 확인했다.","출도 날짜가 기사와 같다. 업종은 따로 찾아 보완했다.","기사 원문과 수치가 같다."];d.rows.forEach((r,i)=>{if(!r.ans)return;r.sum=r.sum||SUM[i]||"";r.res=r.res||RES[i]||"";r.ck=[true,true,true,i!==1];r.j=r.j||"수용";r.why=r.why||WHY[i]||""});
+   if(!S.s3.sealed&&d.vq.length<NEED()){const G=d.guesses.map(g=>g.t);d.vq=[{q:"2018년 제주의 예멘인 신청자 가운데 난민으로 인정된 사람은 몇 명이고, 어떤 이유로 인정되었나?",cause:G[0]},{q:"인도적 체류 허가를 받으면 한 번에 얼마 동안 머물 수 있고, 난민 인정자와 지원은 어떻게 다른가?",cause:G[1]},{q:"출도 제한은 언제부터였고, 그동안 예멘인 신청자가 일할 수 있었던 업종은 무엇인가?",cause:G[2]},{q:"2018년 여론조사에서 예멘 난민 수용에 찬성·반대한 비율은 얼마였나?",cause:G[3]||G[0]}]}},
+ 3:()=>{const d=S.s3;syncRows();d.rows.forEach((r,i)=>{if(!r.who)r.who=ROSTER[1][i%ROSTER[1].length]});const SUM=["심사를 끝까지 받은 사람 중 난민으로 받아들여진 건 단 두 명이다. 나머지 대다수는 1년짜리 인도적 체류에 그쳤다.","인도적 체류는 1년이 최대라 해마다 연장해야 한다. 건강보험 조건은 AI도 확인하지 못했다.","4월 30일부터 제주 밖으로 나갈 수 없었다. 일할 수 있는 업종은 AI가 답하지 못했다.","6월 조사에서 반대가 찬성보다 10%p쯤 많았고, 폐지 청원에도 40만 명 넘게 참여했다."],RES=["제주출입국·외국인청 게시글과 뉴시스 기사에서 숫자가 같음","세계일보 2023 기사와 같음. 건강보험 조건은 찾지 못함","출도 날짜는 뉴시스 기사와 같음. 업종은 서울신문 2018. 7. 23. 기사에서 1차 산업·요식업으로 확인","뉴시스 2018. 6. 28. 기사와 수치가 같음"],WHY=["제주출입국·외국인청 원문과 수치가 같다.","세계일보 원문에서 1년 상한을 확인했다.","출도 날짜가 기사와 같다. 업종은 따로 찾아 보완했다.","기사 원문과 수치가 같다."];d.rows.forEach((r,i)=>{if(!r.ans)return;r.sum=r.sum||SUM[i]||"";r.res=r.res||RES[i]||"";r.ck=[true,true,true,i!==1];r.j=r.j||"수용";r.why=r.why||WHY[i]||""});
    const C=S.s2.guesses.map(g=>g.t);if(C.length>=3&&!d.links.length)d.links=[[C[0],C[1]],[C[3]||C[2],C[0]]];d.root=d.root||C[0]||"";
    d.coreC=d.coreC||"난민 인정이 매우 적고 대부분 1년마다 연장해야 하는 인도적 체류 허가에 머무는 제도";d.coreE=d.coreE||"484명 가운데 인정 2명, 인도적 체류 412명이고 인도적 체류는 1년이 상한(기사 3)"},
  4:()=>{const d=S.s4;if(!d.pinned)d.coreEdit=d.coreEdit||coreText()||"난민 인정이 매우 적고 대부분 1년마다 연장해야 하는 인도적 체류 허가에 머무는 제도 (근거: 기사 3)";
@@ -1144,7 +1150,7 @@ app.addEventListener("click",e=>{
    case "ox":d2.qa[i]=v;break;
    case "cls":{const c=d2.cls[i]||{};d2.cls[i]={v,art:v==="확인된 이야기"?(c.art||""):""};break}
    case "s2g":{const t=val("s2-g");if(!t)return;d2.guesses.push({t});if(BIAS.test(t))alertAdd(2,"bias",`원인 추측에 일반화 표현: "${t}" — 되묻기 필요`,"bias-g-"+t);break}
-   case "s2v":{const t=val("s2-v");if(!t||d2.vq.length>=NEED()||d2.vq.some(v=>v.cause===$("#s2-vc").value||v.who===$("#s2-vw").value)||!$("#s2-vc").value||!$("#s2-vw").value){const n=!$("#s2-vc").value?$("#s2-vc"):$("#s2-vw");if(n&&!n.value)n.focus();return}d2.vq.push({q:t,cause:$("#s2-vc").value,who:$("#s2-vw").value,aft:!!helpVis("q2")});break}
+   case "s2v":{const t=val("s2-v");if(!t||d2.vq.length>=d2.guesses.length||!$("#s2-vc").value||d2.vq.some(v=>v.cause===$("#s2-vc").value)){const n=$("#s2-vc");if(n&&!n.value)n.focus();return}d2.vq.push({q:t,cause:$("#s2-vc").value,who:"",aft:!!helpVis("q2")});break}
    case "s3seal":d3.sealed=true;d3.sealT=now();S.req[3]="";syncRows();log(3,"seal","원인 확인 질문 봉인(2-5)");break;
    case "s3ask":searchAsk(i,false);return;
    case "s3fu":searchAsk(i,true);return;
