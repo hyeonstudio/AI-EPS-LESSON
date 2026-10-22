@@ -1,0 +1,778 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>AI-EPS 전자 쓰레기 수업 견본</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 앱 셸(상단 바 + 보기 전환) 아래, 학생 보기는 단계 레일 + 작업 패널 2열. 좁은 화면에서는 레일이 가로 띠가 된다 */
+:root{
+  --bg:#F2F5F4; --surface:#FFFFFF; --sunk:#E8EDEB; --ink:#17201E; --muted:#58665F; --line:#D5DDDA;
+  --accent:#1E5D55; --accent-ink:#FFFFFF; --accent-soft:#DDECE9;
+  --g:#2D7F4F; --g-bg:#E0F1E6; --y:#9A6A00; --y-solid:#D99A0B; --y-bg:#FFF2D2; --r:#B8342B; --r-bg:#FBE2DF; --off:#6E7B78; --off-bg:#E6EAE9;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101615; --surface:#18201E; --sunk:#141B19; --ink:#E4EBE9; --muted:#9AA9A4; --line:#2B3633;
+  --accent:#6CC2B5; --accent-ink:#0E1A18; --accent-soft:#1D3431;
+  --g:#6BCB92; --g-bg:#173325; --y:#F0BE4C; --y-solid:#E5A824; --y-bg:#352A10; --r:#F2867C; --r-bg:#3C1C19; --off:#93A19D; --off-bg:#222B29; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101615; --surface:#18201E; --sunk:#141B19; --ink:#E4EBE9; --muted:#9AA9A4; --line:#2B3633;
+  --accent:#6CC2B5; --accent-ink:#0E1A18; --accent-soft:#1D3431;
+  --g:#6BCB92; --g-bg:#173325; --y:#F0BE4C; --y-solid:#E5A824; --y-bg:#352A10; --r:#F2867C; --r-bg:#3C1C19; --off:#93A19D; --off-bg:#222B29; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.hbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding-block:12px;max-width:1240px;margin:0 auto}
+.brand{display:flex;align-items:baseline;gap:10px;margin-right:auto;flex-wrap:wrap}
+.brand b{font-size:19px;letter-spacing:.02em}
+.brand span{color:var(--muted);font-size:13px}
+.views{display:flex;gap:4px;background:var(--sunk);padding:4px;border-radius:10px}
+.views button{border:0;background:transparent;color:var(--muted);font:600 14px var(--sans);padding:7px 14px;border-radius:7px;cursor:pointer}
+.views button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.demo-note{font-size:12px;color:var(--muted);border:1px dashed var(--line);border-radius:6px;padding:3px 8px}
+main{max-width:1240px;margin:0 auto;padding-block:20px 60px}
+button{font-family:var(--sans)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.student{display:grid;grid-template-columns:232px minmax(0,1fr);gap:20px;align-items:start}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);display:flex;flex-direction:column;gap:6px}
+.rail .who{font-size:13px;color:var(--muted);padding:0 4px 6px}
+.step{display:grid;grid-template-columns:26px 1fr;gap:2px 10px;align-items:center;text-align:left;width:100%;border:1px solid transparent;background:transparent;border-radius:10px;padding:8px 10px;cursor:pointer;color:var(--ink)}
+.step .n{grid-row:span 2;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:600 13px var(--mono);background:var(--sunk);color:var(--muted)}
+.step .t{font-weight:600;font-size:14px;line-height:1.35}
+.step .s{font-size:12px;color:var(--muted)}
+.step[aria-current="step"]{background:var(--surface);border-color:var(--line)}
+.step[aria-current="step"] .n{background:var(--accent);color:var(--accent-ink)}
+.step.done .n{background:var(--accent-soft);color:var(--accent)}
+.step:disabled{opacity:.45;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:5px;font:600 11px var(--mono);letter-spacing:.04em;padding:2px 7px;border-radius:999px;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.Y{background:var(--y-bg);color:var(--y)} .chip.N{background:var(--off-bg);color:var(--off)} .chip.R{background:var(--r-bg);color:var(--r)} .chip.G{background:var(--g-bg);color:var(--g)}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,28px);min-width:0}
+.stage-head{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:6px}
+.stage-head h2{margin:0;font-size:22px;text-wrap:balance}
+.stage-def{color:var(--muted);margin:0 0 16px;max-width:68ch}
+.signal{display:flex;gap:12px;align-items:flex-start;border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:14px}
+.signal.Y{background:var(--y-bg)} .signal.N{background:var(--off-bg)}
+.signal strong{display:block}
+.signal .lamp{flex:none;display:flex;flex-direction:column;gap:3px;padding:4px;border-radius:6px;background:#1c2422}
+.lamp i{width:9px;height:9px;border-radius:50%;background:#3b4542;display:block}
+.signal.Y .lamp i:nth-child(2){background:#F2B32A}
+
+.flow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;list-style:none;padding:0}
+.flow li{font-size:13px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);color:var(--muted);display:flex;gap:6px;align-items:center}
+.flow li.now{border-color:var(--accent);color:var(--accent);font-weight:600}
+.flow li.ok{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.flow li.lock::after{content:"잠김";font-size:11px;color:var(--muted)}
+
+.block{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}
+.block.first{border:0;margin:0;padding:0}
+.block h3{font-size:16px;margin:0 0 4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.block .hint{color:var(--muted);font-size:13.5px;margin:0 0 12px;max-width:70ch}
+.ws{font:500 11.5px var(--mono);color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+.locked>.lockbody{opacity:.38;pointer-events:none;user-select:none}
+.lockmsg{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);background:var(--sunk);border-radius:8px;padding:8px 12px;margin-bottom:10px}
+.lockmsg::before{content:"";width:12px;height:12px;border:2px solid currentColor;border-radius:3px}
+
+.letter{background:var(--sunk);border-radius:12px;padding:16px 18px;font-size:14.5px;max-width:70ch}
+.letter p{margin:0 0 8px}
+.letter p:last-child{margin:0}
+.letter .from{font-size:12.5px;color:var(--muted);margin-bottom:6px}
+
+.list{display:flex;flex-direction:column;gap:6px;margin:0 0 10px;padding:0;list-style:none}
+.list li{display:flex;gap:10px;align-items:flex-start;background:var(--sunk);border-radius:8px;padding:8px 10px;font-size:14px}
+.list li .tag{flex:none;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:5px;padding:1px 7px}
+.list li .txt{flex:1;min-width:0}
+.list li .x{flex:none;border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:13px}
+.addrow{display:flex;gap:8px;flex-wrap:wrap}
+.addrow input,.addrow select{flex:1 1 180px;min-width:0}
+input[type=text],textarea,select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+textarea{min-height:80px;resize:vertical}
+textarea[readonly]{background:var(--sunk);color:var(--muted)}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:600;font-size:14px;padding:8px 14px;border-radius:8px;cursor:pointer;white-space:nowrap}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.warn{border-color:var(--r);color:var(--r)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.seal{font:500 12px var(--mono);color:var(--accent);background:var(--accent-soft);padding:3px 8px;border-radius:6px}
+.small{font-size:12.5px;color:var(--muted)}
+.timer{font:600 13px var(--mono);padding:3px 9px;border-radius:6px;background:var(--sunk);color:var(--ink)}
+.timer.low{background:var(--y-bg);color:var(--y)}
+
+.chat{display:flex;flex-direction:column;gap:10px;background:var(--sunk);border-radius:12px;padding:14px;max-height:380px;overflow:auto;margin-bottom:10px}
+.msg{max-width:78%;padding:9px 13px;border-radius:12px;font-size:14px}
+.msg.me{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:3px}
+.msg.ai{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:3px;user-select:none}
+.msg.sys{align-self:center;background:transparent;color:var(--muted);font-size:12.5px;padding:2px}
+.msg .who{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:2px}
+.persona{display:flex;gap:12px;align-items:center;margin-bottom:10px;font-size:13.5px}
+.persona .av{flex:none;width:38px;height:38px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700}
+.persona em{font-style:normal;color:var(--muted);display:block;font-size:12.5px}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:640px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--sunk);font-weight:600;font-size:12.5px;color:var(--muted);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td select,td input[type=text],td textarea{font-size:13px;padding:5px 7px}
+td textarea{min-height:56px}
+.ai-ans{user-select:none}
+.ai-ans small{display:block;color:var(--muted);margin-top:3px}
+.checks{display:flex;flex-direction:column;gap:3px;font-size:12.5px}
+.checks label{display:flex;gap:5px;align-items:center;white-space:nowrap}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:6px}
+.fact{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.fact .big{font:600 24px var(--sans);color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.2}
+.fact .src{font-size:11.5px;color:var(--muted);margin-top:auto;padding-top:4px}
+.fact p{margin:0;font-size:13.5px}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.card{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--surface);user-select:none}
+.card.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.card h4{margin:0;font-size:15px}
+.card dl{margin:0;display:grid;gap:6px;font-size:13px}
+.card dt{font-weight:600;color:var(--muted);font-size:12px}
+.card dd{margin:0}
+.scen-l{font:600 12px var(--mono);color:var(--accent);letter-spacing:.04em}
+.cards.stories{grid-template-columns:minmax(0,1fr)}
+.cards.stories .card{max-width:78ch}
+.card.story p{margin:0;font-size:13.5px;line-height:1.7}
+.card label{display:flex;gap:6px;align-items:center;font-size:13.5px;font-weight:600;margin-top:auto}
+
+.redbox{margin-top:8px;border-radius:8px;padding:8px 12px;font-size:13px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.redbox.ok{background:var(--g-bg);color:var(--g)}
+.redbox.warn{background:var(--y-bg);color:var(--y)}
+.redbox.red{background:var(--r-bg);color:var(--r)}
+.meter{flex:1 1 120px;height:6px;border-radius:3px;background:var(--line);overflow:hidden;min-width:90px}
+.meter i{display:block;height:100%;background:currentColor}
+.redbox b{font-family:var(--mono)}
+
+.qa{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;counter-reset:q}
+.qa li{counter-increment:q;display:flex;flex-direction:column;gap:6px;background:var(--sunk);border-radius:10px;padding:10px 12px}
+.qa-q{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-size:14px}
+.qa-q::before{content:counter(q);font:600 12px var(--mono);color:var(--muted)}
+.qa-type{font:600 11px var(--mono);color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:1px 6px}
+.ox{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ox button{width:44px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:700 16px var(--mono);cursor:pointer}
+.ox button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.qa-fb{font-size:13px;padding:3px 8px;border-radius:6px}
+.qa-fb.ok{background:var(--g-bg);color:var(--g)} .qa-fb.no{background:var(--y-bg);color:var(--y)}
+.fiction{border:1px dashed var(--line);border-radius:10px;padding:12px 14px;font-size:14px}
+.fiction ul{margin:8px 0 0;padding-left:18px}
+.fiction li{margin-bottom:3px}
+.fic-tag{font:600 11px var(--mono);color:var(--off);background:var(--off-bg);border-radius:4px;padding:1px 6px;margin-right:6px}
+.life{display:flex;flex-direction:column;gap:12px}
+.life section{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start}
+.life section>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.life-n{width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font:600 13px var(--mono)}
+.pend{display:flex;flex-direction:column;gap:2px;border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13.5px;color:var(--muted)}
+.pend b{color:var(--ink);font-size:13.5px}
+.exbox{background:var(--y-bg);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13.5px}
+.exbox ul{margin:6px 0 0;padding-left:18px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chipbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 11px;font-size:13px;cursor:pointer}
+.exq{border-left:3px solid var(--accent);background:var(--sunk);border-radius:0 10px 10px 0;padding:10px 14px;margin-top:12px}
+.altform{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1.5fr) minmax(0,1.2fr) auto;gap:8px}
+.casegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.casegrid .fact input{margin-bottom:4px}
+.corebox{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.simwarn{display:inline-block;margin-top:3px;font-size:12.5px;color:var(--y);background:var(--y-bg);border-radius:5px;padding:1px 7px}
+.demo-btn{margin-left:auto;border:1px dashed var(--line);background:transparent;color:var(--muted);border-radius:6px;padding:3px 9px;font-size:12px;cursor:pointer}
+.log .k-rev{color:var(--g)}
+@media (max-width:860px){.altform{grid-template-columns:minmax(0,1fr)}}
+.nextbar{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:flex-end;border-top:1px solid var(--line);margin-top:20px;padding-top:14px}
+.demo-hint{border:1px dashed var(--line);border-radius:6px;padding:2px 8px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:7px 14px;font-weight:600;font-size:14px;cursor:pointer}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.acttypes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.acttypes div{display:flex;flex-direction:column;gap:2px;background:var(--sunk);border-radius:8px;padding:8px 12px;font-size:14px}
+.scopes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.scope{display:grid;grid-template-columns:auto 1fr;gap:2px 8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.scope .small{grid-column:2}
+.scope.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.propform{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pf{display:grid;grid-template-columns:130px minmax(0,1fr);border-bottom:1px solid var(--line);font-size:14px}
+.pf:last-child{border-bottom:0}
+.pf-k{background:var(--sunk);padding:10px 12px;font-weight:600;font-size:13px;color:var(--muted)}
+.pf>div{padding:10px 12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.pf-src{font:500 11px var(--mono);color:var(--accent);margin-top:2px}
+.pf-ul{margin:0;padding-left:18px}
+@media (max-width:860px){.pf{grid-template-columns:minmax(0,1fr)}}
+.chain{display:flex;flex-direction:column;gap:0;margin:0;padding:0;list-style:none}
+.chain li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.chain li:last-child{border:0}
+.chain li span:first-child{color:var(--muted);font-size:12.5px;font-weight:600}
+.scale td,.scale th{text-align:center}
+.scale td:nth-child(2),.scale th:nth-child(2){text-align:left}
+
+.teacher{display:grid;gap:18px}
+.tgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px;align-items:start}
+.sec-title{font-size:13px;font-weight:600;letter-spacing:.05em;color:var(--muted);margin:0 0 10px}
+.gates{display:flex;gap:6px;flex-wrap:wrap}
+.gates button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 10px;font-weight:600;cursor:pointer;display:flex;gap:6px;align-items:center}
+.gates button.open{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.cell{display:inline-block;width:22px;height:22px;border-radius:5px;font:500 11px/22px var(--mono);text-align:center}
+.cell.d{background:var(--accent-soft);color:var(--accent)} .cell.w{background:var(--sunk);color:var(--muted)} .cell.f{background:var(--r-bg);color:var(--r)} .cell.p{background:var(--y-bg);color:var(--y)}
+.flags{display:flex;flex-direction:column;gap:8px}
+.flag{border-left:3px solid var(--r);background:var(--r-bg);border-radius:0 8px 8px 0;padding:9px 12px;font-size:13.5px}
+.flag.y{border-color:var(--y-solid);background:var(--y-bg)}
+.flag b{display:block}
+.log{font:13px/1.55 var(--mono);display:flex;flex-direction:column;gap:2px;max-height:360px;overflow:auto}
+.log div{display:grid;grid-template-columns:52px 34px 1fr;gap:8px;padding:4px 6px;border-radius:5px}
+.log div:nth-child(odd){background:var(--sunk)}
+.log .k-seal{color:var(--accent)} .log .k-ai{color:var(--y)} .log .k-red{color:var(--r)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12.5px;color:var(--muted);margin-top:8px}
+
+.plan{display:grid;gap:18px}
+.plan h2{margin:0 0 6px;font-size:20px}
+.plan p{max-width:72ch;margin:0 0 10px}
+.plan ul{margin:0;padding-left:20px;max-width:76ch}
+.plan li{margin-bottom:5px}
+
+@media (max-width:860px){
+  .student{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static;flex-direction:row;overflow-x:auto;padding-bottom:4px}
+  .rail .who{display:none}
+  .step{min-width:168px}
+  .tgrid{grid-template-columns:minmax(0,1fr)}
+  .msg{max-width:90%}
+  .chain li{grid-template-columns:minmax(0,1fr);gap:2px}
+}
+@media (prefers-reduced-motion:no-preference){.step,.btn,.card{transition:background .15s,border-color .15s,box-shadow .15s}}
+</style>
+
+<header><div class="wrap"><div class="hbar">
+  <div class="brand"><b>AI-EPS</b><span>중3 사회 · 지속가능한 세계와 글로컬 시민 · 전자 쓰레기</span></div>
+  <span class="demo-note">시연용 견본 · AI 응답은 미리 넣은 예시</span>
+  <div class="views" role="group" aria-label="보기 전환">
+    <button id="v-student" aria-pressed="true">학생 화면</button>
+    <button id="v-teacher" aria-pressed="false">교사 화면</button>
+    <button id="v-plan" aria-pressed="false">기획 메모</button>
+  </div>
+</div></div></header>
+
+<main class="wrap"><div id="app"></div></main>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const now=()=>{const d=new Date();return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")};
+
+const STAGES=[
+ {n:1,t:"AI 페르소나를 통한 사건 경험",g:"Y",role:"경험 전달자",ws:"활동지 가 · 1번",def:"코피의 편지를 읽고, 모둠이 합의한 질문으로 코피와 대화하며 문제 상황에 공감한다."},
+ {n:2,t:"사건의 배경 확인 및 원인 탐색",g:"N",ws:"활동지 가 · 2–3번",def:"편지 속 가상 내용과 실제 사건을 구분하고, AI 없이 원인을 브레인스토밍해 원인 탐색 질문 2개를 만든다."},
+ {n:3,t:"검증을 통한 핵심 원인 도출",g:"Y",role:"검색 보조자",ws:"활동지 가 · 4–5번",def:"두 명이 질문 하나씩 맡아 AI로 자료를 찾고, 검증 기준으로 점검해 핵심 원인을 정한다."},
+ {n:4,t:"해결 대안 구상 및 보완",g:"Y",role:"대안 검토자",ws:"활동지 나 · 1–2번",def:"핵심 원인을 겨냥한 대안을 모둠이 먼저 만들고, AI 피드백을 판단해 보완한 뒤 비교표를 근거로 1순위 대안을 정한다."},
+ {n:5,t:"AI 시뮬레이션 기반 미래 시나리오 탐색",g:"Y",role:"미리보기 제공자",ws:"활동지 나 · 3–4번",def:"이해관계자의 반응을 먼저 예측하고, AI가 만든 시나리오 가운데 일어날 가능성이 큰 것을 골라 새로운 문제를 찾는다."},
+ {n:6,t:"행동계획 수립 및 실행",g:"N",ws:"활동지 나 · 4–5번",def:"새로운 문제의 수준에 맞는 행동을 정하고, 실행 범위를 선택해 제안서와 행동 계획표를 작성한다."},
+ {n:7,t:"공유 및 성찰",g:"N",ws:"활동지 나 · 6번, 성찰 체크리스트",def:"문제 해결 과정을 발표하고 동료 모둠을 평가하며, AI 활용을 성찰한다."}
+];
+const MEMBERS=["서윤","민준","하은","지호"];
+const TYPES=["내가 스스로 할 수 있는 것","주변 사람이나 기관에 요청해야 하는 것","제도나 규칙이 바뀌어야 하는 것"];
+
+const S={
+ view:"student",stage:1,open:5,logs:[],
+ rev:{q1:{all:false,g:false,t:""},q2:{all:false,g:false,t:""},alt:{all:false,g:false,t:""},cases:{all:false,g:false,t:""},who:{all:false,g:false,t:""}},
+ after:new Set(),
+ s1:{qs:[],sealed:false,asked:[],paused:false,discuss:"",qs2:[],sealed2:false,asked2:[],chat:[],deadline:null},
+ s2:{qa:["","","","",""],diff:"",life:{same:"",place:"",impact:"",dev:[{item:"휴대전화",how:""},{item:"이어폰",how:""},{item:"충전기·케이블",how:""},{item:"태블릿·노트북",how:""}]},causes:[],vq:[]},
+ s3:{rows:[],core:""},
+ s4:{alts:[],notes:[],sealed:false,fb:null,first:null,firstWhy:""},
+ s5:{preds:[],sealed:false,scen:null,pick:null,why:"",newp:""},
+ s6:{newAlt:"",fz:false,ss:false,level:"",acts:[],scope:"",prop:{ask:"",effect:"",reply:""},plans:[{who:"",how:"",risk:"",resp:"",channel:"",date:""},{who:"",how:"",risk:"",resp:"",channel:"",date:""}],chk:[false,false,false],ok:false,tnote:"",resultOpen:false,res:{what:"",same:"",back:"",why:""}},
+ s7:{peer:[0,0,0,0],learn:"",compare:"",chk:Array(10).fill(""),newThought:""}
+};
+
+/* ---- 교사 공개 도움 자료 ---- */
+const REV=[
+ {k:"q1",stage:1,name:"코피에게 물어볼 예시 질문"},
+ {k:"q2",stage:2,name:"원인 탐색 질문 예시"},
+ {k:"alt",stage:4,name:"해결 대안 예시"},
+ {k:"cases",stage:4,name:"다른 지역·나라의 해결 사례"},
+ {k:"who",stage:5,name:"이해관계자 예시"}
+];
+const vis=k=>S.rev[k].all||S.rev[k].g;
+const aft=(k,t)=>S.after.has(k+"|"+t)?" · 공개 후":"";
+function markAfter(k,t){if(vis(k))S.after.add(k+"|"+t)}
+function pendingBox(k,what){return `<div class="pend"><b>${esc(what)}</b><span>선생님이 공개하면 여기에 나타납니다. 그 전에 모둠이 먼저 생각해 봅시다.</span></div>`}
+const Q2_EX=["전자 쓰레기를 다른 나라로 보내는 것을 막는 규칙이 있는가? 있다면 왜 잘 지켜지지 않는가?","전자제품을 안전하게 처리하는 비용은 누가 내는가?","중고 전자제품과 전자 쓰레기는 어떻게 구분하는가?"];
+const ALT_EX=["고장 난 전자제품은 수리해서 오래 쓴다","학교에 소형 전자제품 수거함을 설치해 달라고 요청한다","제조 기업이 수거와 재활용 비용을 부담하도록 제도를 강화한다"];
+const WHO_EX=["우리(소비자)","학교","재활용 업체","전자제품 제조 기업","중고 전자제품 수출업자","수거 작업자","코피의 마을 주민","정부·지자체"];
+const TSHORT=["스스로","요청","제도·규칙"];
+const FBT=[
+ ["비용이 거의 들지 않고 바로 실천할 수 있다. 버리는 시기를 늦춰 발생량을 줄일 수 있다.","혼자 하는 실천이라 영향 범위가 작고, 꾸준히 이어 가기 어렵다."],
+ ["여러 사람이 함께 참여할 수 있고, 모은 것을 정식 경로로 보낼 수 있다.","요청을 받는 사람이나 기관이 따르지 않으면 실행되지 않는다. 그 뒤 처리 과정을 누가 맡는지도 정해야 한다."],
+ ["많은 양에 한꺼번에 영향을 주고, 오래 유지될 수 있다.","중학생이 직접 바꾸기 어렵고 시간이 오래 걸린다. 비용이 다른 곳으로 옮겨 갈 수 있다."]
+];
+function overlapWith(txt,arr){const a=grams(txt);if(a.size<5)return 0;let best=0;arr.forEach(t=>{const b=grams(t);let h=0;a.forEach(x=>{if(b.has(x))h++});best=Math.max(best,h/a.size)});return best}
+const caseTexts=()=>[...CASES.map(c=>c[0]+" "+c[1]),...ALT_EX];
+const LEVELS=["개인","학교·지역","제도·국가 간"];
+const ACT_T=[{n:"제도 제안",ex:"정책 제안서, 국민신문고·지자체 제안, 기관 건의문"},{n:"요청·설득",ex:"학교, 기관, 기업에 요청하거나 설득하기"},{n:"자기 실천",ex:"나와 가족이 직접 실천하기"}];
+const SCOPES=[{n:"수업 중 실행",d:"수업 시간 안에 실제로 해 본다"},{n:"실행 준비",d:"제출 직전 초안까지 만들고, 제출은 후속 차시에 한다"},{n:"후속 탐구",d:"더 알아봐야 할 것을 정리해 다음 탐구로 넘긴다"}];
+const CHK6=["특정 나라·집단을 낙인찍거나 일반화하는 표현이 없다","실명, 연락처 같은 개인정보가 들어 있지 않다","사실을 말한 부분에는 근거 자료(3단계)를 밝혔다"];
+const DEMO={
+ 1:()=>{S.s1.qs=["전자 쓰레기가 들어온 뒤 마을은 어떻게 달라졌어?","전자 쓰레기 때문에 코피와 가족들은 어떤 어려움을 겪고 있어?","마을 사람들이 가장 해결되었으면 하는 문제는 뭐야?"]},
+ 2:()=>{S.s2.causes=["전자제품을 너무 자주 바꾼다","중고품이라며 다른 나라로 보낸다","안전하게 처리할 시설이 부족하다"];S.s2.vq=["전자 쓰레기가 개발도상국으로 가는 이유는 무엇인가?","전자 쓰레기를 안전하게 처리하는 제도는 왜 잘 지켜지지 않는가?"]},
+ 4:()=>{S.s4.alts=[{txt:"휴대전화를 바꾸기 전에 고칠 수 있는지 먼저 알아보고, 친구끼리 고치는 방법을 공유한다",cause:"새 제품을 너무 자주 사서 버리는 양이 많다",type:0},{txt:"집에 있는 안 쓰는 충전기와 이어폰을 모아 지자체 소형가전 수거함에 함께 가져간다",cause:"버리는 방법을 몰라 일반 쓰레기로 버린다",type:1},{txt:"전자 쓰레기를 중고품이라며 수출할 때 작동 검사를 받게 하자고 국회에 제안한다",cause:"중고품과 폐기물을 구분하기 어려워 해외로 나간다",type:2}]},
+ 6:()=>{const d=S.s6;d.level="학교·지역";d.newAlt="수거함을 놓기 전에 구청 소형가전 수거 경로와 수거 주기를 먼저 정하고, 학년마다 수거함을 두어 안내한다";d.acts=[{type:1,what:"학교에 수거 업체와 수거 주기를 정해 달라고 건의",target:"교장 선생님, 행정실"},{type:0,what:"구청에 아파트·학교 근처 소형가전 수거함 위치 안내를 늘려 달라고 제안",target:"○○구청"},{type:2,what:"우리 집 서랍 속 전자제품을 정리해 수거함에 반납",target:"우리 가족"}];d.scope="실행 준비";d.prop={ask:"학교 수거함에 모인 전자제품을 구청 수거 경로로 보낼 수 있도록 수거 업체와 수거 주기를 정해 주세요. 수거함은 학년마다 하나씩 두면 좋겠습니다.",effect:"모은 전자제품이 창고에 쌓이지 않고 정식 재활용 경로로 갑니다. 모든 학년이 참여할 수 있습니다.",reply:"행정실 업무가 늘어난다는 걱정에는 학생회가 한 달에 한 번 수거 날짜를 안내하고 상자를 정리하겠습니다."};d.plans=[{who:"학생회 3모둠",how:"건의서를 교장 선생님께 전달",risk:"답이 늦을 수 있음",resp:"학생회 회의 안건으로 올림",channel:"교장실 면담",date:"11월 둘째 주"},{who:"모둠 전체",how:"구청 누리집 제안 게시판에 의견 제출",risk:"중학생이 쓸 수 있는지 모름",resp:"선생님과 먼저 확인",channel:"구청 누리집",date:"11월 말"}]},
+ 5:()=>{S.s5.preds=[{who:"우리(소비자)",txt:"수거함이 생기면 집에 있는 이어폰, 충전기를 가져올 것이다. 귀찮으면 일반 쓰레기로 버리는 학생도 있을 것이다."},{who:"재활용 업체",txt:"수거량이 늘면 일감이 늘어 반긴다. 수거 비용은 누가 내는지 물을 것이다."}]}
+};
+
+function log(stage,kind,text){S.logs.push({t:now(),stage,kind,text})}
+function aiTexts(){
+  const o=[];S.s1.chat.forEach(m=>{if(m.r==="ai")o.push(m.x)});
+  S.s3.rows.forEach(r=>{if(r.ans)o.push(r.ans)});
+  if(S.s4.fb)S.s4.fb.forEach(f=>o.push(f.s+" "+f.w));
+  if(S.s5.scen)S.s5.scen.forEach(c=>o.push(c.story.join(" ")));
+  return o;
+}
+/* Red 탐지: 학생 문장의 글자 3-gram 가운데 같은 모둠 AI 응답에 이미 있는 비율 */
+function grams(s){s=s.replace(/[\s.,!?·'"“”‘’()\-]/g,"");const g=new Set();for(let i=0;i+3<=s.length;i++)g.add(s.slice(i,i+3));return g}
+function overlap(txt){const a=grams(txt);if(a.size<6)return null;let best=0;aiTexts().forEach(t=>{const b=grams(t);let h=0;a.forEach(x=>{if(b.has(x))h++});best=Math.max(best,h/a.size)});return best}
+function redHtml(id,val){
+  const v=overlap(val||"");
+  if(v===null)return `<div class="redbox ok" id="${id}-rb">재구성 점검: 문장을 더 쓰면 AI 응답과 겹치는 정도를 확인합니다.</div>`;
+  const p=Math.round(v*100),cls=v>=.6?"red":v>=.35?"warn":"ok";
+  const msg=v>=.6?"Red 의심 · AI 응답을 그대로 옮긴 것으로 보입니다. 선생님께 알림이 가고, 말로 설명하기 전까지 인정되지 않습니다.":v>=.35?"주의 · AI 표현이 많이 남아 있습니다. 우리 말로 다시 써 보세요.":"재구성 확인 · 우리 말로 쓴 문장입니다.";
+  return `<div class="redbox ${cls}" id="${id}-rb"><span>${msg}</span><span class="meter"><i style="width:${p}%"></i></span><b>${p}%</b></div>`;
+}
+const flagged=new Set();
+function bindRed(el,id,stage,set){
+  if(!el)return;
+  const upd=()=>{set(el.value);const b=document.getElementById(id+"-rb");if(b)b.outerHTML=redHtml(id,el.value);
+    const v=overlap(el.value);if(v!==null&&v>=.6&&!flagged.has(id)){flagged.add(id);log(stage,"red","Red 의심("+id+"): AI 응답 일치율 "+Math.round(v*100)+"%")}};
+  el.addEventListener("input",upd);
+  el.addEventListener("paste",()=>setTimeout(()=>log(stage,"red","붙여넣기 감지 ("+id+")"),0));
+}
+
+/* ---- 미리 넣은 AI 응답 (시연용) ---- */
+const KOFI={
+ "코피가 사는 마을은 원래 어떤 모습이었어?":"나무가 많고 들판이 넓었어. 비가 오면 아이들이 물길 옆에서 놀기도 했어.",
+ "전자 쓰레기가 들어온 뒤 마을은 어떻게 달라졌어?":"예전에는 마을 주변의 땅과 물길을 크게 걱정하지 않았는데, 전자 쓰레기가 쌓이고 태워지면서 검은 연기가 나는 날이 생겼어. 비가 오면 폐기물이 있는 곳에서 흘러나온 물이 주변으로 퍼지는 것도 걱정돼.",
+ "전자 쓰레기 때문에 코피와 가족들은 어떤 어려움을 겪고 있어?":"연기가 나는 날에는 창문을 닫고 지내. 사촌 형은 전선을 모아 팔아서 돈을 버는데, 엄마는 그 일이 위험하다고 걱정하셔.",
+ "물을 마시거나 생활할 때 불편하거나 걱정되는 점이 있어?":"비 온 뒤에는 물길 색이 이상해 보일 때가 있어. 그래서 그쪽 물은 쓰지 말라고 들었어.",
+ "마을 사람들이 가장 해결되었으면 하는 문제는 뭐야?":"나는 전자 쓰레기가 계속 쌓이지 않고, 마을 사람들이 깨끗한 환경에서 안전하게 생활할 수 있었으면 좋겠어. 그런데 전자제품에서 부품이나 금속을 찾아 생활하는 사람들도 있어서 단순히 폐기물을 없애는 것만으로 해결될지는 잘 모르겠어."
+};
+const KOFI_DEFAULT="그건 나도 잘 몰라. 왜 여기로 오는지 같은 건 내가 설명하기 어려워. 내가 직접 보고 겪은 일이라면 이야기해 줄 수 있어.";
+const SEARCH=[
+ "중고 전자제품이라는 이름으로 수출되지만 실제로는 작동하지 않는 제품이 섞여 있는 경우가 있다고 보고됩니다. 또 일부 나라에서는 정식 처리 비용보다 비공식 해체·소각 비용이 낮아 그쪽으로 흘러간다는 분석이 있습니다. (AI가 제시한 출처: 바젤협약 관련 보고서 — 확인 필요)",
+ "국제 협약으로 유해 폐기물의 국가 간 이동을 제한하고 있지만, 중고품과 폐기물을 구분하기 어렵고 단속 인력과 처리 시설이 부족한 지역이 많다는 지적이 있습니다. 공식적으로 수거·재활용이 확인된 비율은 전체 발생량의 일부에 그친다고 합니다. (AI가 제시한 출처: Global E-waste Monitor — 확인 필요)"
+];
+function FEEDBACK(alts){
+ const s=["비용이 거의 들지 않고 오늘부터 실천할 수 있다. 버리는 시기를 늦춰 발생량을 줄인다.","학교 구성원이 함께 참여할 수 있고, 모은 제품을 정식 재활용 경로로 보낼 수 있다.","생산 단계부터 책임을 지게 해 많은 양에 영향을 준다."];
+ const w=["수리 방법을 모르거나 부품을 구하기 어려우면 오래 이어 가기 어렵다.","수거한 제품을 누가 어디로 보내는지 정해 두지 않으면 쌓이기만 할 수 있다.","중학생이 직접 바꾸기 어렵고, 비용이 제품 가격에 더해질 수 있다."];
+ return alts.map((a,i)=>({alt:a,s:s[i%3],w:w[i%3],dec:"",why:"",fz:false,ss:false,fix:""}));
+}
+const SCEN=[{"title": "6개월 뒤, 우리 학교 3층 복도", "story": ["3월 첫 주 월요일, 3층 복도 끝에 초록색 상자 하나가 놓였다. 학생회장 은재는 매직으로 '고장 난 전자제품, 여기에 주세요'라고 써 붙였다. 다음 날 누군가 그 글씨 위에 동그란 눈 두 개를 그려 넣었고, 그때부터 아이들은 상자를 '초록이'라고 불렀다.", "서윤이는 책상 서랍 깊숙이 엉켜 있던 이어폰 세 개를 꺼냈다. 하나는 초등학교 6학년 수학여행 때 휴게소에서 산 것이었다. 초록이 입에 이어폰을 넣으면서 서윤이는 코피의 편지를 잠깐 떠올렸다.", "초록이는 2주 만에 가득 찼다. 학생회는 꽉 찬 상자 사진을 학교 누리집에 올렸고, 교장 선생님은 아침 방송에서 3층 학생들을 칭찬했다. 3학년 형 하나가 장난으로 고장 난 게임기를 넣었다가, 엄마한테 혼날까 봐 쉬는 시간에 다시 꺼내 간 일도 있었다.", "4월부터는 초록이 옆에 종이 상자가 하나둘 놓이기 시작했다. 상자에는 리모컨, 전기 모기채, 날개가 빠진 탁상용 선풍기 같은 것이 담겨 있었다. 누가 가져다 놓았는지는 아무도 몰랐다.", "6월 어느 날, 행정실 선생님이 복도에 쌓인 상자를 보고 업체에 전화를 걸었다. 통화를 마친 선생님은 \"소형가전은 따로 신청해야 하고, 어느 정도 양이 모여야 가지러 온대\"라고 말했다. 신청서 양식을 찾는 사이 기말고사 기간이 시작되었다.", "상자들은 '잠시' 체육 창고로 옮겨졌다. 창고에는 바람 빠진 농구공과 뜀틀, 작년 체육대회 때 쓰던 박 터뜨리기 바구니가 있었다. 상자들은 뜀틀 뒤에 차곡차곡 쌓였다.", "여름 방학, 창고 정리를 맡은 주무관님은 이름도 적혀 있지 않은 상자들 앞에서 한참을 서 있었다. 그러다 몇 개를 열어 일반 쓰레기 봉투에 나눠 담았다. 너무 무거워서 봉투 손잡이 하나가 툭 끊어졌다.", "2학기 첫 주, 초록이가 있던 자리에는 '잠시 운영 중단'이라고 적힌 종이가 붙어 있었다. 초록이의 눈 그림은 반쯤 지워져 있었다.", "민준이는 주말에 할머니 댁에서 가져온 고장 난 충전기를 들고 그 앞에 섰다. 잠시 종이를 바라보던 민준이는 충전기를 가방 앞주머니에 다시 넣었다. 그날 저녁, 충전기는 민준이 방 서랍 안으로 들어갔다."]}, {"title": "1년 뒤, 2학년 4반 교실과 지호네 베란다", "story": ["12월, 학기 말 설문지가 돌았다. 7번 문항은 '학교 전자제품 수거함을 이용해 본 적이 있나요?'였다. 하은이네 반 교실이 웅성거렸다. \"그런 게 있었어?\"", "수거함은 1학년 교실이 있는 3층에만 있었다. 2학년 교실은 4층이어서, 아이들이 3층에 내려갈 일은 과학실 수업이 있는 날뿐이었다. 3월 첫 주에 붙었던 홍보 포스터는 비 오는 날 열린 창문 바람에 떨어져 청소함 뒤로 들어간 지 오래였다.", "하은이가 반 단체 대화방에 물었다. \"우리 학교에 전자제품 수거함 있는 거 알았던 사람?\" 답은 셋이었다. \"몰랐음\", \"1학년 동생이 말해 줌\", 그리고 누군가 잘못 보낸 고양이 사진 한 장.", "그 고양이 사진을 보낸 사람은 지호였다. 사진 속 고양이 보리는 베란다 구석 상자 위에서 자고 있었다. 그 상자에는 고장 난 노트북 한 대, 아빠가 쓰던 폴더폰, 엄마의 옛날 휴대전화 두 대, 어디에 쓰던 것인지 모를 충전기 한 묶음이 들어 있었다.", "그날 저녁 지호가 물었다. \"이거 학교에 가져갈까?\" 엄마는 휴대전화 하나를 들어 이리저리 돌려 보았다. \"여기 사진이랑 연락처가 그대로 남아 있을 텐데. 아무 데나 못 버려.\" 아빠는 노트북이 너무 커서 학교 수거함에는 들어가지도 않을 거라고 했다.", "지호는 휴대전화 정보를 지우는 방법을 검색했다. 가장 위에 뜬 영상의 길이가 23분인 것을 보고, 지호는 다음 주말에 하기로 했다.", "상자는 다시 베란다 구석으로 밀려났다. 보리는 기다렸다는 듯 그 위에 올라가 몸을 둥글게 말았다.", "같은 주 금요일, 학생회 회의가 열렸다. 화면에는 1학기에 찍은 꽉 찬 수거함 사진과 누리집 조회 수가 띄워져 있었다. 회의록 마지막 줄에는 '수거함 운영 1년, 참여율 높음. 내년에도 계속 운영'이라고 적혔다.", "회의록을 쓴 학생회 서기는 4층에 있는 2학년 교실을 쓰고 있었다. 서기는 3층 수거함을 직접 본 적이 없었다."]}, {"title": "2년 뒤, 어느 항구의 컨테이너 야적장", "story": ["전국에서 소형 전자제품 수거가 늘었다. 저녁 뉴스에는 '소형가전 수거량 역대 최대'라는 자막이 나왔다. 재활용 업체를 운영하는 김 사장의 공장 앞에는 아침마다 트럭이 줄을 섰고, 직원들은 점심을 컵라면으로 때우는 날이 많아졌다.", "처리할 물건이 늘자 김 사장은 분해 기계를 한 대 더 들이고 직원도 두 명 더 뽑았다. 업체가 받는 처리 비용도 함께 올랐다. 거래처 사람들은 전화로 물었다. \"작년보다 왜 이렇게 비싸요?\"", "같은 도시의 다른 창고에서는 박 씨가 상자마다 '중고 전자제품'이라고 적힌 스티커를 붙이고 있었다. 라디오에서 트로트가 흘러나오자 박 씨는 테이프를 감으며 흥얼흥얼 따라 불렀다.", "상자 맨 위에는 화면이 반짝이는 휴대전화들이 가지런히 놓였다. 그 아래에는 화면이 깨진 태블릿, 버튼을 눌러도 켜지지 않는 휴대전화, 배터리가 부풀어 뚜껑이 들뜬 노트북이 들어갔다. 박 씨는 상자를 테이프로 세 번 감았다.", "서류에는 '중고품 수출'이라고 적혔다. 항구에는 그날도 컨테이너 수백 개가 쌓여 있었다. 검사원은 다른 컨테이너 앞에서 바나나 상자 서류를 넘기고 있었다.", "배는 몇 주 동안 바다를 건넜다. 갑판에서 일하던 젊은 선원 한 명은 물 위로 날아오르는 날치를 처음 보고 휴대전화로 영상을 찍었다.", "서아프리카의 한 항구에 컨테이너가 내려졌다. 상자들은 트럭에 실려 시장으로 갔다. 켜지는 휴대전화는 수리점 진열대에 올라갔고, 나머지는 다시 자루에 담겨 마을 가장자리 공터로 옮겨졌다.", "코피의 사촌 형 쿠와메는 '새 물건이 들어왔다'는 소식을 듣고 새벽에 집을 나섰다. 등 뒤에서 이모가 \"연기 나는 데는 가까이 가지 마라!\" 하고 외쳤다. 쿠와메는 뒤도 돌아보지 않고 손만 흔들었다.", "그날 오후, 학교에서 돌아오던 코피는 공터 쪽에서 검은 연기가 오르는 것을 보았다. 공터 한쪽에는 스티커가 붙은 상자 하나가 납작하게 밟혀 있었다. 코피는 스티커에 적힌 둥글고 네모난 글자가 어느 나라 글자인지 한참 들여다보았다."]}];
+const ARTICLES=[
+ {tag:"기사 1 · 현장",title:"전자 쓰레기 처리장의 대명사",src:"시사IN 제537호 (2018.1.8), 사진 신웅재·글 공유정옥",url:"https://www.sisain.co.kr/news/articleView.html?idxno=30889",
+  body:["가나의 수도 아크라에 있는 아그보그블로시는 전자 쓰레기 처리장으로 알려졌던 곳이다. 이곳의 공기, 물, 흙뿐 아니라 주민의 소변, 혈액, 모유에서도 오염 물질이 발견되었다.","소년들은 전자제품 폐기물을 불에 태워 구리선을 모으고, 이를 팔아 생계를 꾸린다."]},
+ {tag:"기사 2 · 통계",title:"전자 쓰레기, 기록된 재활용보다 5배 빠르게 늘어",src:"UNITAR·ITU 보도자료 (2024.3.20), Global E-waste Monitor 2024",url:"https://www.unitar.org/about/news-stories/press/global-e-waste-monitor-2024-electronic-waste-rising-five-times-faster-documented-e-waste-recycling",
+  body:["2022년 전 세계에서 나온 전자 쓰레기는 6,200만 톤으로 2010년보다 82% 늘었다. 이 가운데 공식적으로 수거·재활용되었다고 기록된 것은 22.3%뿐이다.","2022년 약 510만 톤의 전자 쓰레기가 국경을 넘었다. 그중 약 330만 톤은 소득이 높은 나라에서 중·저소득 나라로, 관리되지 않고 기록도 남지 않는 경로로 옮겨졌다.","아프리카에서 공식적으로 재활용되는 전자 쓰레기는 1%도 되지 않는다."]},
+ {tag:"기사 3 · 사람과 경로",title:"거대한 전자 쓰레기장, 그리고 그곳에서 살아가는 사람들",src:"NPR (2024.10.5), Jonathan Lambert",url:"https://www.npr.org/sections/goats-and-soda/2024/10/05/g-s1-6411/electronics-public-health-waste-ghana-phones-computers",
+  body:["수출업자들은 작동하는 전자제품과 고장 난 제품을 한 컨테이너에 섞어 배로 보낸다. 가나는 유해한 전자 쓰레기 수입을 법으로 막고 있지만, 항구에서 뇌물을 받고 통과시키는 일이 확인되었다.","작업자들은 피복을 입힌 전선을 태워 구리를 얻고, 일주일에 약 60달러를 번다. 화상과 상처를 입거나 유독 가스를 마시는 위험이 있다. 세계보건기구(WHO)는 전자 쓰레기에 납, 수은 등 1,000가지가 넘는 유해 물질이 들어 있다고 본다.","작업자 중에는 어린이와 청소년도 많다. 상당수는 기온 상승으로 농사가 어려워진 가나 북부에서 일자리를 찾아 온 사람들이다."],
+  note:"덧붙임: 아그보그블로시 고철장은 2021년 7월 가나 정부가 철거했다. 작업자들은 다른 곳으로 옮겨졌지만 일부는 근처에서 일을 다시 하고 있다. (Citi Newsroom, 2024.6)"}
+];
+const QA=[
+ {type:"text",q:"전자 쓰레기 처리장으로 알려진 아그보그블로시는 어느 나라, 어느 도시에 있었나요?",src:"1",a:"가나 아크라"},
+ {type:"ox",q:"2022년 전 세계 전자 쓰레기 가운데 공식적으로 수거·재활용된 것은 절반이 넘는다.",src:"2",a:"X",why:"기록된 비율은 22.3%입니다."},
+ {type:"text",q:"작업자들은 전선을 왜 태우나요?",src:"1·3",a:"구리를 얻어 팔기 위해"},
+ {type:"ox",q:"가나는 유해한 전자 쓰레기의 수입을 법으로 막고 있다.",src:"3",a:"O",why:"법으로 막고 있지만 항구에서 뇌물로 통과되는 일이 있었습니다."},
+ {type:"text",q:"전자 쓰레기를 처리하는 사람과 주민은 어떤 피해를 입나요? 한 가지 이상 쓰세요.",src:"1·3",a:"화상·상처, 유독 가스, 몸에서 오염 물질 검출 등"}
+];
+const CASES=[
+ ["가나 · 보상형 전선 수거","태우지 않은 전선을 가져오면 금속 가치보다 높은 보상을 줌","보상 예산과 처리 경로를 계속 유지할 수 있을까?"],
+ ["가나 · Mago Motors","전자제품 플라스틱을 분류·세척해 새 제품 원료로 판매","유해 성분을 구분하고 원료 살 곳을 확보할 수 있을까?"],
+ ["나이지리아 · 수거와 안전 처리","공식 수거센터, 작업자 보호장비·교육, 기업 처리 책임 제도 개선","수거만 늘리면 안전한 처리까지 보장될까?"],
+ ["네덜란드에서 시작 · 수리 카페","고장 난 물건을 자원봉사자와 함께 고쳐 버리는 시기를 늦춤","수리 기술이 없거나 수리가 어려운 제품은?"],
+ ["한국 · 폐가전 무상 방문수거","예약한 폐가전을 방문 수거해 재활용 체계에 연결","우리 지역의 소형가전 수거함은 어디에 있을까?"]
+];
+const CHECK=["페르소나 AI와 대화하면서 내가 직접 경험하기 어려운 다른 지역 사람들의 삶과 문제를 구체적으로 이해할 수 있었다.","AI와 대화한 내용을 가상상황으로만 받아들이지 않고 실제 사회에서 일어나는 문제와 연결하여 확인했다.","문제의 원인과 해결 대안을 생각할 때 AI에게 먼저 답을 묻지 않고 우리 스스로 생각했다.","AI에게 무엇을 물어볼지 우리에게 필요한 질문을 스스로 만들었다.","AI가 알려준 정보를 그대로 믿지 않고 다른 자료와 비교하여 사실인지 확인했다.","AI의 피드백을 그대로 따르지 않고 동의할 부분과 동의하기 어려운 부분을 구분하여 판단했다.","AI를 활용하여 내가 미처 생각하지 못했던 다른 관점이나 새로운 가능성까지 생각해 볼 수 있었다.","AI가 예상한 결과가 실제로 일어날 수 있는지 우리 모둠의 생각과 근거를 바탕으로 다시 판단했다.","문제 해결 과정에서 AI의 도움을 받았지만 중요한 선택과 최종 결정은 우리 스스로 내렸다.","AI를 정답을 대신 만들어 주는 도구가 아니라 나의 경험과 생각을 확장하고 검토하는 도구로 활용했다."];
+const PEER=["문제의 원인을 타당하게 판단했다.","신뢰할 수 있는 근거를 활용했다.","해결 대안이 실현 가능하다.","대안으로 나타날 결과를 충분히 고려했다."];
+
+/* ---- helpers ---- */
+const flowList=items=>`<ol class="flow">${items.map(([t,st])=>`<li class="${st}">${esc(t)}</li>`).join("")}</ol>`;
+const lockWrap=(on,msg,inner)=>on?`<div class="locked"><div class="lockmsg">${esc(msg)}</div><div class="lockbody">${inner}</div></div>`:inner;
+function listItems(arr,tag,removable,key){return `<ul class="list">${arr.map((x,i)=>`<li>${tag?`<span class="tag">${esc(tag(i,x))}</span>`:""}<span class="txt">${esc(typeof x==="string"?x:x.txt)}${x&&x.why?`<br><span class="small">목소리를 내기 어려운 이유: ${esc(x.why)}</span>`:""}</span>${removable?`<button class="x" data-del="${key}" data-i="${i}">삭제</button>`:""}</li>`).join("")}</ul>`}
+function signal(g){return g==="Y"
+ ?`<div class="signal Y"><span class="lamp" aria-hidden="true"><i></i><i></i><i></i></span><div><strong>YELLOW · 먼저 우리가 생각하고, 그다음에 AI</strong>모둠이 먼저 쓰고 합의한 내용을 저장해야 AI 창이 열립니다. AI의 답은 그대로 옮기지 않고 우리 말로 바꿔 판단합니다. 이 단계의 대화는 모두 기록되어 제출됩니다.</div></div>`
+ :`<div class="signal N"><span class="lamp" aria-hidden="true"><i></i><i></i><i></i></span><div><strong>AI 미사용 단계</strong>이 단계는 모둠이 직접 생각하고 토의합니다. 화면에 AI 창이 없습니다.</div></div>`}
+function stageDone(n){switch(n){
+ case 1:return S.s1.sealed2&&S.s1.asked2.length===S.s1.qs2.length;
+ case 2:return S.s2.vq.length===2;
+ case 3:return S.s3.core.trim().length>10;
+ case 4:return S.s4.first!==null&&S.s4.firstWhy.trim().length>10;
+ case 5:return S.s5.newp.trim().length>10;
+ case 6:return !!S.s6.scope&&S.s6.plans.some(p=>p.who&&p.how);
+ case 7:return S.s7.chk.every(x=>x);
+ }return false}
+
+let busy=false,pending=false;
+function render(){
+  if(busy){pending=true;return}
+  busy=true;
+  try{
+    document.querySelectorAll(".views button").forEach(b=>b.setAttribute("aria-pressed",String(b.id==="v-"+S.view)));
+    $("#app").innerHTML=S.view==="student"?renderStudent():S.view==="teacher"?renderTeacher():renderPlan();
+    bind();
+  }finally{busy=false}
+  if(pending){pending=false;setTimeout(render,0)}
+}
+function renderStudent(){
+  const rail=`<nav class="rail" aria-label="수업 단계"><div class="who">3모둠 · 서윤 · 중3 · 90분 연차시</div>${STAGES.map(st=>{const dis=st.n>S.open;
+   return `<button class="step ${stageDone(st.n)?"done":""}" data-stage="${st.n}" ${dis?"disabled":""} ${S.stage===st.n?'aria-current="step"':""}><span class="n">${st.n}</span><span class="t">${esc(st.t)}</span><span class="s">${dis?"선생님이 아직 열지 않음":`<span class="chip ${st.g}">${st.g==="Y"?"YELLOW":"AI 없음"}</span>`}</span></button>`}).join("")}</nav>`;
+  const st=STAGES[S.stage-1];
+  const head=`<div class="stage-head"><h2>${st.n}단계 · ${esc(st.t)}</h2><span class="chip ${st.g}">${st.g==="Y"?"YELLOW":"AI 미사용"}</span><span class="ws">${esc(st.ws)}</span>${st.role?`<span class="small">AI 역할: ${esc(st.role)}</span>`:""}${DEMO[st.n]?`<button class="demo-btn" data-demo="${st.n}">시연용 예시 넣기</button>`:""}</div><p class="stage-def">${esc(st.def)}</p>${signal(st.g)}`;
+  const nx=S.stage+1;
+  const next=nx>7?"":nx<=S.open?`<div class="nextbar"><button class="btn primary" data-stage="${nx}">${nx}단계로 이동</button></div>`:`<div class="nextbar"><span class="small">${nx}단계는 선생님이 아직 열지 않았습니다. 선생님이 열면 이동할 수 있습니다.</span><span class="small demo-hint">시연: 교사 화면 → 단계 개방에서 ${nx}을 누르세요.</span></div>`;
+  return `<div class="student">${rail}<section class="panel">${head}${[null,s1,s2,s3,s4,s5,s6,s7][S.stage]()}${next}</section></div>`;
+}
+
+function timerText(){if(!S.s1.deadline)return "10:00";const r=Math.max(0,Math.round((S.s1.deadline-Date.now())/1000));return String(Math.floor(r/60)).padStart(2,"0")+":"+String(r%60).padStart(2,"0")}
+
+function s1(){
+  const d=S.s1,phase=!d.sealed?0:!d.paused?1:!d.sealed2?2:3;
+  const fl=flowList([["편지 읽기","ok"],["① 질문 합의",phase>0?"ok":"now"],["② 1차 대화",phase===1?"now":phase>1?"ok":"lock"],["③ 멈추고 논의",phase===2?"now":phase>2?"ok":"lock"],["④ 2차 대화",phase===3?"now":"lock"]]);
+  const letter=`<div class="block first"><h3>코피에게서 온 편지</h3><div class="letter"><div class="from">가상 인물 · 실제 사건을 모티프로 선생님이 AI를 활용해 창작한 편지입니다.</div>
+   <p>안녕. 나는 서아프리카에 사는 코피라고 해.</p>
+   <p>내가 사는 곳에는 푸른 나무와 들판이 있는 아름다운 마을이야. 그런데 요즘 마을 근처에 오래된 컴퓨터, 휴대전화, 모니터, 전선 같은 전자제품 폐기물이 많이 쌓이고 있어. 사람들은 그 안에서 쓸 수 있는 부품과 금속을 찾기 위해 전자제품을 부수거나 태우기도 해. 그럴 때면 검은 연기가 나고, 비가 온 뒤에는 폐기물이 쌓인 곳에서 흘러나온 물이 주변 땅과 물길로 퍼지기도 해. 우리 마을이 점점 달라지는 것 같아 걱정돼.</p>
+   <p>이렇게나 많은 전자 쓰레기들이 왜 우리 동네까지 오게 되었는지 모르겠어. 너희도 휴대전화나 이어폰, 태블릿 같은 전자제품을 사용하지? 사용할 땐 정말 편하지만, 그것을 사용하지 않게 되었을 때 어디로 가는지 생각해 본 적 있어?</p>
+   <p>우리가 필요한 전자제품도 사용하고, 환경도 지킬 수 있는 좋은 방법은 없을까?</p></div></div>`;
+  const q1=`<div class="block"><h3>① 코피에게 물어볼 질문 합의 ${d.sealed?`<span class="seal">봉인 ${esc(d.sealTime)}</span>`:""}</h3>
+   <p class="hint">코피가 어떤 어려움을 겪는지 알 수 있도록 모둠이 토의해 질문을 정합니다. 3개 이상이어야 대화를 시작할 수 있습니다.</p>
+   ${listItems(d.qs,i=>"Q"+(i+1)+aft("q1",d.qs[i]),!d.sealed,"s1qs")}
+   ${d.sealed?"":`<div class="addrow"><input type="text" id="s1-new" placeholder="모둠이 직접 만든 질문"><button class="btn" data-act="s1add">추가</button></div>
+   ${vis("q1")?`<div class="exbox"><b class="small">선생님이 공개한 예시 질문</b> <span class="small">그대로 쓰기보다 우리가 더 알고 싶은 것으로 바꿔 봅시다.</span><ul>${Object.keys(KOFI).map(q=>`<li>${esc(q)}</li>`).join("")}</ul></div>`:pendingBox("q1","예시 질문")}
+   <div class="row"><button class="btn primary" data-act="s1seal" ${d.qs.length<3?"disabled":""}>합의 완료 · 대화 시작</button><span class="small">${d.qs.length}/3개 이상 · 합의 후에는 고칠 수 없고 시각이 기록됩니다.</span></div>`}</div>`;
+  const chat=`<div class="persona"><span class="av">코</span><div><b>코피</b><em>가상 인물 · 우리 또래 청소년 · 응답은 사실로 확정된 정보가 아닙니다. 2단계에서 실제 자료와 비교합니다.</em></div><span class="timer" id="s1-timer" style="margin-left:auto">${timerText()}</span></div>
+   <div class="chat" aria-live="polite">${d.chat.length?d.chat.map(m=>m.r==="sys"?`<div class="msg sys">${esc(m.x)}</div>`:`<div class="msg ${m.r==="me"?"me":"ai"}">${m.r==="ai"?'<span class="who">코피</span>':""}${esc(m.x)}</div>`).join(""):'<div class="msg sys">합의한 질문을 골라 보내면 대화가 시작됩니다.</div>'}</div>`;
+  const r1=d.qs.filter(q=>!d.asked.includes(q));
+  const c1=`<div class="block"><h3>② 1차 대화</h3><p class="hint">자유 입력창은 없습니다. 합의한 질문만 보낼 수 있습니다. 대화 시간은 1·2차를 합쳐 10분입니다.</p>${chat}
+   ${!d.paused?`<div class="addrow"><select id="s1-pick">${r1.map(q=>`<option>${esc(q)}</option>`).join("")}</select><button class="btn primary" data-act="s1send" ${r1.length?"":"disabled"}>보내기</button></div>
+   <div class="row"><button class="btn" data-act="s1pause" ${r1.length?"disabled":""}>대화 멈추고 모둠 논의</button><span class="small">합의한 질문을 모두 보내면 멈출 수 있습니다.</span></div>`:""}</div>`;
+  const disc=`<div class="block"><h3>③ 멈추고 모둠 논의 ${d.sealed2?`<span class="seal">봉인 ${esc(d.sealTime2)}</span>`:""}</h3><p class="hint">코피의 이야기에서 아직 모르는 부분은 무엇인가요? 더 물어볼 것이 있는지 논의하고 결과를 적습니다.</p>
+   <textarea id="s1-disc" ${d.sealed2?"readonly":""} placeholder="예: 코피의 사촌 형이 하는 일이 어떤 일인지, 마을 사람들이 그 일을 어떻게 생각하는지 아직 모른다.">${esc(d.discuss)}</textarea>
+   ${listItems(d.qs2,i=>"추가 "+(i+1),!d.sealed2,"s1qs2")}
+   ${d.sealed2?"":`<div class="addrow"><input type="text" id="s1-new2" placeholder="추가로 합의한 질문 (없으면 비워 둠)"><button class="btn" data-act="s1add2">추가</button></div><div class="row"><button class="btn primary" data-act="s1seal2">논의 완료 · ${d.qs2.length?"2차 대화 시작":"추가 질문 없이 마치기"}</button></div>`}</div>`;
+  const r2=d.qs2.filter(q=>!d.asked2.includes(q));
+  const c2=`<div class="block"><h3>④ 2차 대화</h3>${d.qs2.length?`<div class="addrow"><select id="s1-pick2">${r2.map(q=>`<option>${esc(q)}</option>`).join("")}</select><button class="btn primary" data-act="s1send2" ${r2.length?"":"disabled"}>보내기</button></div>`:'<p class="hint">추가 질문 없이 대화를 마쳤습니다.</p>'}
+   <p class="small" style="margin-top:8px">대화 로그는 자동으로 제출됩니다. (활동지 가 1-2번)</p></div>`;
+  return fl+letter+q1+lockWrap(phase<1,"질문을 합의해야 대화가 열립니다.",c1)+lockWrap(phase<2,"1차 대화를 마치고 멈춰야 논의가 열립니다.",disc)+lockWrap(phase<3,"논의 결과를 저장해야 2차 대화가 열립니다.",c2);
+}
+
+function s2(){
+  const d=S.s2;
+  const facts=`<div class="block first"><h3>선생님이 준 실제 사건 자료</h3><p class="hint">세 기사를 읽고 아래 질문에 답한 뒤, 코피 이야기와 비교해 봅시다.</p><div class="facts">${ARTICLES.map(a=>`<article class="fact"><span class="small">${esc(a.tag)}</span><p><b>${esc(a.title)}</b></p>${a.body.map(x=>`<p>${esc(x)}</p>`).join("")}${a.note?`<p class="small">${esc(a.note)}</p>`:""}<span class="src"><a href="${a.url}" target="_blank" rel="noopener">${esc(a.src)}</a></span></article>`).join("")}</div></div>`;
+  const answered=d.qa.filter((x,i)=>QA[i].type==="ox"?x:x.trim()).length;
+  const qa=`<div class="block"><h3>가상 상황과 현실 연결하기 ① 실제 사건 확인하기 <span class="ws">2번</span></h3><p class="hint">위 기사에서 답을 찾아 적습니다. 답을 찾은 기사 번호는 오른쪽에 있습니다. (${answered}/${QA.length})</p>
+   <ol class="qa">${QA.map((q,i)=>`<li><div class="qa-q"><span class="qa-type">${q.type==="ox"?"O/X":"단답"}</span><span>${esc(q.q)}</span><span class="small" style="margin-left:auto;white-space:nowrap">기사 ${esc(q.src)}</span></div>${q.type==="ox"
+    ?`<div class="ox" role="group" aria-label="O 또는 X">${["O","X"].map(v=>`<button class="${d.qa[i]===v?"on":""}" data-ox="${i}" data-v="${v}" aria-pressed="${d.qa[i]===v}">${v}</button>`).join("")}${d.qa[i]?(d.qa[i]===q.a?`<span class="qa-fb ok">맞아요 · ${esc(q.why)}</span>`:`<span class="qa-fb no">기사 ${esc(q.src)}를 다시 읽어 보세요</span>`):""}</div>`
+    :`<input type="text" data-qa="${i}" value="${esc(d.qa[i])}" placeholder="기사에서 찾은 답">`}</li>`).join("")}</ol></div>`;
+  const kofiLines=S.s1.chat.filter(m=>m.r==="ai").map(m=>m.x);
+  const diff=`<div class="block"><h3>가상 상황과 현실 연결하기 ② 코피 이야기와 다른 점 찾기</h3>
+   <div class="fiction"><span class="fic-tag">가상</span><b>코피 이야기</b> <span class="small">실제 사건을 모티프로 만든 가상 인물과 대화입니다.</span>
+    <ul><li>서아프리카의 푸른 나무와 들판이 있는 마을에 산다. (편지)</li><li>마을 근처에 전자제품 폐기물이 쌓이고, 사람들이 부품과 금속을 찾으려고 부수거나 태운다. (편지)</li><li>전자 쓰레기가 왜 마을까지 오는지 모른다. (편지)</li>${kofiLines.map(x=>`<li>${esc(x)} <span class="small">(우리 모둠 대화)</span></li>`).join("")}</ul></div>
+   <label class="small" for="s2-diff" style="display:block;margin-top:12px">기사 내용과 비교해 코피 이야기와 다른 점을 찾아 써 봅시다. 코피 이야기에만 있고 기사로 확인할 수 없는 것, 기사에는 있는데 코피 이야기에는 빠진 것은 무엇인가요?</label>
+   <textarea id="s2-diff" placeholder="예: 코피는 마을 근처에 쓰레기가 쌓인다고 했지만, 기사에서는 …">${esc(d.diff)}</textarea></div>`;
+  const L=d.life;
+  const life=`<div class="block"><h3>사건과 나의 삶 잇기</h3><p class="hint">코피는 우리와 같은 나이대의 청소년입니다. 세 단계로 코피의 삶과 나의 삶을 이어 봅시다. (개인 작성 후 모둠 공유)</p>
+   <div class="life">
+    <section><span class="life-n">1</span><div><b>같은 청소년</b><label class="small" for="s2-same">코피와 나는 어떤 점이 비슷할까요? 학교, 가족, 친구, 하루 일과, 휴대전화 같은 것을 떠올려 봅니다.</label><textarea id="s2-same" placeholder="예: 코피도 나처럼 가족과 함께 살고 …">${esc(L.same)}</textarea></div></section>
+    <section><span class="life-n">2</span><div><b>사는 곳만 다르다면</b><label class="small" for="s2-place">내가 코피의 마을에서 태어났다면 어떤 일을 겪었을까요? 지금의 나는 왜 그 일을 겪지 않을까요? 내가 더 노력해서일까요, 사는 곳이 달라서일까요?</label><textarea id="s2-place">${esc(L.place)}</textarea></div></section>
+    <section><span class="life-n">3</span><div><b>나와 코피는 연결되어 있을까</b><span class="small" style="display:block">최근 몇 년 동안 내가 바꾼 전자제품은 어떻게 되었나요?</span>
+     <div class="tablewrap" style="margin:6px 0 8px"><table style="min-width:360px"><thead><tr><th>전자제품</th><th>쓰지 않게 된 뒤</th></tr></thead><tbody>${L.dev.map((x,i)=>`<tr><td>${esc(x.item)}</td><td><select data-dev="${i}" aria-label="${esc(x.item)} 처리 방법"><option value="">선택</option>${["아직 쓰는 중","서랍에 보관","일반 쓰레기로 버림","수거함·매장에 반납","팔거나 물려줌","모름"].map(o=>`<option ${x.how===o?"selected":""}>${o}</option>`).join("")}</select></td></tr>`).join("")}</tbody></table></div>
+     <label class="small" for="s2-impact">내가 쓰다 버린 전자제품과 내 선택이 코피의 삶에 영향을 미쳤을 가능성은 없을까요? 어떤 경로로 연결될 수 있을지 써 봅니다.</label><textarea id="s2-impact">${esc(L.impact)}</textarea>
+     <p class="small" style="margin:6px 0 0">확실하지 않은 부분은 단정하지 말고, 아래 원인 탐색 질문으로 남겨 3단계에서 확인합니다.</p></div></section>
+   </div></div>`;
+  const cmp=qa+diff+life;
+  const brain=`<div class="block"><h3>문제 원인 브레인스토밍 <span class="ws">3번</span></h3><p class="hint">전자 쓰레기는 왜 코피의 마을까지 가게 되었을까요? 서로의 의견을 판단하지 않고 모두 적습니다.</p>${listItems(d.causes,null,true,"s2causes")}<div class="addrow"><input type="text" id="s2-c" placeholder="생각나는 원인"><button class="btn" data-act="s2c">추가</button></div></div>`;
+  const vq=`<div class="block"><h3>원인 탐색 질문 목록 (모둠당 2개)</h3><p class="hint">개인의 노력만으로 해결될 수 없다면, 어떤 제도나 여론이 영향을 주었을까요? 3단계에서 AI에게 물을 수 있는 질문은 이 두 개뿐입니다.</p>${listItems(d.vq,i=>"질문 "+(i+1)+aft("q2",d.vq[i]),true,"s2vq")}
+   ${d.vq.length<2?`<div class="addrow"><input type="text" id="s2-v" placeholder="원인을 확인할 질문"><button class="btn" data-act="s2v">추가</button></div>`:'<p class="small">질문 2개가 정해졌습니다. 바꾸려면 하나를 삭제하세요.</p>'}
+   ${vis("q2")?`<div class="exbox"><b class="small">선생님이 공개한 원인 탐색 질문 예시</b> <span class="small">우리가 브레인스토밍한 원인에 맞게 바꿔 씁니다.</span><ul>${Q2_EX.map(q=>`<li>${esc(q)}</li>`).join("")}</ul></div>`:pendingBox("q2","원인 탐색 질문 예시")}</div>`;
+  return facts+cmp+brain+vq;
+}
+
+function s3(){
+  const d=S.s3;
+  if(d.rows.length!==S.s2.vq.length||d.rows.some((r,i)=>r.q!==S.s2.vq[i]))d.rows=S.s2.vq.map((q,i)=>({q,who:MEMBERS.slice(i*2,i*2+2).join("·"),ans:null,src:"",c:[false,false,false],judge:""}));
+  const asked=d.rows.length&&d.rows.every(r=>r.ans),judged=asked&&d.rows.every(r=>r.judge&&r.src.trim()&&r.c.some(Boolean));
+  const fl=flowList([["① 질문 확인(2단계)","ok"],["② 두 명씩 AI로 자료 찾기",asked?"ok":"now"],["③ 기준으로 검증",asked?(judged?"ok":"now"):"lock"],["④ 핵심 원인",judged?"now":"lock"]]);
+  const tbl=`<div class="block"><h3>질문 목록 검증하기 <span class="ws">4번</span></h3><p class="hint">질문 입력창은 없습니다. 2단계에서 만든 질문만 AI에게 보낼 수 있습니다. AI가 말한 출처는 직접 찾아 확인하기 전까지 믿지 않습니다.</p>
+   <div class="tablewrap"><table><thead><tr><th>질문 · 담당</th><th>AI를 통해 수집한 자료</th><th>직접 확인한 자료 · 출처</th><th>검증 기준</th><th>채택 여부</th></tr></thead><tbody>${d.rows.map((r,i)=>`<tr>
+    <td>${esc(r.q)}<br><span class="small">${esc(r.who)}</span></td>
+    <td>${r.ans?`<div class="ai-ans">${esc(r.ans)}<small>AI 제시 출처는 확인 전</small></div>`:`<button class="btn" data-ask3="${i}">AI에게 질의</button>`}</td>
+    <td><input type="text" data-src3="${i}" value="${esc(r.src)}" placeholder="기관·문서명, 날짜" ${r.ans?"":"disabled"}></td>
+    <td><div class="checks">${["출처를 믿을 수 있다","내용이 직접 확인한 자료와 일치한다","최근 자료다"].map((c,k)=>`<label><input type="checkbox" data-c3="${i}" data-k="${k}" ${r.c[k]?"checked":""} ${r.ans?"":"disabled"}> ${c}</label>`).join("")}</div></td>
+    <td><select data-j3="${i}" ${r.ans?"":"disabled"}><option value="">선택</option>${["수용","보류","기각"].map(o=>`<option ${r.judge===o?"selected":""}>${o}</option>`).join("")}</select></td></tr>`).join("")}</tbody></table></div></div>`;
+  const core=`<div class="block"><h3>핵심 원인 도출하기 <span class="ws">5번</span></h3><p class="hint">수용한 자료만 근거로, 이것이 해결되면 다른 원인도 함께 풀리는 원인을 우리 말로 씁니다.</p><textarea id="s3-core" placeholder="핵심 원인과 근거">${esc(d.core)}</textarea>${redHtml("s3-core",d.core)}</div>`;
+  if(!d.rows.length)return fl+`<div class="pend"><b>검증할 질문이 없습니다</b><span>2단계에서 원인 탐색 질문 2개를 먼저 만드세요.</span></div>`;
+  return fl+tbl+lockWrap(!judged,"두 질문 모두 직접 확인한 자료, 검증 기준, 채택 여부를 적어야 열립니다.",core);
+}
+
+function s4(){
+  const d=S.s4;
+  if(d.notes.length!==CASES.length)d.notes=CASES.map(()=>({changed:"",cant:""}));
+  const ready=d.alts.length>=3&&d.alts.every(a=>a.cause.trim());
+  const judged=d.fb&&d.fb.every(f=>f.dec&&f.why.trim()&&f.fix.trim());
+  const rated=judged&&d.fb.every(f=>f.r[0]&&f.r[1]&&f.r[2]&&f.rw.trim());
+  const fl=flowList([["① 핵심 원인 확인","ok"],["② 우리 대안 구상",d.sealed?"ok":"now"],["③ AI 피드백 판단",d.sealed?(judged?"ok":"now"):"lock"],["④ 비교표",judged?(rated?"ok":"now"):"lock"],["⑤ 1순위 직접 선정",rated?"now":"lock"]]);
+  const core=`<div class="block first"><h3>우리가 찾은 핵심 원인 <span class="small">3단계</span></h3><div class="corebox">${S.s3.core.trim()?esc(S.s3.core):'<span class="small">3단계에서 핵심 원인을 아직 정하지 않았습니다.</span>'}</div><p class="hint" style="margin-top:8px">이 원인을 바꾸려면 무엇이 달라져야 할까요? 대안은 이 원인을 겨냥해야 합니다.</p></div>`;
+  const list=`<ul class="list">${d.alts.map((a,i)=>{const sim=overlapWith(a.txt,caseTexts());return `<li><span class="tag">${esc(TSHORT[a.type])}${aft("alt4",a.txt)}</span><span class="txt">${esc(a.txt)}<br><span class="small">겨냥하는 원인: ${esc(a.cause||"(비어 있음)")}</span>${sim>=.4?`<br><span class="simwarn">사례·예시와 표현이 많이 겹칩니다 (${Math.round(sim*100)}%). 우리 원인과 상황에 맞게 바꿨나요?</span>`:""}</span>${d.sealed?"":`<button class="x" data-del="s4alts" data-i="${i}">삭제</button>`}</li>`}).join("")}</ul>`;
+  const add=d.sealed?"":`<div class="altform"><input type="text" id="s4-txt" placeholder="우리 모둠이 생각한 대안"><input type="text" id="s4-cause" placeholder="이 대안이 겨냥하는 원인"><select id="s4-type" aria-label="실행 주체">${TYPES.map((t,i)=>`<option value="${i}">${esc(t)}</option>`).join("")}</select><button class="btn" data-act="s4add">추가</button></div>
+   <div class="row"><button class="btn primary" data-act="s4seal" ${ready?"":"disabled"}>대안 확정 · AI 피드백 받기</button><span class="small">${d.alts.length}/3개 이상 · 모든 대안에 겨냥하는 원인을 적어야 합니다. 실행 주체가 같은 대안이 여러 개여도 됩니다.</span></div>`;
+  const altBlock=`<div class="block"><h3>해결 대안 구상 <span class="ws">나 · 1번</span> ${d.sealed?`<span class="seal">봉인 ${esc(d.sealTime)}</span>`:""}</h3><p class="hint">AI 없이 모둠이 토의합니다. 서로의 의견은 판단하지 않고, 대안마다 겨냥하는 원인과 실행 주체를 함께 적습니다.</p>${list}${add}</div>`;
+  const helps=`<div class="block"><h3>도움 자료 <span class="small">선생님이 공개</span></h3>
+   ${vis("cases")?`<p class="hint">해결책을 고르는 자료가 아닙니다. 각 사례가 무엇을 바꿨는지 찾고, 우리 상황에 그대로 쓸 수 없는 이유를 적어 봅시다.</p><div class="casegrid">${CASES.map((c,i)=>`<div class="fact"><p><b>${esc(c[0])}</b></p><p>${esc(c[1])}</p><span class="src">생각해 볼 점: ${esc(c[2])}</span>
+     <label class="small" for="s4-ch${i}">이 사례가 바꾼 것은?</label><input type="text" id="s4-ch${i}" data-note="${i}" data-k="changed" value="${esc(d.notes[i].changed)}">
+     <label class="small" for="s4-ct${i}">우리 상황에 그대로 쓸 수 없는 이유는?</label><input type="text" id="s4-ct${i}" data-note="${i}" data-k="cant" value="${esc(d.notes[i].cant)}"></div>`).join("")}</div>`:pendingBox("cases","다른 지역·나라의 해결 사례")}
+   ${vis("alt")?`<div class="exbox" style="margin-top:12px"><b class="small">선생님이 공개한 대안 예시</b> <span class="small">그대로 옮기지 말고 우리 핵심 원인에 맞게 바꿔 씁니다.</span><ul>${ALT_EX.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:`<div style="margin-top:12px">${pendingBox("alt","해결 대안 예시")}</div>`}</div>`;
+  const fb=`<div class="block"><h3>AI 피드백으로 대안 보완하기</h3><p class="hint">AI는 강점과 약점만 말합니다. 새 대안을 내거나 순위를 매기지 않습니다. 피드백마다 채택 여부와 이유를 적고, 보완한 대안을 우리 말로 씁니다.</p>
+   ${d.fb?`<div class="tablewrap"><table><thead><tr><th>모둠 대안</th><th>AI의 피드백</th><th>채택 여부와 이유</th><th>보완한 대안</th></tr></thead><tbody>${d.fb.map((x,i)=>`<tr>
+    <td><span class="small">${esc(TSHORT[x.type])}</span><br>${esc(x.alt)}</td>
+    <td class="ai-ans"><b class="small">강점</b> ${esc(x.s)}<br><b class="small">약점</b> ${esc(x.w)}</td>
+    <td><select data-d4="${i}"><option value="">선택</option>${["수용","수정","기각"].map(o=>`<option ${x.dec===o?"selected":""}>${o}</option>`).join("")}</select><input type="text" data-w4="${i}" value="${esc(x.why)}" placeholder="이유" style="margin-top:4px"></td>
+    <td><textarea id="s4-fix${i}" data-fix4="${i}" placeholder="우리 말로 보완한 대안">${esc(x.fix)}</textarea>${redHtml("s4-fix"+i,x.fix)}</td></tr>`).join("")}</tbody></table></div>`:`<button class="btn primary" data-act="s4fb">AI 피드백 요청</button>`}</div>`;
+  const lv=["상","중","하"];
+  const cmp=`<div class="block"><h3>대안 비교표</h3><p class="hint">모둠이 토의해 보완한 대안을 세 기준으로 평가하고 근거를 씁니다.</p>
+   ${d.fb?`<div class="tablewrap"><table><thead><tr><th>보완한 대안</th><th>실현 가능성</th><th>지속가능성</th><th>핵심 원인 해결 정도</th><th>평가 근거</th></tr></thead><tbody>${d.fb.map((x,i)=>`<tr><td>${esc(x.fix||x.alt)}</td>${[0,1,2].map(k=>`<td><select data-r4="${i}" data-k="${k}" aria-label="평가"><option value="">-</option>${lv.map(o=>`<option ${x.r[k]===o?"selected":""}>${o}</option>`).join("")}</select></td>`).join("")}<td><input type="text" data-rw4="${i}" value="${esc(x.rw)}" placeholder="왜 이렇게 평가했나"></td></tr>`).join("")}</tbody></table></div>`:""}</div>`;
+  const first=`<div class="block"><h3>1순위 대안 직접 선정하기 <span class="ws">나 · 2번</span></h3><p class="hint">비교표를 근거로 모둠이 토의해 하나를 고르고, 다른 대안보다 나은 이유를 씁니다.</p>
+   <div class="checks" style="font-size:14px;gap:6px">${(d.fb||[]).map((x,i)=>`<label style="white-space:normal"><input type="radio" name="s4first" data-first="${i}" ${d.first===i?"checked":""}> ${esc(x.fix||x.alt)} <span class="small">(${x.r.map(v=>v||"-").join("·")})</span></label>`).join("")}</div>
+   <textarea id="s4-why" style="margin-top:8px" placeholder="비교표에서 어떤 점 때문에 이 대안을 골랐나요?">${esc(d.firstWhy)}</textarea>${redHtml("s4-why",d.firstWhy)}</div>`;
+  return fl+core+altBlock+helps+lockWrap(!d.sealed,"대안을 3개 이상 만들고 겨냥하는 원인을 모두 적어야 AI 피드백이 열립니다.",fb)+lockWrap(!judged,"모든 피드백에 채택 여부, 이유, 보완한 대안을 적어야 열립니다.",cmp)+lockWrap(!rated,"비교표를 모두 채워야 1순위를 고를 수 있습니다.",first);
+}
+
+function s5(){
+  const d=S.s5,firstAlt=S.s4.fb&&S.s4.first!==null?(S.s4.fb[S.s4.first].fix||S.s4.fb[S.s4.first].alt):"학교에 소형 전자제품 수거함을 설치해 달라고 요청한다 (4단계 미완료 시 예시)";
+  const chosen=d.pick!==null&&d.whySaved;const L3="ABC";
+  const fl=flowList([["① 반응 먼저 예측",d.sealed?"ok":"now"],["② AI 시나리오",d.sealed?(d.scen?"ok":"now"):"lock"],["③ 가능성 판단과 이유",d.scen?(chosen?"ok":"now"):"lock"],["④ 예상 못 한 문제",chosen?"now":"lock"]]);
+  const p=`<div class="block first"><h3>이해관계자 반응 예측하기 <span class="ws">나 · 3번</span> ${d.sealed?`<span class="seal">봉인 ${esc(d.sealTime)}</span>`:""}</h3>
+   <p class="small" style="margin:0 0 6px">우리 대안: <b>${esc(firstAlt)}</b></p>
+   <p class="hint">이 대안이 실현되면 영향을 받는 사람은 누구일까요? 각자 어떻게 반응할지 근거와 함께 먼저 예상합니다.</p>
+   ${listItems(d.preds,(i,x)=>x.who+(x.ex?" · 배제된 이해관계자":"")+aft("who",x.who),!d.sealed,"s5preds")}
+   ${d.sealed?"":`<div class="addrow"><input type="text" id="s5-who" placeholder="이해관계자" style="flex:0 1 200px"><input type="text" id="s5-txt" placeholder="예상 반응과 근거"><button class="btn" data-act="s5add">추가</button></div>
+   ${vis("who")?`<div class="exbox"><b class="small">선생님이 공개한 이해관계자 예시</b> <span class="small">누르면 이해관계자 칸에 들어갑니다. 반응은 모둠이 직접 예측합니다.</span><div class="chips">${WHO_EX.map(w=>`<button class="chipbtn" data-whoex="${esc(w)}">${esc(w)}</button>`).join("")}</div></div>`:pendingBox("who","이해관계자 예시")}
+   <div class="exq"><b>배제된 사람은 없을까?</b><p class="small" style="margin:2px 0 8px">이 대안을 정하는 자리에 없었던 사람, 영향을 받지만 의견을 말하기 어려운 사람은 누구일까요? 한 명을 더 찾아 이해관계자로 추가해 봅시다.</p>
+    <div class="altform"><input type="text" id="s5-exwho" placeholder="배제된 이해관계자"><input type="text" id="s5-exwhy" placeholder="왜 목소리를 내기 어려운가"><input type="text" id="s5-extxt" placeholder="예상 반응과 근거"><button class="btn" data-act="s5exadd">추가</button></div></div>
+   <div class="row"><button class="btn primary" data-act="s5seal" ${d.preds.filter(p=>!p.ex).length<2||!d.preds.some(p=>p.ex)?"disabled":""}>예측 확정 · 시나리오 만들기</button><span class="small">이해관계자 ${d.preds.filter(p=>!p.ex).length}/2명 이상 · 배제된 이해관계자 ${d.preds.filter(p=>p.ex).length}/1명 이상</span></div>`}</div>`;
+  const sc=`<div class="block"><h3>AI로 결과 시나리오 만들기</h3><p class="hint">대안이 실행된 뒤 일어날 수 있는 장면을 이야기로 보여 줍니다. 미래를 맞히는 예언이 아닙니다. 이야기 속에서 우리 예측과 다른 점, 문제가 될 만한 장면을 직접 찾아봅시다.</p>
+   ${d.scen?`<div class="cards stories">${d.scen.map((c,i)=>`<div class="card story ${d.pick===i?"sel":""}"><span class="scen-l">시나리오 ${L3[i]}</span><h4>${esc(c.title)}</h4>${c.story.map(x=>`<p>${esc(x)}</p>`).join("")}<label><input type="radio" name="s5pick" data-pick="${i}" ${d.pick===i?"checked":""} ${d.whySaved?"disabled":""}> 시나리오 ${L3[i]}가 가장 일어날 가능성이 높다</label></div>`).join("")}</div>
+   <label class="small" for="s5-why" style="display:block;margin-top:12px">${d.pick!==null?`왜 시나리오 ${L3[d.pick]}가 가장 일어날 가능성이 높다고 생각했나요?`:"시나리오 A, B, C 가운데 하나를 먼저 고르세요."}</label><textarea id="s5-why" ${d.whySaved||d.pick===null?"readonly":""}>${esc(d.why)}</textarea>${redHtml("s5-why",d.why)}
+   <div class="row">${d.whySaved?`<span class="seal">저장됨 ${esc(d.whyTime)}</span><button class="btn" data-act="s5edit">고치기</button>`:`<button class="btn primary" data-act="s5save" ${d.pick===null?"disabled":""}>저장</button><span class="small" id="s5-msg" role="status"></span>`}</div>`:`<button class="btn primary" data-act="s5sim">시나리오 만들기</button>`}</div>`;
+  const np=`<div class="block"><h3>예상하지 못한 새로운 문제 <span class="ws">나 · 4번</span></h3><p class="hint">고른 이야기의 어느 장면에서 문제를 발견했나요? 그 장면에서 누가 어떤 어려움을 겪는지, 왜 그런 일이 생겼는지 우리 말로 씁니다.</p><textarea id="s5-newp">${esc(d.newp)}</textarea>${redHtml("s5-newp",d.newp)}</div>`;
+  return fl+p+lockWrap(!d.sealed,"이해관계자 2명 이상과 배제된 이해관계자 1명 이상의 반응을 예측하고 확정해야 시나리오가 열립니다.",sc)+lockWrap(!chosen,"시나리오를 고르고 이유를 저장해야 열립니다.",np);
+}
+
+function s6(){
+  const d=S.s6,fb=S.s4.fb;
+  const lvIdx=LEVELS.indexOf(d.level);
+  const types=d.acts.map(a=>a.type);
+  const mismatch=lvIdx===2&&!types.some(t=>t<=1)?"제도·국가 간 문제인데 자기 실천만 있습니다. 제도 제안이나 요청·설득을 하나 이상 넣어 볼까요?":lvIdx===1&&types.length&&types.every(t=>t===2)?"학교·지역 문제인데 자기 실천만 있습니다. 학교나 기관에 요청하는 행동도 생각해 볼까요?":"";
+  const needProp=types.some(t=>t<=1);
+  const top=`<p class="small" style="margin:0 0 6px">5단계에서 찾은 문제: <b>${esc(S.s5.newp||"(아직 없음)")}</b></p>`;
+  const lvl=`<div class="block first"><h3>① 문제는 어느 수준에서 생기나요?</h3><p class="hint">5단계에서 찾은 문제가 생기는 곳을 고릅니다. 행동의 규모를 문제의 규모에 맞추기 위해서입니다.</p>
+   <div class="seg" role="radiogroup" aria-label="문제 수준">${LEVELS.map(l=>`<button role="radio" aria-checked="${d.level===l}" class="${d.level===l?"on":""}" data-lv="${l}">${l}</button>`).join("")}</div></div>`;
+  const alt=`<div class="block"><h3>② 대안 보완하기 → 새로운 대안 <span class="ws">나 · 4번</span></h3><p class="hint">이 문제를 해결하려면 기존 대안에서 무엇을 보완해야 할까요?</p>
+   <textarea id="s6-new" placeholder="새로운 대안">${esc(d.newAlt)}</textarea>
+   <div class="checks" style="flex-direction:row;gap:14px;margin-top:6px"><label><input type="checkbox" id="s6-fz" ${d.fz?"checked":""}> 실현 가능성</label><label><input type="checkbox" id="s6-ss" ${d.ss?"checked":""}> 지속가능성</label></div>${redHtml("s6-new",d.newAlt)}</div>`;
+  const acts=`<div class="block"><h3>③ 어떤 행동을 할까요?</h3><p class="hint">행동 유형마다 무엇을, 누구에게 할지 적습니다. 여러 유형을 섞어도 됩니다.</p>
+   <div class="acttypes">${ACT_T.map((t,i)=>`<div><b>${t.n}</b><span class="small">${t.ex}</span></div>`).join("")}</div>
+   <ul class="list" style="margin-top:10px">${d.acts.map((a,i)=>`<li><span class="tag">${esc(ACT_T[a.type].n)}</span><span class="txt">${esc(a.what)}<br><span class="small">대상: ${esc(a.target||"-")}</span></span><button class="x" data-del="s6acts" data-i="${i}">삭제</button></li>`).join("")}</ul>
+   <div class="altform"><select id="s6-at" aria-label="행동 유형">${ACT_T.map((t,i)=>`<option value="${i}">${t.n}</option>`).join("")}</select><input type="text" id="s6-aw" placeholder="무엇을 할까요"><input type="text" id="s6-ag" placeholder="누구에게·어디에"><button class="btn" data-act="s6addact">추가</button></div>
+   ${mismatch?`<div class="redbox warn" style="margin-top:8px"><span>${mismatch}</span></div>`:""}</div>`;
+  const scope=`<div class="block"><h3>④ 어디까지 할까요?</h3><p class="hint">수업 여건에 맞게 모둠이 정합니다. 실제로 실행하지 않아도 됩니다.</p>
+   <div class="scopes">${SCOPES.map(x=>`<label class="scope ${d.scope===x.n?"on":""}"><input type="radio" name="s6scope" data-scope="${x.n}" ${d.scope===x.n?"checked":""}><b>${x.n}</b><span class="small">${x.d}</span></label>`).join("")}</div></div>`;
+  const ev=S.s3.rows.filter(r=>r.judge==="수용").map(r=>r.src).filter(Boolean);
+  const ob=S.s5.preds.map(p=>p.who+": "+p.txt);
+  const prop=`<div class="block"><h3>⑤ 제안서·건의서 쓰기</h3>${needProp?`<p class="hint">제도 제안이나 요청·설득을 고른 모둠은 아래 틀로 씁니다. 앞 단계에서 모둠이 쓴 내용이 자동으로 들어옵니다.</p>
+   <div class="propform">
+    <div class="pf"><span class="pf-k">문제</span><div>${esc(S.s5.newp||S.s3.core||"(앞 단계에서 아직 쓰지 않음)")}<span class="pf-src">5단계 새로운 문제</span></div></div>
+    <div class="pf"><span class="pf-k">근거</span><div>${esc(S.s3.core||"(3단계 핵심 원인 없음)")}${ev.length?`<br><span class="small">근거 자료: ${esc(ev.join(", "))}</span>`:""}<span class="pf-src">3단계 핵심 원인·검증 자료</span></div></div>
+    <div class="pf"><span class="pf-k">제안</span><div><textarea id="s6-ask" placeholder="무엇을 바꿔 달라고 할까요?">${esc(d.prop.ask)}</textarea></div></div>
+    <div class="pf"><span class="pf-k">예상 반대와 대응</span><div>${ob.length?`<ul class="pf-ul">${ob.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:'<span class="small">(5단계 반응 예측 없음)</span>'}<span class="pf-src">5단계 이해관계자 반응</span><textarea id="s6-reply" placeholder="반대하는 사람의 걱정에 어떻게 답할까요?" style="margin-top:6px">${esc(d.prop.reply)}</textarea></div></div>
+    <div class="pf"><span class="pf-k">기대 효과</span><div><textarea id="s6-effect" placeholder="제안이 받아들여지면 무엇이 달라지나요?">${esc(d.prop.effect)}</textarea></div></div>
+   </div>`:pendingBox("prop","③에서 제도 제안이나 요청·설득을 고르면 제안서 틀이 열립니다").replace("선생님이 공개하면 여기에 나타납니다. 그 전에 모둠이 먼저 생각해 봅시다.","")}</div>`;
+  const plan=`<div class="block"><h3>⑥ 행동 계획표 <span class="ws">나 · 5번</span></h3><p class="hint">실행 주체, 방법, 예상되는 어려움과 대응, 제출 경로, 결과를 확인할 날짜를 씁니다.</p>
+   <div class="tablewrap"><table style="min-width:900px"><thead><tr><th></th><th>실행 주체</th><th>방법</th><th>예상되는 어려움</th><th>대응 방법</th><th>제출 경로</th><th>결과 확인일</th></tr></thead><tbody>${d.plans.map((p,i)=>`<tr><td class="num">${i+1}</td>${["who","how","risk","resp","channel","date"].map(k=>`<td><input type="text" data-p6="${i}" data-k="${k}" value="${esc(p[k])}"></td>`).join("")}</tr>`).join("")}</tbody></table></div>
+   <div class="row"><button class="btn" data-act="s6addplan">계획 추가</button></div></div>`;
+  const allChk=d.chk.every(Boolean);
+  const check=`<div class="block"><h3>⑦ 제출 전 점검</h3><p class="hint">밖으로 보내기 전에 모둠이 함께 확인합니다. 선생님이 확인해야 제출할 수 있습니다.</p>
+   <div class="checks" style="font-size:14px;gap:6px">${CHK6.map((c,i)=>`<label style="white-space:normal"><input type="checkbox" data-chk6="${i}" ${d.chk[i]?"checked":""}> ${esc(c)}</label>`).join("")}</div>
+   <div class="row">${d.ok?`<span class="seal">선생님 확인 완료</span>${d.tnote?`<span class="small">선생님: ${esc(d.tnote)}</span>`:""}`:allChk?'<span class="small">선생님 확인을 기다리는 중입니다. (시연: 교사 화면 → 6단계 행동계획에서 확인)</span>':'<span class="small">세 항목을 모두 확인해야 선생님께 확인 요청이 갑니다.</span>'}</div></div>`;
+  const dates=d.plans.map(p=>p.date).filter(Boolean);
+  const r=d.res;
+  const result=`<div class="block"><h3>⑧ 결과 기록 <span class="small">후속 차시</span></h3><p class="hint">실천 결과는 수업 뒤에 나오는 경우가 많습니다. 결과 확인일${dates.length?`(${esc(dates.join(", "))})`:""}에 이 칸이 열리고, 7단계 공유나 다음 차시 도입에서 함께 이야기합니다.</p>
+   ${d.resultOpen?`<div style="display:grid;gap:8px"><div><label class="small" for="s6-rw">무슨 일이 있었나요?</label><textarea id="s6-rw">${esc(r.what)}</textarea></div>
+    <div><span class="small">예상과 같았나요?</span><div class="seg">${["예상과 같았다","예상과 달랐다"].map(v=>`<button class="${r.same===v?"on":""}" data-same="${v}">${v}</button>`).join("")}</div></div>
+    ${r.same==="예상과 달랐다"?`<div><span class="small">어디로 돌아가 다시 탐구할까요?</span><div class="seg wrap">${["원인을 다시 (2·3단계)","대안을 다시 (4단계)","예측을 다시 (5단계)","이번에는 돌아가지 않는다"].map(v=>`<button class="${r.back===v?"on":""}" data-back="${v}">${v}</button>`).join("")}</div><label class="small" for="s6-rwhy" style="display:block;margin-top:6px">그렇게 판단한 이유</label><input type="text" id="s6-rwhy" value="${esc(r.why)}"></div>`:""}</div>`
+   :`<div class="pend"><b>아직 결과 확인일이 아닙니다</b><span>결과 확인일이 되면 열립니다.</span><button class="demo-btn" style="margin:6px 0 0;align-self:flex-start" data-act="s6openres">시연: 결과 확인일로 가정하기</button></div>`}</div>`;
+  return top+lvl+alt+acts+scope+prop+plan+check+result;
+}
+
+function s7(){
+  const d=S.s7;
+  const fb=S.s4.fb,first=fb&&S.s4.first!==null?(fb[S.s4.first].fix||fb[S.s4.first].alt):"";
+  const chain=[["핵심 원인",S.s3.core],["자료 수집·검증",S.s3.rows.filter(r=>r.judge).map(r=>r.judge+": "+r.q).join(" / ")],["대안",S.s4.alts.map(a=>a.txt).join(" / ")],["AI 피드백 보완",fb?fb.map(f=>f.dec).filter(Boolean).join(", "):""],["1순위 대안",first],["결과 예측",S.s5.pick!==null?S.s5.scen[S.s5.pick].title:""],["새로운 대안",S.s6.newAlt],["행동",S.s6.acts.map(a=>ACT_T[a.type].n+": "+a.what).join(" / ")+(S.s6.scope?" ("+S.s6.scope+")":"")],["행동 계획",S.s6.plans.filter(p=>p.how).map(p=>p.who+" · "+p.how).join(" / ")]];
+  const by=[1,3,4,5].map(n=>({n,seal:S.logs.filter(l=>l.stage===n&&l.kind==="seal").length,ai:S.logs.filter(l=>l.stage===n&&l.kind==="ai").length,red:S.logs.filter(l=>l.stage===n&&l.kind==="red").length}));
+  return `<div class="block first"><h3>문제 해결 흐름 정리 (발표용)</h3><p class="hint">앞 단계에서 모둠이 쓴 내용이 자동으로 모입니다. 이 흐름에 따라 어떤 근거로 대안과 계획을 세웠는지 발표합니다.</p>
+   <ul class="chain">${chain.map(([k,v])=>`<li><span>${esc(k)}</span><span>${v?esc(v):'<span class="small">아직 작성하지 않음</span>'}</span></li>`).join("")}</ul></div>
+  <div class="block"><h3>동료 모둠 평가 <span class="ws">나 · 6번</span></h3><p class="hint">4: 매우 타당하다 · 3: 타당하다 · 2: 타당하지 않다 · 1: 매우 타당하지 않다</p>
+   <div class="tablewrap"><table class="scale" style="min-width:520px"><thead><tr><th>#</th><th>검토 내용</th><th>4</th><th>3</th><th>2</th><th>1</th></tr></thead><tbody>${PEER.map((t,i)=>`<tr><td class="num">${i+1}</td><td>${esc(t)}</td>${[4,3,2,1].map(v=>`<td><input type="radio" name="peer${i}" data-peer="${i}" value="${v}" ${d.peer[i]===v?"checked":""} aria-label="${v}점"></td>`).join("")}</tr>`).join("")}</tbody></table></div>
+   <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:10px"><div><label class="small" for="s7-learn">발표한 모둠에게서 배울 점</label><textarea id="s7-learn">${esc(d.learn)}</textarea></div><div><label class="small" for="s7-cmp">우리 모둠과 비교 (보완할 점, 새로 알게 된 점)</label><textarea id="s7-cmp">${esc(d.compare)}</textarea></div></div></div>
+  <div class="block"><h3>우리 모둠의 AI 사용 기록</h3><p class="hint">성찰은 이 기록에 근거합니다. 기록은 자동으로 모였고 고칠 수 없습니다.</p>
+   <div class="tablewrap"><table style="min-width:420px"><thead><tr><th>단계</th><th>먼저 생각한 내용 봉인</th><th>AI 사용</th><th>Red 의심</th></tr></thead><tbody>${by.map(b=>`<tr><td>${b.n}단계</td><td class="num">${b.seal}</td><td class="num">${b.ai}</td><td class="num">${b.red}</td></tr>`).join("")}</tbody></table></div></div>
+  <div class="block"><h3>AI 활용 성찰 체크리스트</h3><p class="hint">AI를 사용해 문제를 해결해 본 경험을 돌아봅니다. (개인 작성)</p>
+   <div class="tablewrap"><table class="scale"><thead><tr><th>#</th><th>AI 활용 내용</th><th>그렇다</th><th>보통이다</th><th>아니다</th></tr></thead><tbody>${CHECK.map((t,i)=>`<tr><td class="num">${i+1}</td><td>${esc(t)}</td>${["그렇다","보통이다","아니다"].map(v=>`<td><input type="radio" name="chk${i}" data-chk="${i}" value="${v}" ${d.chk[i]===v?"checked":""} aria-label="${v}"></td>`).join("")}</tr>`).join("")}</tbody></table></div>
+   <label class="small" for="s7-new" style="display:block;margin-top:10px">AI를 사용하면서 처음에는 생각하지 못했지만 새롭게 알게 되거나 생각하게 된 것은?</label><textarea id="s7-new">${esc(d.newThought)}</textarea></div>
+  <div class="block"><h3>다시 읽는 코피의 편지</h3><p class="hint">우리가 쓰던 전자제품이 어디로 가는지, 오늘 세운 계획을 앞으로 어떻게 이어 갈지 생각해 봅니다.</p></div>`;
+}
+
+function renderTeacher(){
+  const groups=[{g:"1모둠",c:["d","d","d","p","w","w","w"],f:0},{g:"2모둠",c:["d","d","f","w","w","w","w"],f:1},{g:"3모둠 (서윤 외 3)",live:true},{g:"4모둠",c:["d","p","w","w","w","w","w"],f:0},{g:"5모둠",c:["d","d","d","d","p","w","w"],f:0},{g:"6모둠",c:["d","d","d","p","w","w","w"],f:0}];
+  const live=STAGES.map(st=>stageDone(st.n)?"d":S.logs.some(l=>l.stage===st.n&&l.kind==="red")?"f":st.n===S.stage?"p":"w");
+  const lf=S.logs.filter(l=>l.kind==="red").length;
+  const rows=groups.map(r=>{const c=r.live?live:r.c;return `<tr><td>${esc(r.g)}${r.live?' <span class="small">(이 견본에서 조작 중)</span>':""}</td>${c.map((x,i)=>`<td><span class="cell ${x}">${i+1}</span></td>`).join("")}<td class="num">${r.live?lf:r.f}</td></tr>`}).join("");
+  const flags=S.logs.filter(l=>l.kind==="red").map(l=>`<div class="flag"><b>3모둠 · ${l.stage}단계 · ${esc(l.t)}</b>${esc(l.text)}<div class="row"><button class="btn">구두 설명 확인 · 인정</button><button class="btn warn">불인정</button></div></div>`).join("");
+  const lg=S.logs.length?S.logs.map(l=>`<div><span>${esc(l.t)}</span><span>${l.stage}단</span><span class="k-${l.kind}">${esc(l.text)}</span></div>`).join(""):`<div><span>—</span><span></span><span>학생 화면에서 활동하면 기록이 쌓입니다.</span></div>`;
+  return `<div class="teacher">
+  <section class="panel"><p class="sec-title">중3 · Ⅻ. 지속가능한 세계와 글로컬 시민 · 전자 쓰레기 · 2차시 연차시(90분) · 수업 코드 E3W9 · 6모둠</p>
+   <div class="row" style="margin-top:0;justify-content:space-between"><div><b>단계 개방</b><p class="small" style="margin:2px 0 0">여기까지 열린 단계만 학생이 들어갈 수 있습니다.</p></div>
+   <div class="gates">${STAGES.map(st=>`<button data-open="${st.n}" class="${st.n<=S.open?"open":""}">${st.n} <span class="chip ${st.g}" style="padding:0 5px">${st.g==="Y"?"Y":"–"}</span></button>`).join("")}</div></div>
+   <div style="margin-top:18px"><b>도움 자료 공개</b><p class="small" style="margin:2px 0 8px">기본은 숨김입니다. 모둠이 먼저 생각한 뒤 필요한 때에 전체 또는 특정 모둠에만 공개합니다. 공개 시각이 기록되고, 공개 뒤 학생이 만든 항목에는 '공개 후' 표시가 붙습니다.</p>
+   <div class="tablewrap"><table style="min-width:560px"><thead><tr><th>단계</th><th>도움 자료</th><th>상태</th><th></th></tr></thead><tbody>${REV.map(r=>{const v=S.rev[r.k];return `<tr><td class="num">${r.stage}</td><td>${esc(r.name)}</td><td>${v.all?`<span class="chip G">전체 공개 ${esc(v.t)}</span>`:v.g?`<span class="chip Y">3모둠만 ${esc(v.t)}</span>`:'<span class="chip N">숨김</span>'}</td><td><div class="gates"><button data-rev="${r.k}" data-m="all">전체 공개</button><button data-rev="${r.k}" data-m="g">3모둠만</button><button data-rev="${r.k}" data-m="hide">숨기기</button></div></td></tr>`}).join("")}</tbody></table></div></div></section>
+  <div class="tgrid">
+   <section class="panel"><p class="sec-title">모둠 진행 현황</p>
+    <div class="tablewrap"><table style="min-width:520px"><thead><tr><th>모둠</th>${STAGES.map(s=>`<th>${s.n}</th>`).join("")}<th>Red</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="legend"><span><span class="cell d">✓</span> 완료</span><span><span class="cell p">·</span> 진행 중</span><span><span class="cell f">!</span> Red 의심</span><span><span class="cell w">·</span> 대기</span></div>
+    <p class="sec-title" style="margin-top:20px">3모둠 활동 기록</p><div class="log">${lg}</div>
+    <div class="row"><button class="btn">CSV 내보내기</button><button class="btn">단계별 모아 보기</button><button class="btn">성찰 체크리스트 집계</button></div></section>
+   <section class="panel"><p class="sec-title">확인이 필요한 알림</p><div class="flags">${flags}
+    <div class="flag"><b>2모둠 · 3단계 · 10:31</b>핵심 원인 문장이 AI 응답과 71% 일치합니다.<div class="row"><button class="btn">구두 설명 확인 · 인정</button><button class="btn warn">불인정</button></div></div>
+    <div class="flag y"><b>1모둠 · 3단계 · 10:28</b>검증 기준을 하나도 표시하지 않고 '수용'을 선택했습니다.</div>
+    <div class="flag y"><b>4모둠 · 1단계 · 10:12</b>대화 시간 10분이 끝났습니다. 2차 대화를 시작하지 않았습니다.</div></div>
+    <p class="sec-title" style="margin-top:20px">수업 전 점검</p>
+    <ul class="list"><li><span class="tag">완료</span><span class="txt">코피 페르소나 프롬프트: 원인·해결책 제시 금지 규칙, 편향·민감 표현</span></li><li><span class="tag">완료</span><span class="txt">2단계 실제 사건 자료 출처 확인 (ITU·UNITAR, GIZ, 바젤협약 사무국, WHO)</span></li><li><span class="tag">대기</span><span class="txt">4단계 유사 사례 5건 출처 확인</span></li><li><span class="tag">대기</span><span class="txt">도움 자료 공개 시점 계획 (지도안 발문과 맞추기)</span></li></ul></section>
+  </div>
+  <section class="panel"><p class="sec-title">6단계 행동계획 현황</p>
+   <div class="tablewrap"><table style="min-width:760px"><thead><tr><th>모둠</th><th>문제 수준</th><th>행동 유형</th><th>실행 범위</th><th>제출 전 점검</th><th>확인</th></tr></thead><tbody>
+    <tr><td>1모둠</td><td>제도·국가 간</td><td>제도 제안, 자기 실천</td><td>실행 준비</td><td>완료</td><td><span class="chip G">확인함</span></td></tr>
+    <tr><td>2모둠</td><td>제도·국가 간</td><td>자기 실천</td><td>수업 중 실행</td><td>-</td><td><span class="chip Y">수준 불일치 알림</span></td></tr>
+    <tr><td>3모둠 <span class="small">(이 견본에서 조작 중)</span></td><td>${esc(S.s6.level||"-")}</td><td>${esc([...new Set(S.s6.acts.map(a=>ACT_T[a.type].n))].join(", ")||"-")}</td><td>${esc(S.s6.scope||"-")}</td><td>${S.s6.chk.every(Boolean)?"완료":"-"}</td><td>${S.s6.ok?'<span class="chip G">확인함</span>':S.s6.chk.every(Boolean)?`<div class="addrow" style="min-width:260px"><input type="text" id="t6-note" placeholder="실천 가능성 코멘트(선택)"><button class="btn primary" data-act="t6ok">확인</button></div>`:'<span class="small">점검 전</span>'}</td></tr>
+   </tbody></table></div>
+   <p class="small" style="margin:8px 0 0">학생이 밖으로 내기 전에 교사가 내용과 낙인·개인정보 점검을 확인합니다. 실행 범위는 모둠이 고르며, 실제 실행은 필수가 아닙니다.</p></section>
+  </div>`;
+}
+
+function renderPlan(){
+  return `<div class="plan">
+  <section class="panel"><h2>이 견본이 담은 것</h2>
+   <p>고등학교(난민) 견본과 같은 앱 구조에 중학교 지도안의 활동지 &lt;가&gt;·&lt;나&gt;와 성찰 체크리스트를 그대로 옮겼다. 단계 화면마다 대응하는 활동지 번호를 표시했다.</p>
+   <ul><li>1단계: 코피 편지, 예시 질문 5개 중 선택 또는 직접 작성, 10분 대화 타이머, 질문 합의 → 1차 대화 → 멈춤·논의 → 2차 대화</li><li>2단계: 기사 3건 요약, 기사에서 답 찾기 5문항(단답 3·O/X 2, 예시 답: 가나 아크라 / X / 구리를 얻어 팔려고 / O / 화상·유독 가스·오염 물질 검출), 코피 이야기(가상)와 다른 점 서술, 원인 브레인스토밍, 질문 정확히 2개</li><li>3단계: 두 명이 질문 하나씩 맡음, 검증 기준 체크, 수용·보류·기각</li><li>4단계: 3단계 핵심 원인 고정 표시 → 대안마다 겨냥 원인·실행 주체 기록(3개 이상) → 교사 공개 시 사례에서 바꾼 것·그대로 못 쓰는 이유 찾기 → AI 피드백 판단 → 비교표(실현 가능성·지속가능성·원인 해결 정도, 상중하+근거) → 1순위 선정. 사례·예시와 표현이 많이 겹치면 학생에게 알림</li><li>5단계 시나리오는 원인·결과·문제를 정리해 주지 않고 장면 이야기로만 제시한다. 문제 발견은 학생 몫이다. 실제 앱의 시뮬레이션 프롬프트에도 "작동 기제·문제 요약 금지, 인물과 장면 중심 서술"을 넣어야 한다.</li><li>5단계: 이해관계자 2명 이상과 배제된 이해관계자 1명 이상(목소리를 내기 어려운 이유 포함)을 예측해야 시나리오가 열림</li><li>5단계: 반응 예측 → 시나리오 A·B·C(장면 이야기) → 고른 이유 저장 → 새로운 문제</li><li>6단계(델파이 2차 반영): 문제 수준 진단(개인/학교·지역/제도·국가 간) → 새로운 대안 → 행동 유형(제도 제안/요청·설득/자기 실천, 수준과 맞지 않으면 알림) → 실행 범위 선택(수업 중 실행/실행 준비/후속 탐구, 실행은 필수 아님) → 제안서 틀(3·5단계 내용 자동 연결) → 계획표(제출 경로·결과 확인일) → 제출 전 점검(낙인·개인정보·근거)과 교사 확인 → 결과 기록과 되돌아갈 단계 선택</li><li>7단계: 문제 해결 흐름 자동 정리, 동료 평가 4문항(4점 척도), 성찰 체크리스트 10문항(3점 척도)</li></ul></section>
+  <section class="panel"><h2>교사가 공개하는 도움 자료</h2>
+   <p>예시 질문(1단계), 원인 탐색 질문 예시(2단계), 대안 예시와 해결 사례(4단계), 이해관계자 예시(5단계)는 기본으로 숨겨 둔다. 교사가 전체 또는 모둠별로 공개한다. 공개 시각과 '공개 후' 표시는 학생이 스스로 만든 것과 자료를 보고 만든 것을 구분하는 평가 근거가 된다.</p>
+   <ul><li><b>합의 필요:</b> 기준본과 지도안은 4단계에서 유사 사례를 먼저 제시하고 그 아이디어로 브레인스토밍하는 순서다. 이 견본은 대안을 먼저 구상한 뒤 교사 판단으로 사례를 공개하는 순서를 기본으로 한다. 기준본 4단계 서술을 고칠지, 지도안에 '교사 판단에 따라 사례 제시 시점을 조정한다'는 유의점만 넣을지 정해야 한다.</li><li>활동지 &lt;나&gt; 1번은 실행 주체별로 한 칸씩 채우는 구조여서 경쟁하는 대안을 여러 개 만들기 어렵다. 대안마다 겨냥 원인과 실행 주체를 적는 표로 바꾸고, 2번에 비교표를 넣는 것을 제안한다.</li></ul></section>
+  <section class="panel"><h2>지도안에서 고칠 부분 (기준본·합의 사항과 불일치)</h2>
+   <ul>
+    <li><b>GYR 표시:</b> 지도안 모형 도식은 1·3단계를 초록(AI 사용), 4·5단계를 노랑으로 표시한다. 합의한 기준은 1·3·4·5단계 모두 Yellow다. 앱은 Yellow로 만들었다.</li>
+    <li><b>1단계 절차:</b> 지도안은 10분 동안 한 번 대화하고 궁금한 점을 이어 묻는 방식이다. 합의한 '질문 합의 → 대화 → 멈춤·논의 → 추가 질문' 절차가 빠져 있다.</li>
+    <li><b>3단계 검증:</b> 활동지 &lt;가&gt; 4번은 'AI를 통해 수집한 자료 | 검증 | 채택 여부'만 있다. 기준본은 직접 수집한 자료와 대조하도록 한다. 앱에는 '직접 확인한 자료·출처' 칸을 추가했다.</li>
+    <li><b>판정 용어:</b> 지도안은 '수용·보류·기각', 기준본은 '수용·보류·불수용'이다. 한쪽으로 통일이 필요하다.</li>
+    <li><b>5·6단계 경계:</b> 지도안은 시나리오 분석과 새로운 문제 발견을 6단계에 둔다. 기준본은 5단계 활동이다. 앱은 기준본을 따랐다.</li>
+    <li><b>시나리오 수:</b> 지도안 예시는 한 시나리오에 문제 다섯 개를 나열한다. 기준본은 복수 시나리오 가운데 개연성이 큰 것을 학습자가 고르도록 한다.</li>
+    <li><b>체크리스트 영역:</b> 10문항에 개인정보보호와 타인의 권리침해 금지에 관한 문항이 없다. 기준본 7단계는 이 영역을 포함한다고 서술한다.</li>
+    <li><b>도구 표기:</b> 교수·학습 자료는 'ChatGPT 페르소나 프롬프트', 활용 도구는 '교사 제작 웹앱'이다. 하나로 정리가 필요하다.</li>
+    <li><b>오탈자:</b> '가상 인문' → '가상 인물'.</li>
+   </ul></section>
+  <section class="panel"><h2>중학교 수업이라 더 확인할 것</h2>
+   <ul><li>중학생의 외부 AI 서비스 이용 연령 조건과 보호자 동의 절차. 사용할 AI 모델이 정해지면 확인한다.</li><li>2단계 실제 사건 자료는 기사 3건(시사IN 2018, UNITAR·ITU 보도자료 2024, NPR 2024)으로 바꾸었다. 수치와 내용은 원문에서 확인했다.</li><li>지도안의 '2016년 4,500만 톤 중 80%'는 시사IN 기사 수치이고, 6,200만 톤·22.3%는 2022년 기준이다. 연도가 달라 학생이 비교할 때 혼동하지 않게 안내가 필요하다.</li><li>아그보그블로시는 2021년 7월 철거되었다. 지도안과 슬라이드가 현재형으로 서술하는 부분은 '처리장이었던 곳'으로 고치는 것이 정확하다.</li><li>90분 안에 7단계를 모두 마치기 빠듯하다. 단계별 권장 시간을 지도안에 넣으면 교사 화면에 타이머로 반영할 수 있다.</li></ul></section>
+  </div>`;
+}
+
+/* ---- events ---- */
+function bind(){
+  document.querySelectorAll("[data-stage]").forEach(b=>b.onclick=()=>{S.stage=+b.dataset.stage;render();window.scrollTo({top:0})});
+  document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{S.open=+b.dataset.open;if(S.stage>S.open)S.stage=S.open;render()});
+  document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{const m={s1qs:S.s1.qs,s1qs2:S.s1.qs2,s2causes:S.s2.causes,s2vq:S.s2.vq,s4alts:S.s4.alts,s5preds:S.s5.preds,s6acts:S.s6.acts};m[b.dataset.del].splice(+b.dataset.i,1);render()});
+  const A=(n,f)=>{const b=document.querySelector(`[data-act="${n}"]`);if(b)b.onclick=f};
+  const addFrom=(id,arr,k)=>{const el=$(id);if(el&&el.value.trim()){const t=el.value.trim();arr.push(t);if(k)markAfter(k,t);render()}};
+  document.querySelectorAll("[data-demo]").forEach(b=>b.onclick=()=>{DEMO[+b.dataset.demo]();render()});
+  document.querySelectorAll("[data-rev]").forEach(b=>b.onclick=()=>{const k=b.dataset.rev,m=b.dataset.m,r=S.rev[k],meta=REV.find(x=>x.k===k);if(m==="hide"){r.all=false;r.g=false;log(meta.stage,"rev","도움 자료 숨김: "+meta.name)}else{r[m]=true;r.t=now();log(meta.stage,"rev","도움 자료 공개("+(m==="all"?"전체":"3모둠")+"): "+meta.name)}render()});
+  const inp=(id,f)=>{const el=$(id);if(el)el.addEventListener("input",()=>f(el.value))};
+  // 1
+  A("s1add",()=>addFrom("#s1-new",S.s1.qs,"q1"));
+  A("s1seal",()=>{S.s1.sealed=true;S.s1.sealTime=now();S.s1.deadline=Date.now()+600000;log(1,"seal","질문 "+S.s1.qs.length+"개 합의·봉인");S.s1.chat.push({r:"sys",x:"질문이 봉인되었습니다. 10분 대화를 시작합니다."});render()});
+  const send=(pick,arr,tag)=>{const q=$(pick).value;if(!q)return;arr.push(q);S.s1.chat.push({r:"me",x:q},{r:"ai",x:KOFI[q]||KOFI_DEFAULT});log(1,"ai","페르소나 질의"+tag+": "+q);render()};
+  A("s1send",()=>send("#s1-pick",S.s1.asked,""));
+  A("s1pause",()=>{S.s1.paused=true;S.s1.chat.push({r:"sys",x:"대화가 멈췄습니다. 더 물어볼 것이 있는지 모둠이 논의하세요."});render()});
+  inp("#s1-disc",v=>S.s1.discuss=v);
+  A("s1add2",()=>addFrom("#s1-new2",S.s1.qs2));
+  A("s1seal2",()=>{S.s1.sealed2=true;S.s1.sealTime2=now();log(1,"seal","논의 결과·추가 질문 "+S.s1.qs2.length+"개 봉인");render()});
+  A("s1send2",()=>send("#s1-pick2",S.s1.asked2,"(2차)"));
+  // 2
+  document.querySelectorAll("[data-ox]").forEach(b=>b.onclick=()=>{S.s2.qa[+b.dataset.ox]=b.dataset.v;render()});
+  document.querySelectorAll("[data-qa]").forEach(el=>{el.addEventListener("input",()=>S.s2.qa[+el.dataset.qa]=el.value);el.addEventListener("change",render)});
+  inp("#s2-diff",v=>S.s2.diff=v);A("s2c",()=>addFrom("#s2-c",S.s2.causes));A("s2v",()=>addFrom("#s2-v",S.s2.vq,"q2"));
+  inp("#s2-same",v=>S.s2.life.same=v);inp("#s2-place",v=>S.s2.life.place=v);inp("#s2-impact",v=>S.s2.life.impact=v);
+  document.querySelectorAll("[data-dev]").forEach(el=>el.onchange=()=>S.s2.life.dev[+el.dataset.dev].how=el.value);
+  // 3
+  document.querySelectorAll("[data-ask3]").forEach(b=>b.onclick=()=>{const i=+b.dataset.ask3,r=S.s3.rows[i];r.ans=SEARCH[i%2];log(3,"ai","자료 수집 질의("+r.who+"): "+r.q);render()});
+  document.querySelectorAll("[data-src3]").forEach(el=>el.onchange=()=>{S.s3.rows[+el.dataset.src3].src=el.value;render()});
+  document.querySelectorAll("[data-c3]").forEach(el=>el.onchange=()=>{S.s3.rows[+el.dataset.c3].c[+el.dataset.k]=el.checked;render()});
+  document.querySelectorAll("[data-j3]").forEach(el=>el.onchange=()=>{S.s3.rows[+el.dataset.j3].judge=el.value;render()});
+  bindRed($("#s3-core"),"s3-core",3,v=>S.s3.core=v);
+  // 4
+  A("s4add",()=>{const t=$("#s4-txt").value.trim();if(!t)return;S.s4.alts.push({txt:t,cause:$("#s4-cause").value.trim(),type:+$("#s4-type").value});if(vis("cases")||vis("alt"))S.after.add("alt4|"+t);render()});
+  A("s4seal",()=>{S.s4.sealed=true;S.s4.sealTime=now();log(4,"seal","대안 "+S.s4.alts.length+"개 봉인 (사례 공개 후 "+S.s4.alts.filter(a=>S.after.has("alt4|"+a.txt)).length+"개)");render()});
+  A("s4fb",()=>{S.s4.fb=S.s4.alts.map(a=>({alt:a.txt,type:a.type,s:FBT[a.type][0],w:FBT[a.type][1],dec:"",why:"",fix:"",r:["","",""],rw:""}));log(4,"ai","대안 피드백 요청");render()});
+  document.querySelectorAll("[data-note]").forEach(el=>el.addEventListener("input",()=>S.s4.notes[+el.dataset.note][el.dataset.k]=el.value));
+  document.querySelectorAll("[data-r4]").forEach(el=>el.onchange=()=>{S.s4.fb[+el.dataset.r4].r[+el.dataset.k]=el.value;render()});
+  document.querySelectorAll("[data-rw4]").forEach(el=>el.onchange=()=>{S.s4.fb[+el.dataset.rw4].rw=el.value;render()});
+  document.querySelectorAll("[data-d4]").forEach(el=>el.onchange=()=>{S.s4.fb[+el.dataset.d4].dec=el.value;render()});
+  document.querySelectorAll("[data-w4]").forEach(el=>el.onchange=()=>{S.s4.fb[+el.dataset.w4].why=el.value;render()});
+  document.querySelectorAll("[data-fix4]").forEach(el=>{const i=+el.dataset.fix4;bindRed(el,"s4-fix"+i,4,v=>S.s4.fb[i].fix=v);el.addEventListener("change",render)});
+  document.querySelectorAll("[data-first]").forEach(el=>el.onchange=()=>{S.s4.first=+el.dataset.first;render()});
+  bindRed($("#s4-why"),"s4-why",4,v=>S.s4.firstWhy=v);
+  // 5
+  A("s5add",()=>{const w=$("#s5-who").value.trim(),t=$("#s5-txt").value.trim();if(w&&t){S.s5.preds.push({who:w,txt:t});markAfter("who",w);render()}});
+  A("s5exadd",()=>{const w=$("#s5-exwho").value.trim(),y=$("#s5-exwhy").value.trim(),t=$("#s5-extxt").value.trim();if(w&&t){S.s5.preds.push({who:w,txt:t,why:y,ex:true});render()}});
+  document.querySelectorAll("[data-whoex]").forEach(b=>b.onclick=()=>{const el=$("#s5-who");el.value=b.dataset.whoex;$("#s5-txt").focus()});
+  A("s5seal",()=>{S.s5.sealed=true;S.s5.sealTime=now();log(5,"seal","이해관계자 반응 예측 "+S.s5.preds.length+"개 봉인 (배제된 이해관계자 "+S.s5.preds.filter(p=>p.ex).length+"명)");render()});
+  A("s5sim",()=>{S.s5.scen=SCEN;log(5,"ai","시나리오 생성 (3개)");render()});
+  document.querySelectorAll("[data-pick]").forEach(el=>el.onchange=()=>{S.s5.pick=+el.dataset.pick;render()});
+  const w5=$("#s5-why");if(w5)bindRed(w5,"s5-why",5,v=>S.s5.why=v);
+  A("s5save",()=>{if(S.s5.why.trim().length<20){const m=$("#s5-msg");m.textContent="이유를 조금 더 자세히 써야 저장됩니다.";m.style.color="var(--r)";$("#s5-why").focus();return}S.s5.whySaved=true;S.s5.whyTime=now();log(5,"seal","시나리오 "+"ABC"[S.s5.pick]+" 선택 이유 저장");render()});
+  A("s5edit",()=>{S.s5.whySaved=false;render()});
+  bindRed($("#s5-newp"),"s5-newp",5,v=>S.s5.newp=v);
+  // 6
+  bindRed($("#s6-new"),"s6-new",6,v=>S.s6.newAlt=v);
+  const fz=$("#s6-fz");if(fz)fz.onchange=()=>S.s6.fz=fz.checked;const ss=$("#s6-ss");if(ss)ss.onchange=()=>S.s6.ss=ss.checked;
+  document.querySelectorAll("[data-p6]").forEach(el=>{el.addEventListener("input",()=>S.s6.plans[+el.dataset.p6][el.dataset.k]=el.value);if(el.dataset.k==="date")el.addEventListener("change",render)});
+  document.querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{S.s6.level=b.dataset.lv;render()});
+  A("s6addact",()=>{const w=$("#s6-aw").value.trim();if(!w)return;S.s6.acts.push({type:+$("#s6-at").value,what:w,target:$("#s6-ag").value.trim()});render()});
+  document.querySelectorAll("[data-scope]").forEach(el=>el.onchange=()=>{S.s6.scope=el.dataset.scope;log(6,"seal","실행 범위: "+S.s6.scope);render()});
+  inp("#s6-ask",v=>S.s6.prop.ask=v);inp("#s6-reply",v=>S.s6.prop.reply=v);inp("#s6-effect",v=>S.s6.prop.effect=v);
+  A("s6addplan",()=>{S.s6.plans.push({who:"",how:"",risk:"",resp:"",channel:"",date:""});render()});
+  document.querySelectorAll("[data-chk6]").forEach(el=>el.onchange=()=>{S.s6.chk[+el.dataset.chk6]=el.checked;if(S.s6.chk.every(Boolean))log(6,"seal","제출 전 점검 완료 · 선생님 확인 요청");render()});
+  A("s6openres",()=>{S.s6.resultOpen=true;render()});
+  inp("#s6-rw",v=>S.s6.res.what=v);inp("#s6-rwhy",v=>S.s6.res.why=v);
+  document.querySelectorAll("[data-same]").forEach(b=>b.onclick=()=>{S.s6.res.same=b.dataset.same;render()});
+  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{S.s6.res.back=b.dataset.back;log(6,"seal","재탐구 결정: "+b.dataset.back);render()});
+  A("t6ok",()=>{S.s6.ok=true;S.s6.tnote=($("#t6-note")||{}).value||"";log(6,"seal","선생님 제출 확인");render()});
+  // 7
+  document.querySelectorAll("[data-peer]").forEach(el=>el.onchange=()=>S.s7.peer[+el.dataset.peer]=+el.value);
+  document.querySelectorAll("[data-chk]").forEach(el=>el.onchange=()=>{S.s7.chk[+el.dataset.chk]=el.value});
+  inp("#s7-learn",v=>S.s7.learn=v);inp("#s7-cmp",v=>S.s7.compare=v);inp("#s7-new",v=>S.s7.newThought=v);
+}
+setInterval(()=>{const t=document.getElementById("s1-timer");if(t&&S.s1.deadline){t.textContent=timerText();t.classList.toggle("low",S.s1.deadline-Date.now()<120000)}},1000);
+["student","teacher","plan"].forEach(v=>$("#v-"+v).onclick=()=>{S.view=v;render()});
+render();
+})();
+</script>
+
+</body></html>
