@@ -3,7 +3,7 @@
 import {
   $, esc, now, hm, clone, sha, toast, netChip, loadLesson, store, makeAI, waitHtml, WAIT,
   helpVisFor, itemVisible, stageDone, aiTexts, overlapWith, redFields, openAI, revealHelp, teacherCheck6,
-  pushLog, pushAlert, coreTextOf, firstAltOf, chainOf
+  pushLog, pushAlert, coreTextOf, firstAltOf, chainOf, newSession
 } from "./core.js";
 
 const app = $("#app"), top = $("#top");
@@ -127,11 +127,13 @@ function joinView() {
     <div class="field"><label for="j-pw">비밀번호 4자리</label><input id="j-pw" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required></div>
     <button class="btn primary" type="submit" style="width:100%;padding:12px">들어가기</button>
    </form>
-   ${codes.length ? `<p class="small" style="margin-top:14px">이 브라우저에 있는 수업: ${codes.slice(0, 5).map(c => `<code>${esc(c)}</code>`).join(" · ")}</p>` : `<p class="small" style="margin-top:14px">지금은 시연판이라 선생님 화면과 같은 브라우저에서만 수업에 들어갈 수 있습니다.</p>`}</div>`;
+   <div class="memo" style="margin-top:18px"><b>시연판 안내</b><p class="small" style="margin:4px 0 8px">지금은 서버 없이 이 브라우저 안에만 저장합니다. 수업 코드는 <b>같은 브라우저</b>의 교사 화면에서 만든 것만 쓸 수 있습니다.</p>
+    ${codes.length ? `<p class="small" style="margin:0 0 6px">이 브라우저에 있는 수업(누르면 코드가 들어갑니다)</p><div class="chips" style="margin:0 0 10px">${codes.slice(0, 6).map(c => `<button type="button" class="chipbtn" data-fill="${esc(c)}">${esc(c)}</button>`).join("")}</div>` : `<p class="small" style="margin:0 0 10px">이 브라우저에는 아직 만든 수업이 없습니다.</p>`}
+    <div class="row" style="margin:0"><button type="button" class="btn" data-quick="1">시연 수업 바로 만들기</button><a class="btn" href="teacher.html" style="text-decoration:none">교사 화면에서 만들기</a></div></div></div>`;
 }
 async function join(c, g, nick, pw) {
   const d0 = store.get(c);
-  if (!d0) throw new Error("수업 코드를 찾을 수 없어요. 선생님께 다시 확인해 주세요.");
+  if (!d0) throw new Error("이 브라우저에서 수업 코드를 찾을 수 없어요. 시연판은 같은 브라우저의 교사 화면에서 만든 수업만 들어갈 수 있습니다. 아래 '시연 수업 바로 만들기'를 눌러 보세요.");
   if (d0.session.status === "closed") throw new Error("이미 닫힌 수업이에요.");
   if (!d0.groups[g]) throw new Error(`이 수업에는 ${g}모둠이 없어요.`);
   const uid = await sha(`${c}|${g}|${nick}`), ph = await sha(`${uid}|${pw}`);
@@ -562,6 +564,15 @@ document.addEventListener("pointerdown", () => { pdown = true; }, true);
 document.addEventListener("pointerup", () => { setTimeout(() => { pdown = false; if (pendR) { pendR = false; render(); } }, 0); }, true);
 function softRender() { if (pdown) pendR = true; else render(); }
 
+app.addEventListener("click", e => {
+  const f = e.target.closest("[data-fill]");
+  if (f) { $("#j-code").value = f.dataset.fill; $("#j-nick").focus(); return; }
+  if (e.target.closest("[data-quick]")) {
+    const d = newSession(D, { title: D.meta.title, groups: 7, teacher: "시연" });
+    render(false); $("#j-code").value = d.session.code; $("#j-nick").focus();
+    toast(`시연 수업 ${d.session.code}을 만들었습니다. 이름과 비밀번호를 넣고 들어가세요. 교사 화면에서도 이 수업이 보입니다.`);
+  }
+});
 app.addEventListener("submit", async e => {
   if (e.target.id !== "joinf") return; e.preventDefault();
   const c = val("j-code").toUpperCase(), g = +$("#j-g").value, nick = val("j-nick"), pw = val("j-pw");
