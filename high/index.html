@@ -355,11 +355,11 @@ const STAGES=[
  {n:2,ses:1,t:"사건의 배경 확인 및 문제 원인 탐색",g:"N",ws:"기록지 2-1~2-5",min:14,def:"선생님이 공개한 실제 사건 기사를 읽고 사실 확인 질문에 답한 뒤, 유수프의 이야기와 대조한다. 사건과 나의 삶을 잇고, AI 없이 원인을 추측해 모둠원이 한 개씩 맡을 원인 확인 질문을 4개 이상 만들어 봉인한다."},
  {n:3,ses:1,t:"검증을 통한 핵심 원인 도출",g:"Y",tool:"자료 탐색 도우미",ws:"기록지 3-1~3-3",min:14,def:"모둠원이 각자 맡은 원인 확인 질문으로 AI에게 정보와 출처를 얻고, 출처를 직접 확인해 수용·보류·불수용을 판정한다. 수용한 정보로 원인 간 관계를 그려 핵심 원인을 정한다."},
  {n:4,ses:2,t:"해결 대안 구상 및 보완",g:"Y",tool:"대안 검토 도우미",ws:"기록지 4-1~4-6",min:13,def:"공개된 유사 사례에서 아이디어를 얻고, 핵심 원인을 해결할 행위 주체별 대안을 3개 이상 만든다. AI의 강점·약점 피드백을 판단하고 비교표로 1순위 대안을 정한다."},
- {n:5,ses:2,t:"AI 시뮬레이션 기반 미래 시나리오 탐색",g:"Y",tool:"시나리오 생성기",ws:"기록지 5-1~5-5",min:12,def:"1순위 대안에 대한 이해관계자의 반응을 먼저 예측한다. AI가 보여 준 시나리오 A·B·C 가운데 가장 개연성 있는 것을 고르고, 이야기 속에서 새로운 문제를 찾는다."},
- {n:6,ses:2,t:"행동계획 수립 및 실행",g:"N",ws:"기록지 6-1~6-6",min:9,def:"새로운 문제의 수준을 진단하고 행동 유형을 고른다. 행동계획표에 대상·내용·방법·제출 경로와 실행 범위, 결과 확인 시점, 돌아갈 단계를 정한다. 제도 제안·요청이나 설득을 고른 모둠은 제안서를 쓴다[선택]."},
+ {n:5,ses:2,t:"AI 시뮬레이션 기반 미래 시나리오 탐색",g:"Y",tool:"시나리오 생성기",ws:"기록지 5-1~5-5",min:12,def:"1순위 대안에 대한 이해관계자의 반응을 먼저 예측한다. AI가 보여 준 시나리오 A·B·C 가운데 가장 개연성 있는 것을 고르고, 이야기 속에서 예상하지 못한 문제를 찾는다."},
+ {n:6,ses:2,t:"행동계획 수립 및 실행",g:"N",ws:"기록지 6-1~6-6",min:9,def:"예상하지 못한 문제의 수준을 진단하고 행동 유형을 고른다. 행동계획표에 대상·내용·방법·제출 경로와 실행 범위, 결과 확인 시점, 돌아갈 단계를 정한다. 제도 제안·요청이나 설득을 고른 모둠은 제안서를 쓴다[선택]."},
  {n:7,ses:2,t:"공유 및 성찰",g:"N",ws:"기록지 7-1~7-4",min:8,def:"문제 해결 과정을 공유 게시판에 올리고 다른 모둠 두 곳을 평가한다. 로그와 기록지를 보며 AI 활용을 성찰한다."}
 ];
-const ROLES=["진행자","AI 입력자","모둠활동 점검자","개인활동지 점검자"];
+const ROLES=["진행자","AI 입력자","모둠활동 점검자","개인활동 도우미"];
 const NEED=()=>Math.max(3,ROSTER[1].length); /* 원인 수 = 질문 수 = 모둠원 수(최소 3) */
 const ROSTER={1:["지민","현우","서연","도윤"],2:["도윤","지민","현우","서연"]};
 const QTYPES=["경험·감정","이동 과정·제도","주변 사회의 반응"];
@@ -370,7 +370,7 @@ const ACTT=[{n:"제도 제안·요청",ex:"국민신문고 정책 제안, 기관
 const SCOPES=[{n:"수업 중 실행",d:"수업 시간 안에 실제로 해 본다"},{n:"실행 준비",d:"제출 직전 초안까지 만들고 6차시에 공유한다"},{n:"후속 탐구",d:"더 알아볼 것을 정리해 다음 탐구로 넘긴다"}];
 const BACK=["원인(2·3단계)","대안(4단계)","예측(5단계)"];
 const CHK6=["특정 국가·종교·집단을 낙인찍거나 일반화하는 표현이 없다","실명, 연락처 같은 개인정보가 들어 있지 않다"];
-const VERIFY=["출처가 실제로 있고 직접 접속했다","공공기관·언론 원문·교과서 같은 확인 가능한 자료다","수치·날짜가 원자료와 일치한다","자료 시점이 질문의 시점과 맞는다"];
+const VERIFY=["신뢰성 · 출처가 실제로 있고 직접 접속했다","신뢰성 · 공공기관·언론 원문·교과서 같은 확인 가능한 자료다","정확성 · 수치·날짜가 원자료와 일치한다","최신성 · 자료 시점이 질문의 시점과 맞는다"];
 
 const LETTER=[
  "안녕. 나는 유수프야. 열아홉 살이고, 지금은 제주도에 있어.",
@@ -466,7 +466,7 @@ function redHtml(id,val){
   const msg=v>=.6?"Red 의심 · AI 응답과 많이 겹칩니다. 선생님이 말로 설명해 보라고 할 수 있습니다.":v>=.35?"주의 · AI 표현이 많이 남아 있습니다. 우리 말로 다시 써 봅시다.":"우리 말로 정리한 문장입니다.";
   return `<div class="redbox ${cls}" id="rb-${id}"><span>${msg}</span><span class="meter" aria-hidden="true"><i style="width:${p}%"></i></span><b>${p}%</b></div>`;
 }
-const FIELD={"s3-core":"핵심 원인 문장","s5-why":"시나리오 선택 이유","s5-newp":"새로운 문제","s4-improve":"1순위 대안과 보완 내용"};
+const FIELD={"s3-core":"핵심 원인 문장","s5-why":"시나리오 선택 이유","s5-newp":"예상하지 못한 문제","s4-improve":"1순위 대안과 보완 내용"};
 function fieldName(id){
   if(FIELD[id])return FIELD[id];let x;
   if((x=id.match(/^s3-sum-(\d+)/)))return `3-1 응답 핵심(질문 ${+x[1]+1})`;
@@ -722,7 +722,7 @@ function s3(){
   const seal=`<div class="block first"><h3>원인 확인 질문 <span class="small">2단계 2-5</span> ${d.sealed?`<span class="seal">봉인 ${hm(d.sealT)}</span>`:""}</h3>
    <ul class="list">${d.rows.map((r,i)=>`<li><span class="tag">질문 ${i+1}</span><span class="txt">${esc(r.q)}${r.who?`<br><span class="small">맡은 사람: ${esc(r.who)}</span>`:""}</span></li>`).join("")}</ul>
    ${d.sealed?gateBox(3,d.sealed,"원인 확인 질문"):`<div class="pend"><b>아직 봉인 전입니다</b><span>2단계 2-5에서 원인 확인 질문을 저장·봉인합니다.</span></div>`}</div>`;
-  const tbl=`<div class="block"><h3>원인 확인 질문으로 얻은 정보 검증하기 <span class="ws">3-1</span></h3><p class="hint">질문 입력창은 없습니다. 모둠원은 각자 맡은 질문을 학생용 프롬프트 형식 그대로 보내고, AI가 제시한 출처에 직접 접속해 확인합니다. 출처가 미비하면 검증 자료 목록과 추가 검색으로 확인합니다. 판정은 모둠원이 함께 논의해 정합니다. AI가 말한 출처는 직접 확인하기 전까지 믿지 않습니다.</p>
+  const tbl=`<div class="block"><h3>원인 확인 질문으로 얻은 정보 검증하기 <span class="ws">3-1</span></h3><p class="hint">질문 입력창은 없습니다. 모둠원은 각자 맡은 질문을 학생용 프롬프트 형식 그대로 보내고, AI가 제시한 출처에 직접 접속해 확인합니다. 출처가 미비하면 검증 자료 목록과 추가 검색으로 확인합니다. 판정은 출처 신뢰성·정확성·최신성을 기준으로 모둠원이 함께 논의해 정합니다. AI가 말한 출처는 직접 확인하기 전까지 믿지 않습니다.</p>
    <div class="tablewrap"><table style="min-width:1040px"><thead><tr><th style="width:14%">원인 확인 질문</th><th style="width:21%">AI 응답과 제시한 출처</th><th style="width:17%">AI 응답의 핵심(우리 말로)</th><th style="width:17%">직접 확인한 결과</th><th style="width:16%">검증 체크리스트</th><th>판정과 이유</th></tr></thead><tbody>${d.rows.map((r,i)=>`<tr>
     <td><span class="small">질문 ${i+1}${r.who?` · ${esc(r.who)}`:""}</span><br>${esc(r.q)}</td>
     <td>${r.ans?`<div class="ai-ans">${esc(r.ans)}<span class="srcs">출처: ${r.src.map(esc).join(" / ")||"없음"}</span>${r.fu?`<span class="srcs" style="color:var(--ink)">근거 다시 묻기 → ${esc(r.fu)}</span>`:`<button class="btn sm" style="margin-top:6px" data-act="s3fu" data-i="${i}" ${r.wait?"disabled":""}>근거 다시 묻기</button>`}</div>`:r.wait?`<span class="thinking">답을 쓰는 중…</span>`:`<button class="btn primary sm" data-act="s3ask" data-i="${i}">AI에게 질의</button><span class="small" style="display:block;margin-top:4px">"…답의 근거가 된 자료의 기관명·자료명·날짜를 함께 제시해 줘. 확인할 수 없는 내용은 '확인 불가'라고 표시해 줘. 원인이 무엇인지 판단하지는 마."</span>`}${r.err?`<div class="warnline">${esc(r.err)}</div>`:""}</td>
@@ -730,7 +730,7 @@ function s3(){
     <td><textarea data-bind="s3.rows.${i}.res" ${r.ans?"":"disabled"} placeholder="자료 내용 / 출처(기관·문서명, 날짜)" aria-label="직접 확인한 결과">${esc(r.res)}</textarea></td>
     <td><div class="checks">${VERIFY.map((c,k)=>`<label><input type="checkbox" data-bind="s3.rows.${i}.ck.${k}" ${r.ck[k]?"checked":""} ${r.ans?"":"disabled"}> ${esc(c)}</label>`).join("")}</div></td>
     <td><div class="judge" role="group" aria-label="판정" style="flex-direction:column;align-items:stretch">${[["○ 수용","수용"],["△ 보류","보류"],["× 불수용","불수용"]].map(([l,v])=>`<button data-act="s3j" data-i="${i}" data-v="${v}" aria-pressed="${r.j===v}" ${r.ans?"":"disabled"}>${l}</button>`).join("")}</div><input type="text" data-bind="s3.rows.${i}.why" value="${esc(r.why||"")}" placeholder="이유" aria-label="판정 이유" style="margin-top:6px" ${r.ans?"":"disabled"}>${r.j==="수용"&&!r.ck[0]?`<div class="warnline">출처를 직접 확인하지 못한 정보는 수용할 수 없습니다.</div>`:""}</td></tr>`).join("")}</tbody></table></div>
-   <p class="small" style="margin:8px 0 0">○ 출처를 확인했고 원자료와 일치 · △ 확인하지 못했거나 자료마다 다름 · × 원자료와 다르거나 출처가 없음</p>
+   <p class="small" style="margin:8px 0 0">판정 기준: 출처 신뢰성·정확성·최신성 · ○ 수용: 출처를 확인했고 원자료와 일치 · △ 보류: 확인하지 못했거나 자료마다 다름 · × 불수용: 원자료와 다르거나 출처가 없음</p>
    <details class="pd"><summary>검증 자료 목록 (선생님 제공)</summary><ul class="small" style="margin:8px 0 0;padding-left:18px">${ARTICLES.flatMap(a=>a.src).filter(s=>s.u).map(s=>`<li><a href="${esc(s.u)}" target="_blank" rel="noopener">${esc(s.t)}</a></li>`).join("")}</ul><p class="small">검색 엔진의 AI 요약이나 출처가 불분명한 게시물은 검증 자료로 인정하지 않습니다.</p></details></div>`;
   const acc=d.rows.filter(r=>r.j==="수용");
   const causes=[...new Set([...S.s2.guesses.map(g=>g.t),...d.rows.map(r=>r.cause).filter(Boolean)])];
@@ -788,7 +788,7 @@ function s5(){
   const d=S.s5,fa=firstAlt();
   const nIn=d.preds.filter(p=>!p.ex).length,nEx=d.preds.filter(p=>p.ex).length;
   const chosen=d.whySaved;
-  const fl=flowList([["반응 예측 4'",d.sealed?"ok":"now"],["AI 시나리오 2'",d.sealed&&!d.scen?"now":d.scen?"ok":""],["고르기와 이유",d.scen&&!chosen?"now":chosen?"ok":""],["새로운 문제",chosen&&!d.newp.trim()?"now":d.newp.trim()?"ok":""]]);
+  const fl=flowList([["반응 예측 4'",d.sealed?"ok":"now"],["AI 시나리오 2'",d.sealed&&!d.scen?"now":d.scen?"ok":""],["고르기와 이유",d.scen&&!chosen?"now":chosen?"ok":""],["예상하지 못한 문제",chosen&&!d.newp.trim()?"now":d.newp.trim()?"ok":""]]);
   const p=`<div class="block first"><h3>이해관계자 반응 예측하기 <span class="ws">5-1·5-2</span> <span class="mins">4'</span> <span class="chip N">AI 미사용</span> ${d.sealed?`<span class="seal">봉인 ${hm(d.sealT)}</span>`:""}</h3>
    <p class="small" style="margin:0 0 6px">우리 1순위 대안: <b>${esc(fa||"4단계에서 1순위 대안을 먼저 정합니다.")}</b></p>
    <p class="hint">AI 없이 먼저 모둠원들과 토의하여 예측합니다. 1순위 대안이 실행되면 영향을 받는 사람을 2명 이상 찾고, 각자 어떻게 반응할지 근거와 함께 씁니다. <span class="ws">5-1</span></p>
@@ -810,7 +810,7 @@ function s5(){
    <div class="row">${chosen?`<span class="seal">저장됨 ${hm(d.whyT)} · 시나리오 ${esc(d.pick)}</span><button class="btn" data-act="s5edit">고치기</button>`:`<button class="btn primary" data-act="s5why" id="s5-whybtn" ${d.pick&&d.why.trim().length>=20?"":"disabled"}>저장</button><span class="small" id="s5-whycnt">${d.why.trim().length}자 · 20자 미만이면 저장되지 않습니다.</span>`}</div>`
    :d.wait?`<p class="thinking">시나리오 생성기가 이야기를 쓰는 중…</p>`:`<button class="btn primary" data-act="s5gen">시나리오 A·B·C 만들기</button>`}
    ${d.err?`<div class="warnline">${esc(d.err)}</div>`:""}</div>`;
-  const np=`<div class="block"><h3>새로운 문제 찾기 <span class="ws">5-5</span></h3><p class="hint">시나리오에는 문제가 요약되어 있지 않습니다. 고른 이야기의 어느 장면에서 대안이 낳은 새로운 문제를 발견했나요? 그 장면에서 누가 어떤 어려움을 겪는지, 왜 그런 일이 생겼는지 우리 말로 씁니다.</p><textarea id="s5-newp" data-bind="s5.newp" data-red="s5-newp" data-st="5">${esc(d.newp)}</textarea>${redHtml("s5-newp",d.newp)}</div>`;
+  const np=`<div class="block"><h3>예상하지 못한 문제 찾기 <span class="ws">5-5</span></h3><p class="hint">시나리오에는 문제가 요약되어 있지 않습니다. 고른 이야기의 어느 장면에서 대안이 낳은 문제를 발견했나요? 그 장면에서 누가 어떤 어려움을 겪는지, 왜 그런 일이 생겼는지 우리 말로 씁니다.</p><textarea id="s5-newp" data-bind="s5.newp" data-red="s5-newp" data-st="5">${esc(d.newp)}</textarea>${redHtml("s5-newp",d.newp)}</div>`;
   return fl+p+lockWrap(!(d.sealed&&S.ai[5]),"반응 예측을 봉인하고 선생님이 단계를 열어야 시나리오가 열립니다.",scen)+lockWrap(!chosen,"시나리오를 고르고 이유를 저장해야 열립니다.",np);
 }
 
@@ -823,7 +823,7 @@ function s6(){
   const needProp=types.some(t=>t!=="자기 실천");
   const opt=(arr,key,multi)=>`<div class="opts">${arr.map(o=>{const n=typeof o==="string"?o:o.n;const on=multi?d[key].includes(n):d[key]===n;return `<button class="opt" data-act="${multi?"tog":"set"}" data-k="s6.${key}" data-v="${esc(n)}" aria-pressed="${on}">${esc(n)}${o.d||o.ex?`<small>${esc(o.d||o.ex)}</small>`:""}</button>`}).join("")}</div>`;
   const fl=flowList([["수준·행동 유형 3'",d.level&&types.length?"ok":"now"],["행동계획표 6'",d.plans.some(p=>p.target&&p.content)&&d.scope?"ok":d.level&&types.length?"now":""],["제안서 [선택]",""],["제출 전 점검",d.tok?"ok":""],["결과 기록(6차시)",d.resOpen?"ok":""]]);
-  const top=`<div class="block first"><h3>5단계에서 찾은 새로운 문제</h3><div class="corebox">${S.s5.newp.trim()?esc(S.s5.newp):'<span class="small">5단계에서 새로운 문제를 먼저 찾습니다.</span>'}</div></div>`;
+  const top=`<div class="block first"><h3>5단계에서 찾은 예상하지 못한 문제</h3><div class="corebox">${S.s5.newp.trim()?esc(S.s5.newp):'<span class="small">5단계에서 문제를 먼저 찾습니다.</span>'}</div></div>`;
   const lvl=`<div class="block"><h3>문제는 어느 수준에서 생기나요? <span class="ws">6-1</span> <span class="mins">3'</span> <span class="chip N">AI 미사용</span></h3><p class="hint">행동의 규모를 문제의 규모에 맞추기 위해 먼저 판단합니다.</p>${opt(LEVELS,"level")}</div>`;
   const act=`<div class="block"><h3>어떤 행동을 할까요? <span class="ws">6-2</span></h3><p class="hint">문제 수준에 맞는 행동 유형을 고르고 이유를 씁니다. 여러 유형을 골라도 됩니다.</p>${opt(ACTT,"types",true)}
    <div class="field" style="margin-top:8px"><label for="s6-tw">이유</label><input type="text" id="s6-tw" data-bind="s6.typeWhy" value="${esc(d.typeWhy)}"></div>
@@ -832,13 +832,13 @@ function s6(){
    <div class="tablewrap"><table style="min-width:820px"><thead><tr><th></th><th>대상</th><th>내용</th><th>방법</th><th>제출 경로</th></tr></thead><tbody>${d.plans.map((p,i)=>`<tr><td class="num">${i+1}</td>${[["target","대상"],["content","내용"],["how","방법"],["channel","제출 경로"]].map(([k,l])=>`<td><input type="text" data-bind="s6.plans.${i}.${k}" data-chk6="1" value="${esc(p[k])}" aria-label="${l}" ${k==="channel"?'placeholder="예: 국민신문고, 기관 누리집, 학교 누리집, 직접 전달"':""}></td>`).join("")}</tr>`).join("")}</tbody></table></div>
    <div class="row"><button class="btn" data-act="s6addplan">줄 추가</button></div><div id="s6-auto">${autoChk6()}</div>
    <div class="field" style="margin-top:12px"><span class="lab">실행 범위</span>${opt(SCOPES,"scope")}</div>
-   <div class="grid2" style="margin-top:10px"><div class="field"><label for="s6-when">결과 확인 시점</label><input type="text" id="s6-when" data-bind="s6.when" value="${esc(d.when)}" placeholder="예: 단원 6차시 도입, 제출 2주 뒤"></div>
+   <div class="grid2" style="margin-top:10px"><div class="field"><label for="s6-when">결과 확인 시점</label><input type="text" id="s6-when" data-bind="s6.when" value="${esc(d.when)}" placeholder="예: 제출 2주 뒤 학급 회의 시간"></div>
     <div class="field"><span class="lab">기대와 다를 때 돌아갈 단계</span>${opt(BACK,"back",true)}</div></div></div>`;
   const ev=S.s3.rows.filter(r=>r.j==="수용").map(r=>r.src.join(", ")).filter(Boolean);
   const ob=S.s5.preds.map(p=>p.who+": "+p.txt);
   const prop=`<div class="block"><h3>제안서·편지 쓰기 <span class="ws">6-4</span> <span class="small">[선택]</span></h3>${needProp?`<p class="hint">6-2에서 제도 제안·요청이나 설득을 고른 모둠만 씁니다. 문제·근거·예상 반대 칸에는 앞 단계 내용이 자동으로 들어옵니다. 시간이 부족하면 건너뛰고 다음 시간 전까지 완성합니다.</p>
    <div class="propform">
-    <div class="pf"><span class="pf-k">문제</span><div>${esc(S.s5.newp||"(5단계에서 아직 쓰지 않음)")}<span class="pf-src">5단계 새로운 문제</span></div></div>
+    <div class="pf"><span class="pf-k">문제</span><div>${esc(S.s5.newp||"(5단계에서 아직 쓰지 않음)")}<span class="pf-src">5단계에서 발견한 문제</span></div></div>
     <div class="pf"><span class="pf-k">근거</span><div>${esc(coreText()||"(핵심 원인 없음)")}${ev.length?`<br><span class="small">검증한 자료: ${esc(ev.join(" / "))}</span>`:""}<span class="pf-src">3단계 핵심 원인과 검증한 자료</span></div></div>
     <div class="pf"><span class="pf-k">제안</span><div><textarea data-bind="s6.prop.ask" placeholder="무엇을 바꿔 달라고, 또는 무엇을 함께하자고 할까요?" aria-label="제안">${esc(d.prop.ask)}</textarea></div></div>
     <div class="pf"><span class="pf-k">예상 반대와 대응</span><div>${ob.length?`<ul class="pf-ul">${ob.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:'<span class="small">(5단계 반응 예측 없음)</span>'}<span class="pf-src">5단계 이해관계자 반응</span><textarea data-bind="s6.prop.reply" placeholder="반대하는 사람의 걱정에 어떻게 답할까요?" style="margin-top:6px" aria-label="예상 반대에 대한 대응">${esc(d.prop.reply)}</textarea></div></div>
@@ -849,10 +849,10 @@ function s6(){
    <div class="checks" style="font-size:14px;gap:6px">${CHK6.map((c,k)=>`<label><input type="checkbox" data-bind="s6.chk.${k}" ${d.chk[k]?"checked":""}> ${esc(c)}</label>`).join("")}</div>
    <div class="row">${d.tok?`<span class="seal">선생님 확인 ${hm(d.tokT)}</span>${d.tnote?`<span class="small">선생님: ${esc(d.tnote)}</span>`:""}`:all?`<span class="small">선생님 확인을 기다리는 중입니다.</span><button class="demo-btn" data-act="t6ok">시연: 선생님 확인</button>`:'<span class="small">두 항목을 모두 확인해야 선생님께 확인 요청이 갑니다.</span>'}</div></div>`;
   const r=d.res;
-  const result=`<div class="block"><h3>결과 기록 <span class="ws">6-6</span> <span class="small">단원 6차시</span></h3><p class="hint">결과 확인 시점에 씁니다. 결과는 다음 차시에 함께 공유합니다.</p>
+  const result=`<div class="block"><h3>결과 기록 <span class="ws">6-6</span></h3><p class="hint">6-3에서 정한 결과 확인 시점에 씁니다. 결과를 함께 나눌 날짜는 모둠의 행동계획에 따라 선생님과 정합니다.</p>
    ${d.resOpen?`<div style="display:grid;gap:8px"><div class="field"><label for="s6-rh">언제 어떻게 실행했나요?</label><textarea id="s6-rh" data-bind="s6.res.how">${esc(r.how||"")}</textarea></div>
     <div class="field"><label for="s6-rw">무슨 일이 있었나요?</label><textarea id="s6-rw" data-bind="s6.res.what">${esc(r.what)}</textarea></div></div>`
-   :`<div class="pend"><b>아직 결과 확인 시점이 아닙니다</b><span>단원 6차시에 열립니다.</span><button class="demo-btn" style="margin:6px 0 0;align-self:flex-start" data-act="s6res">시연: 6차시로 가정하기</button></div>`}</div>`;
+   :`<div class="pend"><b>아직 결과 확인 시점이 아닙니다</b><span>6-3에서 정한 결과 확인 시점에 선생님이 엽니다.</span><button class="demo-btn" style="margin:6px 0 0;align-self:flex-start" data-act="s6res">시연: 6차시로 가정하기</button></div>`}</div>`;
   return fl+top+lvl+act+plan+prop+check+result;
 }
 function autoChk6(){const d=S.s6;const t=[...d.plans.flatMap(p=>[p.target,p.content,p.how]),d.prop.ask,d.prop.reply,d.typeWhy].join(" ");return (BIAS.test(t)?`<div class="warnline r">특정 집단을 일반화하는 표현이 있는지 다시 확인합니다.</div>`:"")+(PI.test(t)?`<div class="warnline r">전화번호나 이메일 같은 개인정보가 들어 있습니다.</div>`:"")}
@@ -863,16 +863,16 @@ const PEERS=[
  {g:"5모둠",flow:["난민 신청자를 둘러싼 오해와 반대 여론","확인되지 않은 소문 속에 난민법 폐지 청원에 40만 명 넘게 참여했다(기사 2)","(세계시민) 학교 누리집에 난민 제도 카드뉴스 게시","카드뉴스 댓글에서 오히려 논쟁이 커져 게시가 중단된다(시나리오 B)","(자기 실천) 우리 반 토의 규칙을 정하고 카드뉴스에 출처를 모두 밝힌다"]},
  {g:"6모둠",flow:["인도적 체류 허가가 1년 단위라 장기 계획을 세우기 어렵다","인도적 체류는 1년이 상한이고 1년씩 연장한다(기사 3)","(비정부 기구) 지역 단체가 연장 서류 준비를 돕는다","도움을 받은 사람과 받지 못한 사람의 차이가 커진다(시나리오 A)","(제도 제안·요청) 지자체에 체류 연장 안내 창구를 요청하는 건의문"]}
 ];
-const CHAIN=["문제","핵심 원인","대안","새로운 문제","행동계획"];
-const PEERC=["문제의 원인을 타당하게 판단하였다.","신뢰할 수 있는 근거를 활용하였다.","대안이 실현 가능하다.","대안이 낳을 새로운 문제를 충분히 고려하였다."];
+const CHAIN=["문제","핵심 원인","대안","예상하지 못한 문제","행동계획"];
+const PEERC=["문제의 원인을 타당하게 판단하였다.","신뢰할 수 있는 근거를 활용하였다.","대안이 실현 가능하다.","시나리오에서 발견한 문제를 행동계획에 반영하였다."];
 const REFL=[["투명성","AI를 사용한 단계와 목적을 기록지에 적었다."],["투명성","AI 대화 로그를 빠짐없이 제출하였다."],["주체성","AI를 쓰기 전에 모둠이 먼저 질문·대안·반응 예측을 만들었다."],["주체성","AI 응답을 그대로 옮기지 않고 우리 말로 다시 정리하였다."],["주체성","AI 피드백 가운데 받아들이지 않은 것이 있고, 그 이유를 설명할 수 있다."],["주체성","최종 대안과 시나리오 선택은 우리 모둠이 기준에 따라 결정하였다."],["검증","AI가 제시한 출처에 직접 접속하여 내용을 확인하였다."],["검증","유수프의 이야기에서 실제 사실과 창작된 내용을 구분하였다."],["개인정보 보호 및 타인의 권리 침해 금지","나와 친구의 개인정보를 AI에 입력하지 않았다."],["개인정보 보호 및 타인의 권리 침해 금지","특정 국가·종교·집단을 일반화하거나 비하하는 표현을 입력하거나 그대로 사용하지 않았다."]];
 function fullChain(){
   const d6=S.s6;
-  return [["문제",S.s7.problem],["핵심 원인",coreText()],["대안",firstAlt()],["새로운 문제",S.s5.newp],["행동계획",d6.types.length?`(${d6.types.join("·")}) `+d6.plans.filter(p=>p.target).map(p=>p.target+" · "+p.content).join(" / ")+(d6.scope?` [${d6.scope}]`:""):""]];
+  return [["문제",S.s7.problem],["핵심 원인",coreText()],["대안",firstAlt()],["예상하지 못한 문제",S.s5.newp],["행동계획",d6.types.length?`(${d6.types.join("·")}) `+d6.plans.filter(p=>p.target).map(p=>p.target+" · "+p.content).join(" / ")+(d6.scope?` [${d6.scope}]`:""):""]];
 }
 function s7(){
   const d=S.s7,ch=fullChain();
-  const share=`<div class="block first"><h3>문제 해결 흐름 정리 <span class="ws">7-1</span> <span class="mins">4'</span> <span class="small">[선택]</span></h3><p class="hint">문제 → 핵심 원인 → 대안 → 새로운 문제 → 행동계획의 흐름을 공유 게시판(패들렛)에 올립니다. '문제'는 모둠이 한 문장으로 쓰고, 나머지는 앞 단계 내용이 자동으로 들어옵니다.</p>
+  const share=`<div class="block first"><h3>문제 해결 흐름 정리 <span class="ws">7-1</span> <span class="mins">4'</span> <span class="small">[선택]</span></h3><p class="hint">문제 → 핵심 원인 → 대안 → 예상하지 못한 문제 → 행동계획의 흐름을 공유 게시판(패들렛)에 올립니다. '문제'는 모둠이 한 문장으로 쓰고, 나머지는 앞 단계 내용이 자동으로 들어옵니다.</p>
    <ul class="chain2"><li><span>문제</span><span><input type="text" data-bind="s7.problem" value="${esc(d.problem)}" placeholder="예: 전쟁을 피해 온 예멘 난민 신청자가 제주에서도 안정적으로 지내기 어렵다" aria-label="문제"></span></li>${ch.slice(1).map(([k,v])=>`<li><span>${esc(k)}</span><span>${v?esc(v):'<span class="small">아직 작성하지 않음</span>'}</span></li>`).join("")}</ul>
    <div class="row"><button class="btn" data-act="copy">게시판에 붙일 글 복사</button><span class="small" id="copy-note">${d.posted?"복사했습니다. 공유 게시판에 붙여 넣으세요.":""}</span></div></div>`;
   const peer=`<div class="block"><h3>다른 모둠의 문제 해결 과정 평가하기 <span class="ws">7-2</span></h3><p class="hint">다른 모둠 두 곳을 골라 네 가지 기준으로 평가하고 댓글을 남깁니다. 4: 매우 그렇다 · 3: 그렇다 · 2: 그렇지 않다 · 1: 전혀 그렇지 않다</p>
@@ -969,11 +969,11 @@ function renderPlan(){
    <li>2단계(14'): 교사가 단계 시작 때 기사 3건 공개 → 사실 확인 6문항(2-1, 4') → 유수프 이야기를 확인된 이야기/창작된 이야기로 대조(2-2, 2') → 삶 잇기 4칸(2-3, 3') → 모둠이 합의한 원인을 모둠원 수 이상(최소 3, 2-4, 2') → 원인 1개씩 나누어 맡고 질문 1개씩(원인 수 = 질문 수 = 모둠원 수), 질문마다 확인할 원인과 맡을 사람을 고름, 저장·봉인(2-5, 3')</li>
    <li>3단계(14'): 교사 AI 열기 → 1인 1대 태블릿으로 각자 맡은 질문을 학생용 프롬프트 형식으로 질의(3'), 근거 다시 묻기 → AI 응답의 핵심(우리 말, Red 탐지), 직접 확인한 결과, 검증 체크리스트, 모둠 논의 후 판정과 이유(3-1, 5') → 원인 관계도(3-2) → 핵심 원인 1개(3-3)</li>
    <li>4단계(13'): 핵심 원인 고정(4-1) → 유사 사례 순차 공개, 사례마다 핵심 아이디어(4-2) → 대안 3개 이상과 실행 주체 봉인, 사례 표현이 겹치면 알림(4-3) → 강점·약점 요약과 수용·수정·기각(4-4) → 비교표 1~3점(4-5) → 1순위와 보완 내용(4-6)</li>
-   <li>5단계(12'): 모둠 토의로 이해관계자 2명 이상의 반응과 이유(5-1), 목소리를 내기 어려운 이해관계자 1명 이상(5-2) 봉인 → 시나리오 A·B·C(시점 표시 없음) → 시나리오 읽기 메모(5-3) → 고른 이유 20자 이상(5-4) → 새로운 문제(5-5)</li>
+   <li>5단계(12'): 모둠 토의로 이해관계자 2명 이상의 반응과 이유(5-1), 목소리를 내기 어려운 이해관계자 1명 이상(5-2) 봉인 → 시나리오 A·B·C(시점 표시 없음) → 시나리오 읽기 메모(5-3) → 고른 이유 20자 이상(5-4) → 예상하지 못한 문제(5-5)</li>
    <li>6단계(9'): 문제 수준(6-1) → 행동 유형과 이유(6-2) → 행동계획표 대상·내용·방법·제출 경로, 실행 범위, 결과 확인 시점, 돌아갈 단계(6-3) → 제안서 [선택](6-4) → 제출 전 점검 2항목과 교사 확인(6-5) → 결과 기록: 언제 어떻게 실행했나 / 무슨 일이 있었나(6-6)</li>
    <li>7단계(8'): 흐름 정리 5칸 [선택](7-1) → 다른 모둠 두 곳 평가(7-2) → 성찰 체크리스트(7-3) → 서술 2문항(7-4)</li></ul></section>
   <section class="panel"><h2>4판에서 바뀐 것 (지도안 v15 반영)</h2>
-   <ul><li>모둠 역할: 진행자, AI 입력자, 모둠활동 점검자, 개인활동지 점검자</li>
+   <ul><li>모둠 역할: 진행자, AI 입력자, 모둠활동 점검자, 개인활동 도우미</li>
    <li>2-2 비교를 3분류에서 '확인된 이야기 / 창작된 이야기' 2분류로</li>
    <li>2-5 원인 확인 질문을 2개에서 모둠원 수만큼으로. 원인 수 = 질문 수 = 모둠원 수(최소 3), 한 사람이 원인 1개·질문 1개를 맡고 원인·사람이 겹치지 않게 함. 시간 3분. 2단계 14분, 3단계 14분(정보 탐색 3분)</li>
    <li>3단계는 각자 맡은 질문을 직접 질의하고, 판정은 모둠 논의로</li>
@@ -985,7 +985,7 @@ function renderPlan(){
   <section class="panel"><h2>결정이 남은 것</h2>
    <ul><li><b>3-1 'AI 응답의 핵심(우리 말로)' 칸:</b> 활동지 3-1은 'AI 응답' 칸이지만, 앱은 노랑(YELLOW) 규칙과 Red 탐지를 위해 우리 말 요약 칸을 남겼다.</li>
    <li><b>6-5 점검 3번째 항목:</b> '사실을 말한 부분에 근거 자료를 밝혔다'를 넣을지(활동지는 2항목).</li>
-   <li><b>6-6 공유 날짜:</b> 활동지 제목은 '(단원 6차시)', 안내문은 'O월 O일'이다.</li>
+   <li><b>6-6 공유 날짜(해결):</b> 날짜를 정해 두지 않고 모둠의 행동계획(6-3 결과 확인 시점)에 따라 학생과 정한다(지도안 v25).</li>
    <li><b>2단계 시간:</b> 기사 3건 읽기와 6문항을 4분에 마치기 빠듯하다. 모둠 안에서 1인 1기사로 나눠 읽는 방안이 있다.</li></ul></section>
   <section class="panel"><h2>Firebase로 옮길 때 확인할 것</h2>
    <ul><li>자료 탐색 도우미는 검색 연결이 없으면 존재하지 않는 출처를 만들 수 있다. 검색 도구를 붙일지, 출처 생성을 검증 활동의 재료로 둘지 정한다.</li>
@@ -1083,10 +1083,10 @@ const DEMO={
  5:()=>{const d=S.s5;if(!firstAlt()){const d4=S.s4;if(!d4.alts.length)DEMO[4]();if(d4.first===null)d4.first=0;d4.improve=d4.improve||"인도적 체류 허가의 연장 기간을 3년으로 늘리고, 이를 국민신문고 정책 제안으로 내는 절차를 정한다."}
    if(!d.sealed){if(!d.preds.length){const a=!!helpVis("who");d.preds=[{who:"인도적 체류 허가자",txt:"1년마다 서류를 낼 걱정이 줄어 일자리를 오래 유지하려 한다.",reason:"편지와 대화에서 기다림이 가장 힘들다고 했다.",aft:a},{who:"제주 지역 주민",txt:"정착이 늘까 봐 반대하는 사람과 일손이 생겨 반기는 사람으로 나뉜다.",reason:"기사 2에서 여론이 갈렸다."},{who:"아직 심사를 기다리는 신청자",txt:"자신은 대상이 아니어서 소외감을 느낀다. 제도 밖에 남겨질까 걱정한다.",why:"제도를 바꾸는 논의에 참여할 통로가 없다",ex:true}]}return}
    if(d.scen){d.sum={A:d.sum.A||"허가 기간이 3년으로 늘자 유수프는 일하던 곳에서 계속 일할 수 있게 되었다. 같은 날 심사 중인 하산은 대상이 아니었다.",B:d.sum.B||"동네 게시판에서 찬반 논쟁이 커졌고, 의원 사무실에 반대 민원과 찬성 서명이 함께 들어왔다.",C:d.sum.C||"유수프는 일을 배우며 자리를 잡았지만, 아민은 아이의 보건 서비스를 받기 어려웠고 하산은 불인정 결정을 받았다."};d.diff={A:d.diff.A||"고용주 반응은 예측과 같았다. 심사 중인 사람이 빠진다는 점은 예측하지 못했다.",B:d.diff.B||"반대 여론은 예측했지만 댓글 삭제가 새 갈등을 만들 줄은 몰랐다.",C:d.diff.C||"체류 기간만 늘리면 생활이 안정될 것으로 예측했지만 다른 문제가 남았다."};d.pick=d.pick||"C";d.why=d.why||"체류 기간이 늘어도 인도적 체류라는 신분은 그대로이므로, 사회복지 지원에서 빠지는 일이 생길 수 있다고 본다(기사 3).";d.newp=d.newp||"체류 기간을 늘려도 심사 중인 신청자는 대상에서 빠지고, 인도적 체류 허가자와 가족은 의료 같은 생활 지원을 받기 어려운 문제가 남는다."}},
- 6:()=>{const d=S.s6;d.level=d.level||"제도·국가 간";if(!d.types.length)d.types=["제도 제안·요청","자기 실천"];d.typeWhy=d.typeWhy||"지원 안내는 제도의 문제이고, 잘못된 정보를 퍼뜨리지 않는 것은 우리가 할 수 있다.";d.scope=d.scope||"실행 준비";d.when=d.when||"단원 6차시 도입";
+ 6:()=>{const d=S.s6;d.level=d.level||"제도·국가 간";if(!d.types.length)d.types=["제도 제안·요청","자기 실천"];d.typeWhy=d.typeWhy||"지원 안내는 제도의 문제이고, 잘못된 정보를 퍼뜨리지 않는 것은 우리가 할 수 있다.";d.scope=d.scope||"실행 준비";d.when=d.when||"제출 2주 뒤 학급 회의 시간";
    d.prop={ask:d.prop.ask||"인도적 체류 허가자와 그 가족이 받을 수 있는 의료·교육 지원을 한곳에 정리하고 여러 언어로 안내해 주세요.",reply:d.prop.reply||"지원을 새로 늘리자는 것이 아니라, 이미 있는 지원을 정확히 알리자는 제안입니다.",effect:d.prop.effect||"체류자가 받을 수 있는 지원을 몰라 놓치는 일이 줄고, 확인되지 않은 소문도 줄어듭니다."};
    if(!d.plans[0].target)d.plans=[{target:"국민신문고(법무부)",content:"인도적 체류 허가자와 가족의 생활 지원 안내를 한곳에 정리해 달라는 정책 제안",how:"기사 3을 근거로 제안서 초안 작성, 6차시에 학급 의견을 받아 다듬기",channel:"국민신문고 정책 제안(교사 확인 후)"},{target:"우리 반",content:"난민 관련 정보를 말할 때 출처를 함께 밝히기",how:"토의 규칙에 추가하고 한 달 동안 지켜보기",channel:"학급 회의"}];if(!d.back.length)d.back=["원인(2·3단계)"]},
- 7:()=>{const d=S.s7;d.problem=d.problem||"전쟁을 피해 온 예멘 난민 신청자가 제주에서도 안정적으로 지내기 어렵다";if(!d.peers.length)d.peers=["2모둠","5모둠"];d.peers.forEach((g,i)=>{d.peer[g]=d.peer[g]||[[3,4,3,2],[3,2,4,3]][i];d.note[g]=d.note[g]||["시나리오 C까지 보고 새로운 문제를 찾은 점을 배우고 싶다.","카드뉴스에 출처를 모두 밝힌 점이 좋았다. 우리도 제안서에 근거 기사를 밝히겠다."][i]});d.chk=d.chk.map((v,i)=>v||(i===4?"보통":"그렇다"));d.r1=d.r1||"처음에는 난민 신청자 개인의 사정 때문이라고 생각했는데, 인정 절차와 체류 제도, 여론이 함께 영향을 준다는 것을 알게 되었다.";d.r2=d.r2||"대안 1에서 '절차가 드러나 있지 않다'는 지적은 받아들였지만, 반대 여론 때문에 어렵다는 지적은 기각했다. 여론이 바뀌는 것도 우리가 할 수 있는 일이라고 보았다."}
+ 7:()=>{const d=S.s7;d.problem=d.problem||"전쟁을 피해 온 예멘 난민 신청자가 제주에서도 안정적으로 지내기 어렵다";if(!d.peers.length)d.peers=["2모둠","5모둠"];d.peers.forEach((g,i)=>{d.peer[g]=d.peer[g]||[[3,4,3,2],[3,2,4,3]][i];d.note[g]=d.note[g]||["시나리오 C까지 보고 예상하지 못한 문제를 찾은 점을 배우고 싶다.","카드뉴스에 출처를 모두 밝힌 점이 좋았다. 우리도 제안서에 근거 기사를 밝히겠다."][i]});d.chk=d.chk.map((v,i)=>v||(i===4?"보통":"그렇다"));d.r1=d.r1||"처음에는 난민 신청자 개인의 사정 때문이라고 생각했는데, 인정 절차와 체류 제도, 여론이 함께 영향을 준다는 것을 알게 되었다.";d.r2=d.r2||"대안 1에서 '절차가 드러나 있지 않다'는 지적은 받아들였지만, 반대 여론 때문에 어렵다는 지적은 기각했다. 여론이 바뀌는 것도 우리가 할 수 있는 일이라고 보았다."}
 };
 function fillAll(){
   S.open=7;S.ai={1:true,3:true,4:true,5:true};log(1,"open","시연: 1·3·4·5단계 AI 열기");
