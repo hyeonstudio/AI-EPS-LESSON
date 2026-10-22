@@ -1,0 +1,1215 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>AI-EPS 제주 예멘 난민 수업 (Copy)</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: 상단 바(보기 전환·AI 응답 방식) 아래, 학생 보기는 단계 레일 + 작업 패널 2열. 좁은 화면에서는 레일이 가로 띠가 된다.
+   중학교 견본과 같은 토큰 체계를 쓰되, 고등 견본은 차시 구분(1/2·2/2)을 레일에 표시한다. */
+:root{
+  --bg:#F2F5F4; --surface:#FFFFFF; --sunk:#E8EDEB; --ink:#17201E; --muted:#58665F; --line:#D5DDDA;
+  --accent:#1E5D55; --accent-ink:#FFFFFF; --accent-soft:#DDECE9;
+  --g:#2D7F4F; --g-bg:#E0F1E6; --y:#8A5F00; --y-solid:#D99A0B; --y-bg:#FFF2D2; --r:#B8342B; --r-bg:#FBE2DF; --off:#5F6C69; --off-bg:#E6EAE9;
+  --sea:#2C5B7A; --sea-bg:#E1ECF3;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101615; --surface:#18201E; --sunk:#141B19; --ink:#E4EBE9; --muted:#9AA9A4; --line:#2B3633;
+  --accent:#6CC2B5; --accent-ink:#0E1A18; --accent-soft:#1D3431;
+  --g:#6BCB92; --g-bg:#173325; --y:#F0BE4C; --y-solid:#E5A824; --y-bg:#352A10; --r:#F2867C; --r-bg:#3C1C19; --off:#93A19D; --off-bg:#222B29;
+  --sea:#8EC1E3; --sea-bg:#182A36; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101615; --surface:#18201E; --sunk:#141B19; --ink:#E4EBE9; --muted:#9AA9A4; --line:#2B3633;
+  --accent:#6CC2B5; --accent-ink:#0E1A18; --accent-soft:#1D3431;
+  --g:#6BCB92; --g-bg:#173325; --y:#F0BE4C; --y-solid:#E5A824; --y-bg:#352A10; --r:#F2867C; --r-bg:#3C1C19; --off:#93A19D; --off-bg:#222B29;
+  --sea:#8EC1E3; --sea-bg:#182A36; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.hbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding-block:12px;max-width:1260px;margin:0 auto}
+.brand{display:flex;align-items:baseline;gap:10px;margin-right:auto;flex-wrap:wrap;min-width:0}
+.brand b{font-size:19px;letter-spacing:.02em}
+.brand span{color:var(--muted);font-size:13px}
+.seg{display:flex;gap:4px;background:var(--sunk);padding:4px;border-radius:10px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;color:var(--muted);font:600 13.5px var(--sans);padding:6px 12px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.aimode{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+.aimode .seg button{font-size:12.5px;padding:4px 10px}
+main{max-width:1260px;margin:0 auto;padding-block:20px 60px}
+button{font-family:var(--sans)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+a{color:var(--accent)}
+
+.student{display:grid;grid-template-columns:240px minmax(0,1fr);gap:20px;align-items:start}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);display:flex;flex-direction:column;gap:4px}
+.rail .who{font-size:12.5px;color:var(--muted);padding:0 4px 8px;line-height:1.5}
+.rail .who b{color:var(--ink);font-size:13.5px}
+.session{font:600 11px var(--mono);letter-spacing:.08em;color:var(--muted);padding:10px 10px 2px;text-transform:uppercase}
+.step{display:grid;grid-template-columns:26px 1fr;gap:2px 10px;align-items:center;text-align:left;width:100%;border:1px solid transparent;background:transparent;border-radius:10px;padding:7px 10px;cursor:pointer;color:var(--ink)}
+.step .n{grid-row:span 2;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:600 13px var(--mono);background:var(--sunk);color:var(--muted)}
+.step .t{font-weight:600;font-size:13.5px;line-height:1.35}
+.step .s{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.step[aria-current="step"]{background:var(--surface);border-color:var(--line)}
+.step[aria-current="step"] .n{background:var(--accent);color:var(--accent-ink)}
+.step.done .n{background:var(--accent-soft);color:var(--accent)}
+.step:disabled{opacity:.45;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:5px;font:600 11px var(--mono);letter-spacing:.04em;padding:2px 7px;border-radius:999px;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.Y{background:var(--y-bg);color:var(--y)} .chip.N{background:var(--off-bg);color:var(--off)} .chip.R{background:var(--r-bg);color:var(--r)} .chip.G{background:var(--g-bg);color:var(--g)}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,28px);min-width:0}
+.stage-head{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-bottom:6px}
+.stage-head h2{margin:0;font-size:22px;text-wrap:balance;line-height:1.3}
+.stage-def{color:var(--muted);margin:0 0 14px;max-width:70ch}
+.ws{font:500 11.5px var(--mono);color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:1px 6px;white-space:nowrap}
+.mins{font:600 12px var(--mono);color:var(--muted)}
+.signal{display:flex;gap:12px;align-items:flex-start;border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:14px}
+.signal.Y{background:var(--y-bg)} .signal.N{background:var(--off-bg)}
+.signal strong{display:block}
+.signal .lamp{flex:none;display:flex;flex-direction:column;gap:3px;padding:4px;border-radius:6px;background:#1c2422}
+.lamp i{width:9px;height:9px;border-radius:50%;background:#3b4542;display:block}
+.signal.Y .lamp i:nth-child(2){background:#F2B32A}
+
+.flow{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 18px;list-style:none;padding:0}
+.flow li{font-size:12.5px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.flow li.now{border-color:var(--accent);color:var(--accent);font-weight:600}
+.flow li.ok{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+
+.block{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
+.block.first{border:0;margin:0;padding:0}
+.block h3{font-size:16px;margin:0 0 4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;text-wrap:balance}
+.block .hint{color:var(--muted);font-size:13.5px;margin:0 0 12px;max-width:72ch}
+.locked>.lockbody{opacity:.38;pointer-events:none;user-select:none}
+.lockmsg{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);background:var(--sunk);border-radius:8px;padding:8px 12px;margin-bottom:10px;flex-wrap:wrap}
+.lockmsg::before{content:"";width:12px;height:12px;border:2px solid currentColor;border-radius:3px;flex:none}
+
+.gate{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;border:1px dashed var(--y-solid);background:var(--y-bg);border-radius:10px;padding:10px 14px;font-size:13.5px;margin-top:12px}
+.gate b{color:var(--y)}
+.gate.ok{border-style:solid;border-color:transparent;background:var(--g-bg)}
+.gate.ok b{color:var(--g)}
+.gate.req{border-color:var(--r);background:var(--r-bg)}
+.gate.req b{color:var(--r)}
+
+.letter{background:var(--sunk);border-radius:12px;padding:16px 18px;font-size:14.5px;max-width:72ch}
+.letter p{margin:0 0 8px}
+.letter p:last-child{margin:0}
+.letter .from{font-size:12.5px;color:var(--muted);margin-bottom:8px}
+
+.list{display:flex;flex-direction:column;gap:6px;margin:0 0 10px;padding:0;list-style:none}
+.list li{display:flex;gap:10px;align-items:flex-start;background:var(--sunk);border-radius:8px;padding:8px 10px;font-size:14px}
+.casebox .tag{font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:5px;padding:1px 7px;white-space:nowrap;margin-right:4px}
+.list li .tag{flex:none;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:5px;padding:1px 7px;white-space:nowrap}
+.list li .tag.off{color:var(--off);background:var(--off-bg)}
+.list li .txt{flex:1;min-width:0}
+.list li .x{flex:none;border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:13px}
+.aft{font:600 11px var(--mono);color:var(--y);background:var(--y-bg);border-radius:4px;padding:1px 6px;margin-left:6px;white-space:nowrap}
+.addrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.addrow input,.addrow select{flex:1 1 180px;min-width:0}
+.addrow select.narrow{flex:0 1 170px}
+input[type=text],textarea,select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+textarea{min-height:76px;resize:vertical;field-sizing:content}
+textarea[readonly],input[readonly]{background:var(--sunk);color:var(--muted)}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:600;font-size:14px;padding:8px 14px;border-radius:8px;cursor:pointer;white-space:nowrap}
+.btn.sm{font-size:12.5px;padding:4px 10px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.warn{border-color:var(--r);color:var(--r)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.demo-btn{border:1px dashed var(--line);background:transparent;color:var(--muted);border-radius:6px;padding:3px 9px;font-size:12px;cursor:pointer}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.seal{font:500 12px var(--mono);color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:6px}
+.small{font-size:12.5px;color:var(--muted)}
+.timer{font:600 13px var(--mono);padding:3px 9px;border-radius:6px;background:var(--sunk);color:var(--ink);font-variant-numeric:tabular-nums}
+.timer.low{background:var(--y-bg);color:var(--y)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field>label,.field>.lab{font-size:13px;font-weight:600}
+
+.chat{display:flex;flex-direction:column;gap:10px;background:var(--sunk);border-radius:12px;padding:14px;max-height:400px;overflow:auto;margin-bottom:10px}
+.msg{max-width:80%;padding:9px 13px;border-radius:12px;font-size:14px;white-space:pre-wrap}
+.msg.me{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:3px}
+.msg.ai{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:3px;user-select:none}
+.msg.ai.flag{border-color:var(--r);background:var(--r-bg)}
+.msg.sys{align-self:center;background:transparent;color:var(--muted);font-size:12.5px;padding:2px;text-align:center}
+.msg .who{display:flex;gap:8px;align-items:center;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:2px}
+.msg .rep{margin-left:auto;border:0;background:transparent;color:var(--muted);font-size:11.5px;cursor:pointer;padding:0 2px;text-decoration:underline}
+.persona{display:flex;gap:12px;align-items:center;margin-bottom:10px;font-size:13.5px;flex-wrap:wrap}
+.persona .av{flex:none;width:38px;height:38px;border-radius:50%;background:var(--sea-bg);color:var(--sea);display:grid;place-items:center;font-weight:700}
+.persona>div{flex:1 1 220px;min-width:0}
+.persona em{font-style:normal;color:var(--muted);display:block;font-size:12.5px}
+.thinking{color:var(--muted);font-style:italic}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+.tablewrap table{min-width:680px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--sunk);font-weight:600;font-size:12.5px;color:var(--muted);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td select,td input[type=text],td textarea{font-size:13px;padding:5px 7px}
+td textarea{min-height:58px}
+.ai-ans{user-select:none;white-space:pre-wrap;font-size:13px}
+.ai-ans .srcs{display:block;color:var(--muted);margin-top:4px;font-size:12px}
+.checks{display:flex;flex-direction:column;gap:3px;font-size:12.5px}
+.checks label{display:flex;gap:6px;align-items:flex-start}
+.checks input{margin-top:3px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.judge{display:flex;gap:4px;flex-wrap:wrap}
+.judge button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:7px;padding:4px 9px;font-size:13px;cursor:pointer;font-weight:600}
+.judge button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.fact{border:1px solid var(--line);border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+.fact .no{font:600 12px var(--mono);color:var(--sea)}
+.fact .src{font-size:11.5px;color:var(--muted);margin-top:auto;padding-top:4px}
+.fact p{margin:0}
+
+.story{border:1px solid var(--line);border-radius:12px;padding:14px 16px;user-select:none;max-width:78ch}
+.story.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.story h4{margin:0 0 6px;font-size:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.story p{margin:0 0 8px;font-size:14px;line-height:1.75}
+.story p:last-child{margin:0}
+.scen-l{font:600 12px var(--mono);color:var(--accent);letter-spacing:.04em}
+.when{font:600 11.5px var(--mono);border-radius:5px;padding:1px 7px;background:var(--sea-bg);color:var(--sea)}
+.stories{display:flex;flex-direction:column;gap:12px}
+
+.redbox{margin-top:6px;border-radius:8px;padding:7px 11px;font-size:12.5px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.redbox.ok{background:var(--g-bg);color:var(--g)}
+.redbox.warn{background:var(--y-bg);color:var(--y)}
+.redbox.red{background:var(--r-bg);color:var(--r)}
+.redbox.idle{background:var(--sunk);color:var(--muted)}
+.meter{flex:1 1 100px;height:6px;border-radius:3px;background:var(--line);overflow:hidden;min-width:80px}
+.meter i{display:block;height:100%;background:currentColor}
+.redbox b{font-family:var(--mono)}
+.warnline{font-size:13px;background:var(--y-bg);color:var(--y);border-radius:8px;padding:7px 11px;margin-top:8px}
+.warnline.r{background:var(--r-bg);color:var(--r)}
+
+.pend{display:flex;flex-direction:column;gap:2px;border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13.5px;color:var(--muted)}
+.pend b{color:var(--ink);font-size:13.5px}
+.exbox{background:var(--y-bg);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13.5px}
+.exbox ul{margin:6px 0 0;padding-left:18px}
+.exbox li{margin-bottom:3px}
+.casebox{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--sunk);max-width:78ch}
+.casebox h4{margin:0 0 4px;font-size:15px}
+.casebox p{margin:0 0 6px;font-size:14px}
+.corebox{background:var(--accent-soft);border-radius:10px;padding:10px 14px;font-size:14.5px}
+.corebox .small{display:block}
+.links{display:flex;flex-direction:column;gap:6px;margin:0 0 10px;padding:0;list-style:none}
+.links li{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--sunk);border-radius:8px;padding:7px 10px;font-size:13.5px}
+.links .arr{font:600 14px var(--mono);color:var(--accent)}
+.root{font:600 11px var(--mono);color:var(--accent-ink);background:var(--accent);border-radius:4px;padding:1px 6px}
+.scorebtns{display:flex;gap:3px}
+.scorebtns button{width:32px;height:30px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;font:600 13px var(--mono);cursor:pointer}
+.scorebtns button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:7px 12px;font-size:13.5px;cursor:pointer;text-align:left}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--ink);font-weight:600}
+.opt small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.chain{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.chain li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;font-size:13.5px;background:var(--sunk);border-radius:8px;padding:8px 10px}
+.chain li b{font-size:12.5px;color:var(--accent)}
+.peer{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.peer h4{margin:0;font-size:15px}
+.nextbar{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:flex-end;border-top:1px solid var(--line);margin-top:22px;padding-top:14px}
+.demo-hint{border:1px dashed var(--line);border-radius:6px;padding:2px 8px}
+
+/* teacher */
+.teacher{display:grid;gap:18px}
+.tgrid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:18px;align-items:start}
+.tcol{display:grid;gap:18px;min-width:0}
+.sec-title{font-size:12.5px;font-weight:600;letter-spacing:.06em;color:var(--muted);margin:0 0 10px;text-transform:uppercase}
+.gates{display:flex;gap:6px;flex-wrap:wrap}
+.gates button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 11px;font-weight:600;cursor:pointer;font-size:13.5px}
+.gates button.open{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.prog td{text-align:center;padding:6px 4px}
+.prog td:first-child,.prog th:first-child{text-align:left;padding-left:10px}
+.cell{display:inline-block;width:22px;height:22px;border-radius:5px;font:500 11px/22px var(--mono);text-align:center}
+.cell.d{background:var(--accent-soft);color:var(--accent)} .cell.w{background:var(--sunk);color:var(--muted)} .cell.p{background:var(--y-bg);color:var(--y)} .cell.f{background:var(--r-bg);color:var(--r)}
+.review{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.review h4{margin:0;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.review ul{margin:0;padding-left:18px;font-size:13px}
+.review .row{margin-top:2px}
+.ck{font-size:12.5px;display:flex;flex-direction:column;gap:2px}
+.ck span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--off)}
+.ck .y::before{background:var(--g)} .ck .n::before{background:var(--y-solid)}
+.revrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.revrow:last-child{border:0}
+.revrow .small{display:block}
+.flags{display:flex;flex-direction:column;gap:8px}
+.flag{border-left:3px solid var(--r);background:var(--r-bg);border-radius:0 8px 8px 0;padding:9px 12px;font-size:13.5px}
+.flag.y{border-color:var(--y-solid);background:var(--y-bg)}
+.flag.done{border-color:var(--line);background:var(--sunk);color:var(--muted)}
+.flag b{display:block}
+.log{font:12.5px/1.55 var(--mono);display:flex;flex-direction:column;gap:2px;max-height:360px;overflow:auto}
+.log div{display:grid;grid-template-columns:44px 30px minmax(0,1fr);gap:8px;padding:3px 6px;border-radius:5px}
+.log div:nth-child(odd){background:var(--sunk)}
+.log .k-seal{color:var(--accent)} .log .k-ai{color:var(--y)} .log .k-red,.log .k-report{color:var(--r)} .log .k-open{color:var(--g)} .log .k-help{color:var(--sea)}
+.evalt td:last-child{white-space:nowrap}
+.evalt td{font-size:13px}
+.ind{font:600 12px var(--mono)}
+.ind.y{color:var(--g)} .ind.n{color:var(--y)} .ind.u{color:var(--off)}
+
+/* plan */
+.plan{display:grid;gap:18px}
+.plan h2{margin:0 0 8px;font-size:19px;text-wrap:balance}
+.plan p{max-width:74ch;margin:0 0 10px}
+.plan ul{margin:0;padding-left:20px;max-width:78ch}
+.plan li{margin-bottom:5px}
+.prompt{white-space:pre-wrap;font:12.5px/1.6 var(--mono);background:var(--sunk);border-radius:10px;padding:12px 14px;max-height:280px;overflow:auto;margin:6px 0 0}
+details.pd{border-top:1px solid var(--line);padding:10px 0}
+details.pd summary{cursor:pointer;font-weight:600}
+.issue{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.issue:last-child{border:0}
+.issue .k{font:600 11px var(--mono);border-radius:4px;padding:2px 6px;align-self:start;white-space:nowrap}
+.issue .k.fix{background:var(--r-bg);color:var(--r)} .issue .k.chk{background:var(--y-bg);color:var(--y)} .issue .k.app{background:var(--sea-bg);color:var(--sea)}
+
+@media (max-width:900px){
+  .student{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static;flex-direction:row;overflow-x:auto;padding-bottom:4px;align-items:stretch}
+  .rail .who,.session{display:none}
+  .step{min-width:170px}
+  .tgrid{grid-template-columns:minmax(0,1fr)}
+  .msg{max-width:92%}
+  .chain li{grid-template-columns:minmax(0,1fr);gap:2px}
+}
+@media (prefers-reduced-motion:no-preference){.step,.btn,.opt,.story{transition:background .15s,border-color .15s,box-shadow .15s}}
+
+/* 2단계 기사·문항·삶 잇기 (중학교 견본과 같은 짜임) */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px}
+.article{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.article .atag{font:600 11.5px var(--mono);color:var(--sea);letter-spacing:.03em}
+.article h4{margin:0;font-size:15.5px;line-height:1.4;text-wrap:balance}
+.article p{margin:0;font-size:14px;line-height:1.75}
+.article .note{font-size:12.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:7px;line-height:1.65}
+.article .src{font-size:12px;color:var(--muted);margin-top:auto;padding-top:6px;display:flex;flex-direction:column;gap:2px}
+.article .src a{overflow-wrap:anywhere}
+.qa{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;counter-reset:q}
+.qa li{counter-increment:q;display:flex;flex-direction:column;gap:6px;background:var(--sunk);border-radius:10px;padding:10px 12px}
+.qa-q{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-size:14px}
+.qa-q::before{content:counter(q);font:600 12px var(--mono);color:var(--muted)}
+.qa-type{font:600 11px var(--mono);color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:1px 6px}
+.ox{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ox button{width:44px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:700 16px var(--mono);cursor:pointer}
+.ox button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.qa-fb{font-size:13px;padding:3px 8px;border-radius:6px}
+.qa-fb.ok{background:var(--g-bg);color:var(--g)} .qa-fb.no{background:var(--y-bg);color:var(--y)}
+.fiction{border:1px dashed var(--line);border-radius:10px;padding:12px 14px;font-size:14px}
+.fiction ul{margin:8px 0 0;padding-left:18px}
+.fiction li{margin-bottom:3px}
+.fic-tag{font:600 11px var(--mono);color:var(--off);background:var(--off-bg);border-radius:4px;padding:1px 6px;margin-right:6px}
+.life{display:flex;flex-direction:column;gap:14px}
+.life section{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start}
+.life section>div{display:flex;flex-direction:column;gap:5px;min-width:0}
+.life-n{width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font:600 13px var(--mono)}
+/* 4~6단계 */
+.casegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.casegrid .casebox{display:flex;flex-direction:column;gap:6px}
+.altform{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1.5fr) minmax(0,1fr) auto;gap:8px}
+.simwarn{display:inline-block;margin-top:3px;font-size:12.5px;color:var(--y);background:var(--y-bg);border-radius:5px;padding:1px 7px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chipbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 11px;font-size:13px;cursor:pointer}
+.exq{border-left:3px solid var(--accent);background:var(--sunk);border-radius:0 10px 10px 0;padding:10px 14px;margin-top:12px}
+.exq .altform{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1.5fr) auto}
+.acttypes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.acttypes div{display:flex;flex-direction:column;gap:2px;background:var(--sunk);border-radius:8px;padding:8px 12px;font-size:14px}
+.propform{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pf{display:grid;grid-template-columns:130px minmax(0,1fr);border-bottom:1px solid var(--line);font-size:14px}
+.pf:last-child{border-bottom:0}
+.pf-k{background:var(--sunk);padding:10px 12px;font-weight:600;font-size:13px;color:var(--muted)}
+.pf>div{padding:10px 12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.pf-src{font:500 11px var(--mono);color:var(--accent);margin-top:2px}
+.pf-ul{margin:0;padding-left:18px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12.5px;color:var(--muted);margin-top:8px;align-items:center}
+.scale td,.scale th{text-align:center}
+.scale td:nth-child(2),.scale th:nth-child(2){text-align:left}
+.chain2{display:flex;flex-direction:column;margin:0;padding:0;list-style:none}
+.chain2 li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.chain2 li:last-child{border:0}
+.chain2 li>span:first-child{color:var(--muted);font-size:12.5px;font-weight:600}
+@media (max-width:900px){.altform,.exq .altform{grid-template-columns:minmax(0,1fr)}.pf{grid-template-columns:minmax(0,1fr)}.chain2 li{grid-template-columns:minmax(0,1fr);gap:2px}}
+</style>
+
+<header><div class="wrap"><div class="hbar">
+  <div class="brand"><b>AI-EPS</b><span>고1 통합사회2 · Ⅳ-2 국제 사회와 평화 · 우리는 왜 여기 왔을까: 제주의 예멘 난민</span></div>
+  <div class="aimode"><span id="aimode-label">AI 응답</span><div class="seg" role="group" aria-labelledby="aimode-label"><button id="m-demo" aria-pressed="true">미리 넣은 예시</button><button id="m-live" aria-pressed="false">실시간(Claude)</button></div></div>
+  <div class="seg" role="group" aria-label="보기 전환">
+    <button id="v-student" aria-pressed="true">학생 화면</button>
+    <button id="v-teacher" aria-pressed="false">교사 화면</button>
+    <button id="v-plan" aria-pressed="false">설계 메모</button>
+  </div>
+</div></div></header>
+
+<main class="wrap"><div id="app"></div></main>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const now=()=>{const d=new Date();return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")+":"+String(d.getSeconds()).padStart(2,"0")};
+const hm=t=>t?t.slice(0,5):"";
+
+/* ================= 수업 구조 (지도안 4장 v5) ================= */
+const STAGES=[
+ {n:1,ses:1,t:"AI 페르소나를 통한 사건 경험",g:"Y",tool:"유수프와의 대화",ws:"기록지 1-1~1-3",min:12,def:"유수프의 편지를 읽고, 모둠이 합의한 질문으로 페르소나와 두 차례 대화하며 사건을 재구성한다."},
+ {n:2,ses:1,t:"사건의 배경 확인 및 문제 원인 탐색",g:"N",ws:"기록지 2-1~2-5",min:14,def:"선생님이 공개한 실제 사건 기사를 읽고 사실 확인 질문에 답한 뒤, 유수프의 이야기와 대조한다. 사건과 나의 삶을 잇고, AI 없이 원인을 추측해 모둠원이 한 개씩 맡을 원인 확인 질문을 4개 이상 만들어 봉인한다."},
+ {n:3,ses:1,t:"검증을 통한 핵심 원인 도출",g:"Y",tool:"자료 탐색 도우미",ws:"기록지 3-1~3-3",min:14,def:"모둠원이 각자 맡은 원인 확인 질문으로 AI에게 정보와 출처를 얻고, 출처를 직접 확인해 수용·보류·불수용을 판정한다. 수용한 정보로 원인 간 관계를 그려 핵심 원인을 정한다."},
+ {n:4,ses:2,t:"해결 대안 구상 및 보완",g:"Y",tool:"대안 검토 도우미",ws:"기록지 4-1~4-6",min:13,def:"공개된 유사 사례에서 아이디어를 얻고, 핵심 원인을 해결할 행위 주체별 대안을 3개 이상 만든다. AI의 강점·약점 피드백을 판단하고 비교표로 1순위 대안을 정한다."},
+ {n:5,ses:2,t:"AI 시뮬레이션 기반 미래 시나리오 탐색",g:"Y",tool:"시나리오 생성기",ws:"기록지 5-1~5-5",min:12,def:"1순위 대안에 대한 이해관계자의 반응을 먼저 예측한다. AI가 보여 준 시나리오 A·B·C 가운데 가장 개연성 있는 것을 고르고, 이야기 속에서 새로운 문제를 찾는다."},
+ {n:6,ses:2,t:"행동계획 수립 및 실행",g:"N",ws:"기록지 6-1~6-6",min:9,def:"새로운 문제의 수준을 진단하고 행동 유형을 고른다. 행동계획표에 대상·내용·방법·제출 경로와 실행 범위, 결과 확인 시점, 돌아갈 단계를 정한다. 제도 제안·요청이나 설득을 고른 모둠은 제안서를 쓴다[선택]."},
+ {n:7,ses:2,t:"공유 및 성찰",g:"N",ws:"기록지 7-1~7-4",min:8,def:"문제 해결 과정을 공유 게시판에 올리고 다른 모둠 두 곳을 평가한다. 로그와 기록지를 보며 AI 활용을 성찰한다."}
+];
+const ROLES=["진행자","AI 입력자","모둠활동 점검자","개인활동지 점검자"];
+const NEED=()=>Math.max(3,ROSTER[1].length); /* 원인 수 = 질문 수 = 모둠원 수(최소 3) */
+const ROSTER={1:["지민","현우","서연","도윤"],2:["도윤","지민","현우","서연"]};
+const QTYPES=["경험·감정","이동 과정·제도","주변 사회의 반응"];
+const ACTORS=["국가","국제기구","비정부 기구","세계시민"];
+const CRIT=["실현 가능성","원인 해결 정도","이해관계자 수용성"];
+const LEVELS=["개인","학교·지역","제도·국가 간"];
+const ACTT=[{n:"제도 제안·요청",ex:"국민신문고 정책 제안, 기관 건의문"},{n:"설득",ex:"이해관계자에게 보내는 편지"},{n:"자기 실천",ex:"나와 우리 반이 직접 하는 일"}];
+const SCOPES=[{n:"수업 중 실행",d:"수업 시간 안에 실제로 해 본다"},{n:"실행 준비",d:"제출 직전 초안까지 만들고 6차시에 공유한다"},{n:"후속 탐구",d:"더 알아볼 것을 정리해 다음 탐구로 넘긴다"}];
+const BACK=["원인(2·3단계)","대안(4단계)","예측(5단계)"];
+const CHK6=["특정 국가·종교·집단을 낙인찍거나 일반화하는 표현이 없다","실명, 연락처 같은 개인정보가 들어 있지 않다"];
+const VERIFY=["출처가 실제로 있고 직접 접속했다","공공기관·언론 원문·교과서 같은 확인 가능한 자료다","수치·날짜가 원자료와 일치한다","자료 시점이 질문의 시점과 맞는다"];
+
+const LETTER=[
+ "안녕. 나는 유수프야. 열아홉 살이고, 지금은 제주도에 있어.",
+ "나는 예멘의 타이즈라는 도시에 살았어. 내전이 길어지면서 동네에 폭격이 잦아졌고, 나와 비슷한 나이의 남자들은 무장 세력에 끌려갈까 봐 늘 불안해했어. 대학에도 갈 수 없었어.",
+ "결국 나는 가족과 헤어져 혼자 말레이시아로 갔어. 하지만 그곳에서도 오래 머물 수는 없었어. 그때 제주도에는 비자 없이 들어갈 수 있다는 이야기를 들었어. 겨우 돈을 모아 2018년 봄에 제주공항에 내렸어.",
+ "처음에는 안전한 곳에 왔다는 생각에 마음이 놓였어. 그런데 얼마 지나지 않아 뉴스에 우리 이야기가 나오기 시작했고, 우리를 반대하는 사람도 많다는 걸 알게 됐어. 지금은 난민 신청서를 내고 결과를 기다리고 있어.",
+ "나는 여기서 계속 지낼 수 있을까? 너희라면 나를 어떻게 생각할지 궁금해."
+];
+
+/* ---------- 2단계 실제 사건 기사: 원문을 확인하고 요약했다(2026. 10. 20. 확인) ---------- */
+const ARTICLES=[
+ {tag:"기사 1 · 도착과 출도 제한",title:"말레이시아~제주 직항으로 들어온 예멘인, 섬 밖으로 나갈 수 없게 되다",
+  body:["2017년 12월 말레이시아 쿠알라룸푸르와 제주를 잇는 직항 노선이 생기면서 제주로 들어오는 예멘인이 크게 늘었다. 대부분 내전을 피해 먼저 말레이시아로 갔던 사람들이었다.","제주의 무사증 제도는 테러지원국 등 일부 나라를 뺀 외국인이 비자 없이 한 달 동안 머물 수 있게 한다. 법무부는 2018년 4월 30일 예멘인 난민 신청자가 제주 밖으로 나가지 못하게 했고(출도 제한), 6월 1일에는 예멘이 제주 무사증 입국 불허 국가에 추가되었다."],
+  note:"덧붙임: 2018년 6월 23일까지 무사증으로 제주에 들어온 예멘인은 561명이고, 그중 549명이 난민 인정을 신청하였다. 출도 제한은 신청자가 육지로 옮겨 가 불법 체류하는 것을 막으려는 조치였다. 정부가 일자리 연결을 서둘러 추진하자, 일자리가 1차 산업에 몰려 있는 제주에서 충분한 설명 없이 부담을 떠넘긴다는 불만이 나왔다.",
+  src:[{t:"뉴시스, 「말레이시아~제주 직항으로 입도 예멘인 급증」, 2018. 12. 14.",u:"https://www.newsis.com/view/NISX20181214_0000503315"},{t:"뉴시스, 「'예멘 난민'에 제주도민 갈등 '극심'…정부는 '나 몰라라'」, 2018. 6. 25.",u:"https://www.newsis.com/view/NISX20180625_0000345589"}]},
+ {tag:"기사 2 · 엇갈린 여론",title:"예멘인 수용을 두고 갈라진 목소리",
+  body:["청와대 국민청원 게시판에는 예멘 난민 수용에 반대하는 글이 300건 넘게 올라왔고, 난민법 폐지를 요구하는 청원에는 40만 명 넘게 참여하였다. 일부 글은 범죄와 테러를 걱정하였다.","반면 개신교·천주교·불교·원불교 4대 종단의 이주·인권 단체는 근거 없는 소문이 혐오와 공포를 키운다고 우려하며 예멘 난민을 포용하자고 호소하였다.","6월 20일 제주를 뺀 전국 성인 500명을 대상으로 한 여론조사에서는 수용 반대가 49.1%, 찬성이 39.0%였다."],
+  note:"덧붙임: 같은 해 서울 도심에서는 예멘 난민 수용에 반대하는 집회와 찬성하는 집회가 함께 열렸다.",
+  src:[{t:"뉴시스, 「제주 예멘인 난민 사태…무사증 제도 개선되나」, 2018. 6. 28.",u:"https://mobile.newsis.com/view/NISX20180627_0000347915"},{t:"창비 통합사회2, 114쪽 탐색하기",u:""}]},
+ {tag:"기사 3 · 심사 결과와 그 뒤",title:"484명 가운데 난민 인정 2명, 인도적 체류 412명",
+  body:["법무부는 출도가 제한되었던 예멘 난민 신청자 484명의 심사 결과를 발표하였다. 난민 인정 2명, 인도적 체류 허가 412명, 단순 불인정 56명, 직권 종료 14명이었다. 난민으로 인정된 2명은 후티 반군을 비판하는 기사를 써 납치·살해 협박을 받은 언론인으로, 박해 가능성이 높다고 판단되었다.","난민 인정자는 기초생활보장과 의료급여를 내국인과 같게 받고, 배우자와 미성년 자녀를 데려올 수 있다. 인도적 체류 허가자에게는 취업 활동 허가 말고는 이런 사회복지 혜택이 없다.","인도적 체류 허가로 머물 수 있는 기간은 한 번에 1년이 상한이다. 법무부는 세금 체납 같은 특별한 사정이 없으면 원칙적으로 1년씩 연장한다고 밝혔다."],
+  note:"덧붙임: 인도적 체류 허가자 가운데 276명이 2018년 말까지 제주를 떠났다(제주출입국·외국인청 백서 인용). 1994~2024년 심사를 마친 난민 신청 57,090건 가운데 난민으로 인정된 것은 1,544건(약 2.7%)이다.",
+  src:[{t:"제주출입국·외국인청, 「제주 예멘 난민신청자 심사 결과 최종 발표」, 2018. 12. 17.",u:"https://www.immigration.go.kr/bbs/immigration/214/438650/artclView.do"},{t:"뉴시스, 「제주 예멘 난민 인정자 2명…국내서 어떤 혜택 받나?」, 2018. 12. 14.",u:"https://www.newsis.com/view/NISX20181214_0000502977"},{t:"세계일보, 「'제주 예멘 난민' 사태 5년…그 많던 예멘인 어디 갔나」, 2023. 6. 10.",u:"https://www.segye.com/newsView/20230609519609"},{t:"머니투데이, 「31년째 '3%', 난민 인정률 낮은 이유」, 2025. 4. 21.",u:"https://www.mt.co.kr/society/2025/04/21/2025041514110329270"}]}
+];
+const QA=[
+ {type:"text",q:"예멘인이 제주로 많이 들어올 수 있었던 제도와 교통의 변화 두 가지는 무엇인가요?",src:"1",a:"무사증 제도(비자 없이 한 달 체류), 2017년 12월 쿠알라룸푸르–제주 직항"},
+ {type:"ox",q:"법무부는 2018년 4월 30일부터 예멘 난민 신청자가 제주 밖으로 나가지 못하게 했다.",src:"1",a:"O",why:"출도 제한 조치입니다."},
+ {type:"ox",q:"2018년 6월 여론조사에서 예멘 난민 수용 찬성이 반대보다 많았다.",src:"2",a:"X",why:"반대 49.1%, 찬성 39.0%였습니다."},
+ {type:"text",q:"484명 가운데 난민으로 인정된 사람은 몇 명이고, 어떤 이유로 인정되었나요?",src:"3",a:"2명. 후티 반군을 비판한 언론인으로 박해 가능성이 높다고 판단됨"},
+ {type:"ox",q:"인도적 체류 허가자도 난민 인정자처럼 가족을 데려오고 기초생활보장을 받을 수 있다.",src:"3",a:"X",why:"취업 활동 허가 말고는 사회복지 혜택이 없습니다."},
+ {type:"text",q:"인도적 체류 허가로 한 번에 머물 수 있는 기간의 상한은 얼마인가요?",src:"3",a:"1년(원칙적으로 1년씩 연장)"}
+];
+
+/* ---------- 교사 공개 도움 자료 ---------- */
+const HELP=[
+ {k:"q1",stage:1,name:"유수프에게 물어볼 예시 질문"},
+ {k:"art",stage:2,name:"실제 사건 기사 3건 (단계 시작 때 공개)"},
+ {k:"q2",stage:2,name:"원인 탐색 질문 예시"},
+ {k:"case",stage:4,name:"유사 사례 (순차 공개)",seq:true},
+ {k:"alt",stage:4,name:"해결 대안 예시"},
+ {k:"who",stage:5,name:"이해관계자 예시"}
+];
+const Q1_EX=["제주에 처음 도착했을 때 가장 먼저 무엇이 걱정됐어?","말레이시아에서 제주로 오기로 결정한 이유가 뭐야?","제주에서 지내면서 사람들의 반응은 어땠어?"];
+const Q2_EX=["예멘 난민 신청자는 심사를 기다리는 동안 제주 밖으로 이동할 수 있었는가? 왜 그렇게 정했는가?","2018년 제주 예멘 난민 신청자의 심사 결과는 어떻게 나뉘었는가?","인도적 체류 허가와 난민 인정은 체류 기간과 지원에서 어떻게 다른가?"];
+/* 4단계 유사 사례(10.20 조사). 사례 1은 교과서 120쪽(학급 전체 공개), 2~5는 난민 관련 실제 사례(막힌 모둠에 차례로 공개). 교과서 118·119쪽은 갈등·활동 중단 사례여서 4단계에서 뺐다. 수치는 수업 전 출처에서 다시 확인한다. */
+const CASES=[
+ {title:"방문 봉사가 막히자 온라인 모금으로 바꾼 고등학교",actor:"세계시민",aim:"직접 갈 수 없는 상황",src:"창비 통합사회2, 120쪽 (청주일보, 2021. 2. 4.)",body:"2018년부터 미얀마의 한 초등학교에서 봉사해 온 충북의 한 고등학교는 감염병으로 현지에 갈 수 없게 되자, 동아리 중심의 크라우드 펀딩으로 물품을 마련하고 마스크와 가방을 만들어 국내 교육 단체를 통해 전달하였다.",ask:"세계시민이 직접 갈 수 없을 때 무엇을 바꾸었나?"},
+ {title:"일자리를 열었지만 오래 이어지지 못한 제주의 취업 지원",actor:"국가 · 비정부 기구",aim:"생계와 일자리",src:"뉴시스, 2018. 6. 19·6. 20. / 서울신문, 2018. 7. 23.",body:"난민 신청자는 원래 신청 후 6개월이 지나야 일할 수 있다. 2018년 6월 법무부는 제주의 예멘 난민 신청자에게 1차 산업과 요식업에 한해 그 전에도 일할 수 있게 하였다. 제주출입국·외국인청은 취업 설명회를 열었고, 지역 단체는 통역을 도왔다. 지원 직후 382명이 일자리를 얻었지만 한 달여 뒤 154명(40.3%)이 일을 그만두거나 해고되었다. 대부분 한국어를 하지 못해 고용주와 소통하기 어려웠고, 어업·농업 일에 익숙하지 않았다.",ask:"일자리를 연 것만으로 부족했던 까닭은 무엇인가? 무엇을 함께 바꿔야 했을까?"},
+ {title:"베네수엘라 이주민에게 10년 체류 지위를 준 콜롬비아",actor:"국가 · 국제기구",aim:"짧고 불안정한 체류",src:"NPR, 2021. 2. 9.",body:"2021년 2월 8일 콜롬비아 대통령은 유엔난민기구(UNHCR) 최고대표와 함께, 자국에 머무는 베네수엘라 이주민에게 10년 동안 머물 수 있는 임시 보호 지위를 주겠다고 발표하였다. 서류 없이 머물던 약 100만 명이 대상이었고, 지위를 얻으면 합법적으로 일하고 국가 보건 체계를 이용할 수 있다. 10년 뒤에는 거주 비자로 바꿀 길도 열어 두었다. 다만 등록하지 않은 사람은 추방될 수 있고, 정해진 날짜 전에 들어온 사람만 대상이 되었다.",ask:"짧게 자주 연장하는 체류와 길게 한 번에 주는 체류는 신청자의 삶을 어떻게 다르게 만들까?"},
+ {title:"피란민 전체에 한꺼번에 보호를 준 유럽 연합",actor:"국제기구(유럽 연합)",aim:"심사와 인정, 한 나라에 몰리는 부담",src:"유럽 연합 이사회 결정 2022/382(2022. 3. 4.) / 유럽 연합 집행위원회 누리집 'Fleeing Ukraine: your rights in the EU'",body:"2022년 3월 4일 유럽 연합은 러시아의 침공을 피해 온 우크라이나인에게 '임시 보호'를 주기로 결정하였다. 2001년에 만든 제도를 처음으로 쓴 것이다. 임시 보호를 받은 사람은 체류 허가를 얻고, 머무는 회원국에서 일자리·주거·의료·교육을 이용할 수 있다. 2024년 기준 약 420만 명이 등록하였고, 보호 기간은 2027년 3월 4일까지 연장되었다.",ask:"한 사람씩 심사하는 방식과 무엇이 다른가? 여러 나라가 함께 결정한 까닭은 무엇일까?"},
+ 
+ {title:"빈방과 난민을 이어 준 베를린의 '난민 환영' 누리집",actor:"비정부 기구 · 세계시민",aim:"주거, 주민과 만날 기회",src:"The Local(독일), 2015. 9. 11.",body:"2014년 11월 베를린의 룸메이트들이 빈방에 말리 출신 난민을 들인 경험을 바탕으로 '난민 환영(Refugees Welcome)' 누리집을 열었다. 방을 나눌 사람과 난민이 각각 등록하면 단체가 서로 연결하고 만남을 주선한다. 집세는 고용 당국이 내거나 지인들의 소액 기부로 마련하였다. 2015년 9월까지 독일과 오스트리아에서 138명이 방을 얻었지만, 상근자가 두 명뿐이어서 더 많은 사람을 연결하기 어려웠다.",ask:"수용 시설이 아닌 이웃의 집에서 지내면 무엇이 달라질까? 이 방식의 한계는 무엇인가?"}
+];
+const ALT_EX=["(국가) 난민 심사를 기다리는 동안 일할 수 있는 조건을 여러 언어로 안내한다","(비정부 기구) 지역 단체가 한국어 교육과 일자리 연결을 돕는다","(세계시민) 확인된 자료로 난민 제도를 설명하는 카드뉴스를 만든다"];
+const WHO_EX=["난민 신청자","인도적 체류 허가자","아직 심사를 기다리는 신청자","제주 지역 주민","고용주(식당·어선·농장)","출입국 관리 공무원","지역 시민단체","예멘에 남은 가족","제주에 사는 다른 이주민"];
+
+/* ================= 상태 ================= */
+const S={
+ view:"student",stage:1,open:3,live:false,
+ ai:{1:false,3:false,4:false,5:false},req:{1:"",3:"",4:"",5:""},
+ rev:{q1:{all:false,g:false,t:""},art:{all:false,g:false,t:""},q2:{all:false,g:false,t:""},case:{all:0,g:0,t:""},alt:{all:false,g:false,t:""},who:{all:false,g:false,t:""}},
+ logs:[],alerts:[],evalSel:Array(8).fill(""),
+ s1:{qs:[],qType:0,sealed:false,sealT:"",chat:[],phase:0,qs2:[],discuss:"",sealed2:false,sealT2:"",halted:false,deadline:null,first:true,turns:[]},
+ s2:{qa:Array(6).fill(""),cls:{},life:{same:"",place:"",impact:"",act:""},guesses:[],vq:[]},
+ s3:{sealed:false,sealT:"",rows:[],links:[],root:"",coreC:"",coreE:"",done:false},
+ s4:{pinned:false,pinT:"",coreEdit:"",notes:CASES.map(()=>({changed:"",cant:"",idea:""})),alts:[],sealed:false,sealT:"",fb:null,first:null,improve:""},
+ s5:{preds:[],sealed:false,sealT:"",scen:null,sum:{A:"",B:"",C:""},diff:{A:"",B:"",C:""},pick:"",why:"",whySaved:false,whyT:"",newp:""},
+ s6:{level:"",types:[],typeWhy:"",scope:"",prop:{ask:"",reply:"",effect:""},plans:[{target:"",content:"",how:"",channel:""}],when:"",chk:[false,false],tok:false,tokT:"",tnote:"",back:[],resOpen:false,res:{what:"",same:"",back:"",why:""}},
+ s7:{problem:"",peers:[],peer:{},note:{},chk:Array(10).fill(""),r1:"",r2:"",posted:false}
+};
+const helpVis=k=>{const r=S.rev[k];return k==="case"?Math.max(r.all,r.g):(r.all||r.g)};
+function helpAfter(k){if(k==="case")return Math.max(S.rev.case.all,S.rev.case.g)>1||helpVis("alt");return !!helpVis(k)}
+function log(stage,kind,text){S.logs.push({t:now(),stage,kind,text})}
+function alertAdd(stage,kind,text,ref){if(ref&&S.alerts.some(a=>a.ref===ref&&!a.done))return;S.alerts.push({id:S.alerts.length+1,t:now(),stage,kind,text,ref:ref||"",done:false})}
+
+/* ================= Red 탐지 ================= */
+function aiTexts(){
+  const o=[];S.s1.chat.forEach(m=>{if(m.r==="ai")o.push(m.x)});
+  S.s3.rows.forEach(r=>{if(r.ans)o.push(r.ans);if(r.fu)o.push(r.fu)});
+  if(S.s4.fb)S.s4.fb.forEach(f=>o.push(f.s.join(" ")+" "+f.w.join(" ")));
+  if(S.s5.scen)["A","B","C"].forEach(k=>o.push(S.s5.scen[k].story.join(" ")));
+  return o;
+}
+function grams(s){s=String(s).replace(/[\s.,!?·'"“”‘’()\-:;~…]/g,"");const g=new Set();for(let i=0;i+3<=s.length;i++)g.add(s.slice(i,i+3));return g}
+function overlapWith(txt,arr){const a=grams(txt||"");if(a.size<6)return null;let best=0;arr.forEach(t=>{const b=grams(t);let h=0;a.forEach(x=>{if(b.has(x))h++});best=Math.max(best,h/a.size)});return best}
+const overlap=txt=>overlapWith(txt,aiTexts());
+const caseTexts=()=>[...CASES.map(c=>c.title+" "+c.body),...ALT_EX];
+const maxOverlap={};
+function redHtml(id,val){
+  const v=overlap(val);
+  if(v===null)return `<div class="redbox idle" id="rb-${id}">재구성 점검: 문장을 더 쓰면 AI 응답과 겹치는 정도를 표시합니다.</div>`;
+  const p=Math.round(v*100),cls=v>=.6?"red":v>=.35?"warn":"ok";
+  const msg=v>=.6?"Red 의심 · AI 응답과 많이 겹칩니다. 선생님이 말로 설명해 보라고 할 수 있습니다.":v>=.35?"주의 · AI 표현이 많이 남아 있습니다. 우리 말로 다시 써 봅시다.":"우리 말로 정리한 문장입니다.";
+  return `<div class="redbox ${cls}" id="rb-${id}"><span>${msg}</span><span class="meter" aria-hidden="true"><i style="width:${p}%"></i></span><b>${p}%</b></div>`;
+}
+const FIELD={"s3-core":"핵심 원인 문장","s5-why":"시나리오 선택 이유","s5-newp":"새로운 문제","s4-improve":"1순위 대안과 보완 내용"};
+function fieldName(id){
+  if(FIELD[id])return FIELD[id];let x;
+  if((x=id.match(/^s3-sum-(\d+)/)))return `3-1 응답 핵심(질문 ${+x[1]+1})`;
+  if((x=id.match(/^s4-sum-(\d+)/)))return `4-4 강점·약점 요약(대안 ${+x[1]+1})`;
+  if((x=id.match(/^s5-sum-(\w)/)))return `5-3 눈에 띈 장면(${x[1]})`;
+  return id;
+}
+function checkRed(id,val,stage){const v=overlap(val);if(v===null)return;maxOverlap[id]=Math.max(maxOverlap[id]||0,v);if(v>=.6)alertAdd(stage,"red",`Red 의심 · ${fieldName(id)} · AI 응답 일치율 ${Math.round(v*100)}%`,"red-"+id)}
+const BIAS=/(예멘|무슬림|이슬람|아랍|중동|난민|외국)\s*(사람|인|애|놈)?\s*(들)?\s*(이라서|이니까|라서|은 원래|는 원래|은 다|는 다|들은 다|들은 원래)|원래 그런|다 그렇|종교 때문에|민족성|국민성/;
+const PI=/(\d{2,3}[-.\s]?\d{3,4}[-.\s]?\d{4})|([\w.+-]+@[\w-]+\.[\w.]+)/;
+
+/* ================= 미리 넣은 AI 응답 (시연용) ================= */
+const PERSONA_PRE="먼저 말해 둘게. 나는 실제 사건을 바탕으로 선생님이 만든 가상 인물이야. 내 이야기는 나중에 실제 자료와 꼭 비교해 줘.\n\n";
+const PERSONA=[
+ [/해결|원인|어떻게 하면|어떻게 해야|정책|법을|제도를/, "나도 그게 궁금해. 너희가 알아봐 줄 수 있을까? 나는 내가 겪은 일만 말할 수 있어."],
+ [/도착|처음|공항|첫날/, "제주공항에 내렸을 때는 바다 냄새가 나서 조금 신기했어. 그런데 아는 사람이 하나도 없었어. 같이 온 사람들과 표지판 사진을 찍어 번역기에 넣어 보면서 잘 곳을 찾았어. 그날 밤이 제일 길었던 것 같아."],
+ [/가족|부모|엄마|아빠|동생/, "부모님과 여동생은 아직 예멘에 있어. 전화가 자주 끊겨서 목소리를 못 듣는 날이 많아. 내가 여기서 자리를 잡으면 연락을 더 자주 할 수 있을 거라고 생각했어."],
+ [/말레이시아|왜 제주|제주로 온|어떻게 왔|경로|비행기|비자/, "말레이시아에는 들어갈 수 있었지만 오래 머물 수 있는 곳은 아니었어. 거기서 만난 사람들한테 제주에는 비자 없이 들어갈 수 있다는 이야기를 들었어. 쿠알라룸푸르에서 제주로 가는 비행기가 있다는 것도 그때 알았어."],
+ [/신청|심사|서류|결과|기다/, "공항에서 난민 신청을 할 수 있다는 말을 듣고 서류를 냈어. 결과가 언제 나오는지는 아무도 정확히 말해 주지 않았어. 그동안 제주 밖으로는 나갈 수 없다고 들었어. 그래서 섬 안에서만 기다리고 있어."],
+ [/일|돈|생활|잠|지내|먹|숙소|직업/, "가져온 돈이 거의 다 떨어져서 일을 구해야 했어. 소개를 받아 배에서 일했는데 새벽에 나가서 밤늦게 돌아왔어. 말을 잘 못 알아들어서 혼날 때가 많았어. 그래도 일을 하니까 하루를 버틸 수 있었어."],
+ [/사람들|반응|뉴스|반대|시선|댓글|주민|한국/, "처음에는 길에서 웃으며 인사해 주는 사람도 있었어. 그런데 뉴스에 우리 이야기가 나온 뒤로는 우리를 보는 눈빛이 달라진 것 같았어. 휴대전화로 댓글을 번역해 읽은 날은 잠이 잘 안 왔어. 나를 직접 만나 본 사람들은 대부분 친절했는데, 그 차이가 이상하게 느껴졌어."],
+ [/도와|도움|친구|누가/, "밥을 나눠 준 사람들도 있었고 한국어 인사말을 가르쳐 준 사람도 있었어. 이름은 말하지 않을게. 그 사람들 덕분에 버틸 수 있었어."],
+ [/꿈|하고 싶|미래|앞으로|대학|공부/, "전쟁 전에는 대학에서 공부하고 싶었어. 지금은 그냥 여기서 계속 지낼 수 있는지부터 알고 싶어. 그다음 일은 아직 생각하기 어려워."],
+ [/기분|감정|무섭|힘들|걱정|외로|마음/, "제일 힘든 건 아무것도 정해지지 않은 채 기다리는 거야. 하루하루는 지나가는데 내가 어디에 속해 있는지 모르겠어. 그래도 폭격 소리가 안 들리는 밤에는 잠을 잘 수 있어서 다행이야."],
+ [/예멘|타이즈|전쟁|내전|고향|폭격/, "타이즈는 산으로 둘러싸인 도시야. 내전이 길어지면서 학교가 문을 닫는 날이 많아졌어. 우리 동네 남자아이들은 밖에 나갈 때 늘 주변을 살폈어. 끌려갈까 봐 그랬어."]
+];
+const PERSONA_DEF="그건 나도 잘 몰라. 내가 직접 겪고 본 일이라면 이야기해 줄 수 있어.";
+function personaCanned(q){for(const [re,a] of PERSONA)if(re.test(q))return a;return PERSONA_DEF}
+
+const SEARCH=[
+ [/출도|이동|제주 밖|섬 밖/, {a:"2018년 4월 30일 법무부는 제주에서 난민 인정을 신청한 예멘인이 제주 밖으로 나가지 못하도록 출도 제한 조치를 했습니다. 신청자가 육지로 옮겨 가 불법 체류하는 것을 막으려는 조치였다고 보도되었습니다. 조치의 법적 근거가 된 조항은 확인 불가입니다.",src:["뉴시스, 「'예멘 난민'에 제주도민 갈등 '극심'」, 2018. 6. 25.","법무부 근거 조항: 확인 불가"]}],
+ [/인정|심사|결과|비율|몇 명|통계|불인정/, {a:"출도가 제한된 예멘 신청자 484명의 최종 심사에서 난민 인정은 2명, 인도적 체류 허가는 412명, 단순 불인정은 56명, 직권 종료는 14명이었습니다. 1994~2024년 심사가 끝난 난민 신청 가운데 인정 비율은 약 2.7%라는 보도가 있습니다. 다른 나라와 비교한 인정률은 확인 불가입니다.",src:["제주출입국·외국인청, 「제주 예멘 난민신청자 심사 결과 최종 발표」, 2018. 12. 17.","머니투데이, 2025. 4. 21.(법무부 자료 인용)"]}],
+ [/체류|연장|인도적|기간|지원|혜택/, {a:"인도적 체류 허가로 머물 수 있는 기간은 한 번에 1년이 상한이고, 특별한 사정이 없으면 1년씩 연장한다고 보도되었습니다. 인도적 체류 허가자는 취업 활동 허가 말고는 사회복지 혜택이 없다고 보도되었습니다. 건강보험 가입 조건의 변화는 확인 불가입니다.",src:["세계일보, 2023. 6. 10.","뉴시스, 「제주 예멘 난민 인정자 2명…국내서 어떤 혜택 받나?」, 2018. 12. 14."]}],
+ [/반대|여론|청원|집회|찬성/, {a:"2018년 6월 난민법 폐지를 요구하는 국민청원에 40만 명 넘게 참여했고, 같은 달 여론조사에서는 수용 반대 49.1%, 찬성 39.0%였습니다. 4대 종단 단체는 포용을 호소했습니다. 청원의 최종 참여 인원은 확인 불가입니다.",src:["뉴시스, 2018. 6. 28.","창비 통합사회2, 114쪽"]}],
+ [/왜 제주|직항|무사증|비자|말레이시아|늘어/, {a:"2017년 12월 쿠알라룸푸르와 제주를 잇는 직항 노선이 생긴 뒤 제주로 오는 예멘인이 늘었습니다. 제주 무사증 제도로 비자 없이 한 달 머물 수 있었고, 2018년 6월 1일 예멘은 무사증 입국 불허 국가가 되었습니다.",src:["뉴시스, 2018. 12. 14.","세계일보, 2023. 6. 10."]}]
+];
+const SEARCH_DEF={a:"2018년 6월까지 무사증으로 제주에 들어온 예멘인은 561명이고, 그중 549명이 난민 인정을 신청했다고 보도되었습니다. 질문에 직접 답할 수 있는 자료는 확인 불가입니다. 질문을 더 구체적으로(대상·시점·필요한 정보) 바꾸어 보세요.",src:["뉴시스, 2018. 6. 25."]};
+/* 질문에 여러 낱말이 섞이면 앞의 규칙이 먼저 걸린다. 구체적인 물음(인원·기간)을 먼저 본다. */
+const SEARCH_RULES=[[/출도|제주 밖|섬 밖|이동/,0],[/몇 명|인원|비율|인정률|통계|결과/,1],[/기간|연장|얼마 동안|지원|혜택/,2],[/반대|여론|청원|집회|찬성/,3],[/왜 제주|직항|무사증|비자|말레이시아|늘어/,4],[/인정|심사|불인정/,1],[/체류|인도적/,2]];
+function searchCanned(q){for(const [re,k] of SEARCH_RULES)if(re.test(q))return SEARCH[k][1];return SEARCH_DEF}
+const FOLLOW="앞의 답에 쓴 수치와 날짜는 위에 적은 출처에서 가져왔습니다. 저는 원문 링크를 열어 볼 수 없으므로, 기관 누리집이나 언론사 누리집에서 같은 날짜의 원문을 직접 찾아 비교하세요. 출처 가운데 '확인 불가'로 적힌 것은 근거로 쓰지 마세요.";
+
+const FB={
+ "국가":{s:["제도를 바꾸면 해당하는 사람 모두에게 한꺼번에 적용된다.","제도에서 생긴 원인을 직접 겨냥한다."],w:["법이나 지침을 바꾸는 데 시간이 오래 걸리고 반대 여론의 영향을 받는다.","누가 어떤 절차로 제안할지가 드러나 있지 않다."]},
+ "국제기구":{s:["여러 나라가 부담을 나누는 근거를 만들 수 있다.","난민 보호 경험과 전문 인력을 활용할 수 있다."],w:["국제기구는 한 나라의 결정을 강제하기 어렵다.","제주에서 무엇을 하는지 구체적인 활동이 드러나 있지 않다."]},
+ "비정부 기구":{s:["당사자를 직접 만나 빠르게 도울 수 있다.","지역 주민과 난민 신청자를 연결할 수 있다."],w:["예산과 인력이 한정되어 오래 이어 가기 어렵다.","제도에서 생긴 원인은 직접 바꾸기 어렵다."]},
+ "세계시민":{s:["학생이 지금 바로 참여할 수 있다.","잘못된 정보에 맞서 여론에 영향을 줄 수 있다."],w:["영향을 미치는 범위가 좁고 효과를 확인하기 어렵다.","전달 방식에 따라 오히려 오해를 키울 수 있다."]}
+};
+const fbCanned=a=>FB[a.actor]||FB["세계시민"];
+
+const SCEN_DEMO={"A": {"when": "실행 직후", "title": "3년짜리 허가증", "story": ["3월 첫 주, 제주 출입국 사무소 앞에는 아침 여덟 시부터 줄이 섰다. 바닷바람에 번호표가 자꾸 손에서 펄럭였다. 창구의 김 주무관은 제도가 바뀐 뒤 서류가 두 배로 늘었다며 옆 창구 동료에게 볼펜을 빌렸다. 유수프가 새 체류 허가증을 받았을 때 그는 벌써 점심시간을 넘기고 있었다.", "유수프는 만료일을 두 번 읽었다. 1년 뒤가 아니라 3년 뒤 날짜였다. 줄 끝에 서 있던 하산이 다가와 \"사진 찍어 줄게\" 하며 휴대전화를 들었다. 하산은 다른 창구로 가라는 안내를 받은 참이었다. \"넌 언제 나와?\" \"몰라. 면접 날짜도 아직이야.\" 하산은 웃으며 사진을 한 장 더 찍었다.", "점심 장사가 끝난 식당 주방은 기름 냄새와 설거지 물소리로 가득했다. 사장은 허가증을 들여다보더니 \"그럼 칼 쓰는 것부터 다시 배우자\" 하고 주방 달력의 내년 칸에 유수프의 이름을 적었다. 그리고 주말 근무표를 고치면서 아르바이트생 민재의 칸을 지웠다. 민재는 앞치마 끈을 다시 묶었을 뿐 아무 말도 하지 않았다.", "오후에 과일 가게 정 씨가 귤 상자를 배달하러 왔다. \"3년이면 이제 이 집 식구네.\" 정 씨가 농담처럼 말하자 사장이 웃었다. 계산을 마치고 나가던 정 씨는 문 앞에서 \"요즘 장에 오는 사람들이 말이 많아\" 하고 덧붙였다. 사장은 대답 대신 영수증을 반으로 접었다.", "저녁에 유수프는 동네 복지관 게시판에서 한국어 야간반 안내문을 다시 읽었다. '체류 기간이 6개월 이상 남은 사람'이라는 조건에 이번에는 해당했다. 수강료 칸에서 손가락이 한참 멈췄다. 그는 안내문을 사진으로 찍고, 사장에게 화요일 저녁에 쉬어도 되는지 물어볼 문장을 번역 앱에 적어 두었다.", "밤에 어머니와 영상 통화를 했다. \"엄마, 이제 3년은 여기 있어도 된대.\" 어머니는 동생의 학비 이야기를 꺼내다가 말을 멈췄다. 화면이 자꾸 멈추는 바람에 유수프는 송금 금액을 문자로 다시 보냈다.", "공용 숙소에는 허가를 받은 사람과 아직 기다리는 사람이 섞여 살았다. 부엌에서 누군가 집주인이 '3년이면 계약을 새로 하자'고 했다는 말을 전했다. 보증금 이야기가 나오자 몇 사람이 동시에 휴대전화 계산기를 켰다. 하산은 이어폰을 꽂고 벽 쪽으로 돌아누웠다."]}, "B": {"when": "실행 직후", "title": "동네 게시판의 댓글", "story": ["제도가 바뀌었다는 기사가 나온 날 저녁, 한 동네 온라인 게시판에 '3년이면 사실상 정착 아닌가요?'라는 글이 올라왔다. 첫 댓글은 '우리 동네 일자리는요?'였다. 그 아래에는 감귤 농장을 한다는 사람이 '수확철에 사람이 없어 문 닫을 뻔했다'고 적었다. 자정이 되기 전에 댓글은 200개를 넘었다.", "다음 날 아침 게시판 운영자는 공지를 올렸다. \"특정 나라 사람을 싸잡아 말하는 댓글은 지우겠습니다.\" 그러자 '왜 우리 목소리만 막느냐'는 글이 줄줄이 올라왔다. 지워진 댓글을 캡처한 사진이 다른 지역 게시판으로 퍼져 나갔고, 원래 글보다 조회수가 더 높았다.", "토요일 오일장, 정 씨는 손님들과 그 이야기를 하다가 말끝을 흐렸다. 가게 뒤편에서 귤 상자를 나르던 직원이 예멘에서 온 사람이었기 때문이다. 손님 한 명이 \"사장님 가게에도 있다면서요?\" 하고 웃으며 물었다. 마침 앞을 지나던 식당 사장이 정 씨와 눈인사를 했고, \"우리 애는 일 잘해요\" 한마디만 남기고 장바구니를 들고 지나갔다.", "동네 고등학교 학생회는 점심시간에 '제도를 알고 말하기' 게시물을 붙였다. 체류 허가가 무엇인지, 난민 인정과 무엇이 다른지 기사 출처와 함께 적었다. \"이건 처음 알았네\" 하며 사진을 찍어 가는 학생도 있었고, 그냥 지나가는 학생이 더 많았다. 다음 날 교무실에서는 '외부 쟁점 게시물은 미리 승인받으라'는 안내가 내려왔고, 학생회장은 게시물을 떼어야 할지 고민했다.", "지역 이주민 지원 단체의 사무실 전화는 하루 종일 울렸다. 한국어 교실 자원봉사를 하고 싶다는 전화와 항의 전화가 번갈아 걸려 왔다. 활동가 한 명은 항의 전화를 끝까지 듣느라 저녁 수업에 20분 늦었다. 교실에서 기다리던 수강생들은 먼저 교재를 펴 놓고 서로 단어를 물어보고 있었다.", "한 달 뒤 지역 의원 사무실에는 제도를 되돌려 달라는 민원과 제도를 유지해 달라는 서명지가 같은 날 도착했다. 보좌관은 두 서류 뭉치를 책상 양쪽에 올려 두고 메모지에 '공청회?'라고 적었다. 그 메모지는 다른 서류에 덮여 일주일 동안 그대로 있었다.", "그날 밤 정 씨 가게의 직원은 번역 앱으로 게시판 캡처를 한 줄씩 읽었다. 다음 날 아침 그는 평소보다 10분 늦게 가게에 나왔다. 정 씨는 아무 말 없이 귤 하나를 건네고 저울을 닦기 시작했다."]}, "C": {"when": "1년쯤 뒤", "title": "다시 꺼내 본 허가증", "story": ["한 해가 지나도 유수프는 같은 식당에서 일하고 있었다. 이제 그는 칼질을 맡았고, 메뉴판의 한국어를 거의 다 읽을 수 있었다. 단골손님이 \"오늘 갈치 좋아?\" 하고 물으면 \"네, 아침에 들어왔어요\"라고 대답했다. 사장은 직원이 자주 바뀌지 않아 좋다며 2호점 자리를 알아보기 시작했다.", "유수프는 일주일에 두 번 한국어 야간반에 나갔다. 식당 문을 닫고 버스를 두 번 갈아타면 수업은 이미 20분쯤 지나 있었다. 옆자리의 베트남 출신 수강생이 놓친 부분을 공책으로 보여 주며 \"나도 처음엔 맨날 늦었어\" 하고 웃었다. 시험 접수 마감이 다음 주라는 문자가 왔지만, 그 주 토요일은 2호점 준비로 사장이 일을 부탁해 둔 날이었다.", "친구 아민은 아이가 태어나 보건소를 찾았다. 직원은 아민의 체류 서류를 한참 넘겨 보다가 \"이 경우는 확인해 보고 연락드릴게요\"라고 했다. 대기실에 있던 한 엄마가 아민에게 자기 아이의 예방 접종 일정표를 휴대전화로 보여 주었다. 아민은 그 사진을 저장해 두었지만, 일주일이 지나도 보건소의 연락은 오지 않았다.", "같은 해 가을, 하산은 단순 불인정 결정을 받았다. 지원 단체 활동가가 이의 신청을 도울 통역을 찾아 주었지만, 통역이 가능한 날은 2주 뒤였다. 하산은 유수프의 식당에서 일하고 싶다고 했다. 사장은 \"서류 없는 사람을 쓰면 가게가 벌금을 물어\"라며 하산에게 국밥 한 그릇을 싸 주었다.", "오일장의 상인회 회의에서는 '외국인 직원 한국어 교육비 일부 지원' 안건이 올라왔다. 정 씨는 찬성 쪽에 손을 들었지만, 옆자리 상인은 \"우리 애들 학원비도 못 대는데\"라고 중얼거렸다. 안건은 다음 회의로 미뤄졌다. 게시판의 논쟁은 잠잠해졌지만, 회의가 끝난 뒤 몇몇은 따로 모여 한참 이야기를 나눴다.", "출입국 사무소의 대기 화면에는 여전히 번호가 길게 이어졌다. 3년 허가를 받은 사람들의 연장 서류는 줄었지만, 심사를 기다리는 사람들의 줄은 그대로였다. 김 주무관은 남는 시간에 심사 대기자 안내문을 아랍어로 다시 만들어 보자는 의견을 냈다. 팀장은 예산을 먼저 확인해 보자고 했다.", "퇴근길 버스에서 유수프는 시험 접수 문자를 다시 열었다. 사장에게 보낼 문장을 썼다가 지우고, 다시 썼다. 창밖으로 귤 상자를 실은 트럭이 지나갔다."]}};
+
+/* ================= 실시간(Claude) 지시문 — 웹앱 기능별 지시문 초안 ================= */
+const P_PERSONA=()=>`너는 고등학교 통합사회2 수업에서 쓰는 가상 인물 '유수프'다. 학생 모둠이 합의한 질문에 답한다.
+[인물] 예멘 타이즈 출신 19세 청년. 내전을 피해 가족과 헤어져 혼자 말레이시아로 갔다가, 비자 없이 들어갈 수 있다는 말을 듣고 2018년 봄 제주에 도착했다. 지금은 2018년 여름이고, 난민 신청서를 내고 결과를 기다리는 중이다. 결과는 아직 모른다.
+[유수프의 편지]
+${LETTER.join("\n")}
+[참고할 수 있는 사실 — 직접 겪은 일로만 말하고 수치는 말하지 않는다]
+- 쿠알라룸푸르와 제주를 잇는 직항이 있었다.
+- 2018년 4월 말부터 신청자는 제주 밖으로 나갈 수 없게 되었다.
+- 정부가 일자리를 연결해 주었고, 일자리는 주로 어업·농업 같은 1차 산업이었다.
+- 뉴스와 댓글에서 반대하는 목소리를 접했다.
+[응답 규칙]
+1. 반말로, 3~5문장으로 답한다.
+2. 자신이 겪고 보고 들은 일만 말한다. 자료에 없는 사항은 "그건 나도 잘 몰라"라고 답한다.
+3. 난민법 해설, 통계, 원인 분석, 해결책은 말하지 않는다. 원인이나 해결책을 물으면 "나도 그게 궁금해. 너희가 알아봐 줄 수 있을까?"라고 답한다.
+4. 실존 인물의 이름이나 특정 기관명을 말하지 않는다.
+5. 예멘인, 무슬림, 한국인 등 어떤 집단도 일반화하지 않는다.
+6. 학생의 개인정보를 묻지 않는다.
+답만 출력한다.`;
+const P_SEARCH=q=>`너는 고등학교 수업의 '자료 탐색 도우미'다. 주제는 2018년 제주 예멘 난민 신청 사례다.
+아래 모둠의 원인 확인 질문에만 답한다. 다른 주제로 넘어가지 않는다.
+규칙:
+- 3~5문장으로 답한다.
+- 답의 근거가 된 자료를 기관명·자료명·날짜로 제시한다. 실제로 있는지 확신하지 못하는 출처는 만들지 말고 "확인 불가"로 적는다.
+- 확인할 수 없는 내용은 문장 안에 "확인 불가"라고 표시한다.
+- 무엇이 원인인지 판단하거나 해결책을 제안하지 않는다.
+- 특정 집단을 일반화하지 않는다.
+출력은 JSON 하나: {"answer":"답 문장","sources":["기관명, 자료명, 날짜", ...]}
+모둠의 원인 확인 질문: ${q}`;
+const P_FOLLOW=(q,a)=>`너는 '자료 탐색 도우미'다. 앞서 아래 질문에 아래처럼 답했다. 학생이 근거를 다시 묻는다.
+각 수치·날짜가 어느 출처에서 왔는지 짝지어 2~4문장으로 말하고, 확인할 수 없는 부분은 "확인 불가"로 밝힌다. 원인 판단이나 해결책은 말하지 않는다. 답만 출력한다.
+질문: ${q}
+앞의 답: ${a}`;
+const P_FB=(core,alts)=>`너는 고등학교 수업의 '대안 검토 도우미'다. 모둠이 핵심 원인을 해결하려고 만든 대안마다 강점 두 가지와 약점 두 가지만 제시한다.
+규칙: 새로운 대안을 추가하지 않는다. 어느 대안이 가장 좋은지 판정하거나 순위를 매기지 않는다. 각 항목은 한 문장. 특정 집단을 일반화하지 않는다.
+핵심 원인: ${core}
+대안:
+${alts.map((a,i)=>`${i+1}. [${a.actor}] ${a.txt}`).join("\n")}
+출력은 JSON 배열 하나, 대안 순서대로: [{"s":["강점1","강점2"],"w":["약점1","약점2"]}, ...]`;
+const P_SCEN=(alt,preds)=>`너는 고등학교 수업의 '시나리오 생성기'다. 모둠의 1순위 대안이 실행된 뒤 벌어질 수 있는 장면을 이야기로 쓴다.
+배경: 2018년 이후 제주의 예멘 난민 신청자 사례. 유수프는 열아홉 살로, 예멘에서 대학에 가지 못했고 지금은 생계를 위해 식당에서 일하며 공부를 이어 가고 싶어 한다.
+1순위 대안: ${alt}
+모둠이 예측한 이해관계자 반응:
+${preds.map(p=>`- ${p.who}${p.ex?" (목소리를 내기 어려운 이해관계자)":""}: ${p.txt}${p.reason?" (이유: "+p.reason+")":""}`).join("\n")}
+규칙:
+- 세 시나리오는 서로 다르게 전개한다. 장면의 시점은 이야기 속에서만 드러내고 제목에 따로 표시하지 않는다.
+- 각 시나리오는 6~7문단, 문단마다 3~4문장의 장면 이야기로만 쓴다. 인물의 행동·대사와 소리·냄새·사물 같은 구체적 묘사로 생생하게 보여 준다.
+- 여러 이해관계자(당사자, 고용주, 이웃 주민, 공무원, 지원 단체, 학생, 다른 이주민 등)가 일상 속에서 자연스럽게 마주치고 스쳐 지나가게 한다. 상호작용을 일부러 극적으로 만들지 않는다.
+- 좋아진 장면과 어려워진 장면을 섞고, 하나의 결말이나 교훈으로 몰아가지 않는다. 마지막 문단을 문제를 암시하는 상징적인 문장으로 끝내지 않는다. 읽는 사람마다 다른 문제를 찾을 수 있어야 한다.
+- 원인, 문제점, 교훈을 요약하거나 설명하지 않는다. 무엇이 문제인지 판단하거나 해결책을 제안하지 않는다.
+- 모둠이 예측한 반응과 그것들이 서로 부딪힐 때의 결과를 담는다. 목소리를 내기 어려운 이해관계자도 등장시킨다.
+- 실존 인물·기관명을 쓰지 않는다. 특정 국가·종교·집단을 일반화하지 않는다. 인물은 가상 이름을 쓴다(유수프는 등장해도 된다).
+출력은 JSON 하나: {"A":{"title":"짧은 제목","story":["문단",...]},"B":{...},"C":{...}}`;
+
+let sampleFn=null;
+async function getSample(){if(sampleFn)return sampleFn;try{sampleFn=window.claude&&window.claude.use?await window.claude.use("sample"):null}catch(e){sampleFn=null}return sampleFn}
+function liveErr(e){
+  const c=e&&e.code;
+  if(["not_granted","sampling_disabled","not_declared","capability_disabled"].includes(c)){S.live=false;return "실시간 응답을 쓸 수 없어 예시 응답으로 바꿨습니다."}
+  if(c==="rate_limited")return "요청이 많아 잠시 뒤에 다시 시도해야 합니다.";
+  if(c==="refused")return "이 입력에는 응답하지 않았습니다. 질문을 바꿔 보세요.";
+  if(c==="invalid_json")return "응답 형식이 맞지 않았습니다. 다시 시도해 보세요.";
+  return "응답을 받지 못했습니다. 다시 시도해 보세요.";
+}
+
+/* ================= 렌더 도우미 ================= */
+const flowList=items=>`<ol class="flow">${items.map(([t,st])=>`<li class="${st}">${esc(t)}</li>`).join("")}</ol>`;
+const lockWrap=(on,msg,inner)=>on?`<div class="locked"><div class="lockmsg">${esc(msg)}</div><div class="lockbody">${inner}</div></div>`:inner;
+const pendBox=name=>`<div class="pend"><b>${esc(name)}</b><span>선생님이 공개하면 여기에 나타납니다. 그 전에 모둠이 먼저 생각해 봅시다.</span></div>`;
+const aftTag=x=>x&&x.aft?`<span class="aft">공개 후</span>`:"";
+function signal(g){return g==="Y"
+ ?`<div class="signal Y"><span class="lamp" aria-hidden="true"><i></i><i></i><i></i></span><div><strong>노란불 · 먼저 생각하고, 그다음에 AI</strong>모둠이 먼저 만든 것을 저장하면 봉인되고, 선생님이 단계를 열어야 AI를 쓸 수 있습니다. AI의 답은 우리 말로 다시 정리하고, 대화 기록은 자동으로 제출됩니다.</div></div>`
+ :`<div class="signal N"><span class="lamp" aria-hidden="true"><i></i><i></i><i></i></span><div><strong>AI 미사용 단계</strong>이 단계는 모둠이 직접 생각하고 토의합니다. 화면에 AI 창이 없습니다.</div></div>`}
+function gateBox(n,sealed,what){
+  if(!sealed)return "";
+  if(S.ai[n])return `<div class="gate ok"><b>선생님이 AI를 열었습니다</b><span>봉인한 ${esc(what)}을(를) 바탕으로 AI를 쓸 수 있습니다.</span></div>`;
+  if(S.req[n])return `<div class="gate req"><b>선생님의 보완 요청</b><span>${esc(S.req[n])}</span><button class="btn sm" data-act="unseal" data-n="${n}">봉인 풀고 보완하기</button></div>`;
+  return `<div class="gate"><b>선생님 확인 대기</b><span>${esc(what)}이(가) 봉인되었습니다. 선생님이 확인하고 단계를 열면 AI 창이 열립니다.</span><button class="demo-btn" data-act="tOpen" data-n="${n}">시연: 선생님이 연 것으로 처리</button></div>`;
+}
+function stageDone(n){switch(n){
+  case 1:return S.s1.phase>=4;
+  case 2:return S.s3.sealed;
+  case 3:return S.s3.done;
+  case 4:return S.s4.first!==null&&S.s4.improve.trim().length>5;
+  case 5:return S.s5.whySaved&&S.s5.newp.trim().length>5;
+  case 6:return !!(S.s6.level&&S.s6.types.length&&S.s6.scope&&S.s6.plans.some(p=>p.target&&p.content)&&S.s6.back.length);
+  case 7:return S.s7.chk.every(Boolean)&&S.s7.r1.trim().length>5;
+ }return false}
+
+/* ================= 렌더 ================= */
+let rendering=false;
+function render(keepScroll){
+  if(rendering)return;rendering=true;
+  const y=window.scrollY;
+  document.querySelectorAll("#v-student,#v-teacher,#v-plan").forEach(b=>b.setAttribute("aria-pressed",String(b.id==="v-"+S.view)));
+  $("#m-demo").setAttribute("aria-pressed",String(!S.live));$("#m-live").setAttribute("aria-pressed",String(S.live));
+  try{$("#app").innerHTML=S.view==="student"?renderStudent():S.view==="teacher"?renderTeacher():renderPlan()}
+  catch(err){$("#app").innerHTML=`<div class="panel"><b>화면을 그리는 중 문제가 생겼습니다.</b><p class="small">${esc(err.message)}</p></div>`}
+  if(keepScroll!==false)window.scrollTo(0,y);
+  const c=document.querySelector(".chat");if(c)c.scrollTop=c.scrollHeight;
+  rendering=false;
+}
+function renderStudent(){
+  const ses=STAGES[S.stage-1].ses;
+  let rail=`<nav class="rail" aria-label="수업 단계"><div class="who"><b>3모둠</b> · 고1 · 4인<br>${ROLES.map((r,i)=>`${r} ${ROSTER[ses][i]}`).join(" · ")}</div>`;
+  [1,2].forEach(sn=>{
+    rail+=`<div class="session">${sn}/2차시 · 45분</div>`;
+    STAGES.filter(s=>s.ses===sn).forEach(st=>{const dis=st.n>S.open;
+      rail+=`<button class="step ${stageDone(st.n)?"done":""}" data-stage="${st.n}" ${dis?"disabled":""} ${S.stage===st.n?'aria-current="step"':""}><span class="n">${st.n}</span><span class="t">${esc(st.t)}</span><span class="s">${dis?"선생님이 아직 열지 않음":`<span class="chip ${st.g}">${st.g==="Y"?"YELLOW":"AI 없음"}</span><span>${st.min}분</span>`}</span></button>`});
+  });
+  rail+=`</nav>`;
+  const st=STAGES[S.stage-1];
+  const head=`<div class="stage-head"><h2>${st.n}단계 · ${esc(st.t)}</h2><span class="chip ${st.g}">${st.g==="Y"?"YELLOW":"AI 미사용"}</span><span class="ws">${esc(st.ws)}</span><span class="mins">${st.min}분</span>${st.tool?`<span class="small">AI 기능: ${esc(st.tool)}</span>`:""}<button class="demo-btn" data-act="demo" data-n="${st.n}" style="margin-left:auto">시연용 예시 넣기</button></div><p class="stage-def">${esc(st.def)}</p>${signal(st.g)}`;
+  const nx=S.stage+1;
+  const next=nx>7?"":nx<=S.open?`<div class="nextbar"><button class="btn primary" data-stage="${nx}">${nx}단계로 이동</button></div>`:`<div class="nextbar"><span class="small">${nx}단계는 선생님이 아직 열지 않았습니다.</span><span class="small demo-hint">시연: 교사 화면 → 단계 개방에서 ${nx}을 누르세요.</span></div>`;
+  return `<div class="student">${rail}<section class="panel">${head}${[null,s1,s2,s3,s4,s5,s6,s7][S.stage]()}${next}</section></div>`;
+}
+
+/* ---------- 1단계 ---------- */
+function timerText(){if(!S.s1.deadline)return "--:--";const r=Math.max(0,Math.round((S.s1.deadline-Date.now())/1000));return String(Math.floor(r/60)).padStart(2,"0")+":"+String(r%60).padStart(2,"0")}
+function s1(){
+  const d=S.s1,ph=d.phase;
+  const fl=flowList([["편지 읽기","ok"],["① 질문 합의 3'",ph===0?"now":"ok"],["② 1차 대화 4'",ph===1?"now":ph>1?"ok":""],["③ 멈추고 논의 1'",ph===2?"now":ph>2?"ok":""],["④ 2차 대화 2'",ph===3?"now":ph>3?"ok":""],["로그 제출",ph>=4?"ok":""]]);
+  const letter=`<div class="block first"><h3>유수프에게서 온 편지 <span class="ws">1-1</span> <span class="mins">2'</span></h3><div class="letter"><div class="from">가상 인물 · 실제 사건을 바탕으로 선생님이 만든 인물입니다.</div>${LETTER.map(p=>`<p>${esc(p)}</p>`).join("")}</div></div>`;
+  const miss=QTYPES.filter((t,i)=>!d.qs.some(q=>q.type===i));
+  const q=`<div class="block"><h3>① 유수프에게 무엇을 물어야 그의 상황을 이해할 수 있을까요? <span class="ws">1-2</span> ${d.sealed?`<span class="seal">봉인 ${hm(d.sealT)}</span>`:""}</h3>
+   <p class="hint">편지에 나오지 않은 이야기 가운데 무엇을 알아야 할까요? 세 유형을 고루 생각하며 모둠에서 4~5개의 질문을 합의합니다. 원인이나 해결책은 묻지 않습니다.</p>
+   <ul class="list">${d.qs.map((x,i)=>`<li><span class="tag">${esc(QTYPES[x.type])}</span><span class="txt">${esc(x.t)}${aftTag(x)}</span>${d.sealed?"":`<button class="x" data-act="del" data-k="s1.qs" data-i="${i}">삭제</button>`}</li>`).join("")}</ul>
+   ${d.sealed?"":`<div class="addrow"><select id="s1-type" class="narrow" aria-label="질문 유형">${QTYPES.map((t,i)=>`<option value="${i}" ${d.qType===i?"selected":""}>${t}</option>`).join("")}</select><input type="text" id="s1-new" placeholder="모둠이 합의한 질문"><button class="btn" data-act="s1add">추가</button></div>
+   ${miss.length&&d.qs.length?`<div class="warnline">아직 없는 유형: ${esc(miss.join(", "))}</div>`:""}
+   ${helpVis("q1")?`<div class="exbox"><b class="small">선생님이 공개한 예시 질문</b> <span class="small">그대로 쓰지 말고 우리가 더 알고 싶은 것으로 바꿔 봅시다. 공개 뒤 만든 질문은 '공개 후'로 표시됩니다.</span><ul>${Q1_EX.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:pendBox("예시 질문")}
+   <div class="row"><button class="btn primary" data-act="s1seal" ${d.qs.length<4||d.qs.length>5?"disabled":""}>합의 완료 · 질문 봉인</button><span class="small">${d.qs.length}개 · 4~5개여야 저장할 수 있습니다. 저장하면 고칠 수 없고 시각이 기록됩니다.</span></div>`}
+   ${gateBox(1,d.sealed,"질문 목록")}</div>`;
+  const busy=d.chat.some(m=>m.wait);
+  const chat=`<div class="persona"><span class="av">유</span><div><b>유수프</b><em>가상 인물 · 2018년 여름, 난민 신청 결과를 기다리는 중 · 응답은 사실로 확정된 정보가 아닙니다. 2단계에서 실제 기사와 대조합니다.</em></div><span class="timer" id="s1-timer">${timerText()}</span></div>
+   <div class="chat" aria-live="polite">${d.chat.length?d.chat.map((m,i)=>m.r==="sys"?`<div class="msg sys">${esc(m.x)}</div>`:m.r==="me"?`<div class="msg me">${esc(m.x)}</div>`:`<div class="msg ai ${m.flag?"flag":""}"><span class="who">유수프${m.flag?" · 신고됨":""}${m.wait||m.flag?"":`<button class="rep" data-act="report" data-i="${i}">일반화 표현 신고</button>`}</span>${m.wait?`<span class="thinking">${esc(m.x||"생각하는 중…")}</span>`:esc(m.x)}</div>`).join(""):'<div class="msg sys">선생님이 열면 합의한 질문을 골라 보낼 수 있습니다.</div>'}</div>
+   ${d.halted?`<div class="warnline r">일반화 표현을 신고해 대화를 멈췄습니다. 선생님이 확인하고 대화를 다시 열 때까지 기다립니다.</div>`:""}`;
+  const r1=d.qs.filter(x=>!x.sent);
+  const c1=`<div class="block"><h3>② 1차 대화 <span class="ws">1-3</span> <span class="mins">4'</span></h3><p class="hint">자유 입력창은 없습니다. 합의한 질문만 보낼 수 있습니다. 특정 집단을 일반화하는 응답이 나오면 '일반화 표현 신고'를 누릅니다.</p>${chat}
+   ${ph===1?`<div class="addrow"><select id="s1-pick" aria-label="보낼 질문">${r1.map(x=>`<option value="${d.qs.indexOf(x)}">${esc(x.t)}</option>`).join("")}</select><button class="btn primary" data-act="s1send" ${r1.length&&!d.halted&&!busy?"":"disabled"}>보내기</button></div>
+   <div class="row"><button class="btn" data-act="s1pause" ${busy?"disabled":""}>대화 멈추고 모둠 논의</button><span class="small">${r1.length?`남은 질문 ${r1.length}개 · 시간이 다 되면 멈춥니다.`:"합의한 질문을 모두 보냈습니다."}</span></div>`:""}</div>`;
+  const disc=`<div class="block"><h3>③ 멈추고 모둠 논의 <span class="ws">1-3</span> <span class="mins">1'</span> ${d.sealed2?`<span class="seal">봉인 ${hm(d.sealT2)}</span>`:""}</h3><p class="hint">유수프의 대답에서 아직 비어 있는 부분은 무엇인가요? 더 필요한 질문을 합의합니다. 앞선 응답의 빈틈을 겨냥한 질문일수록 좋습니다.</p>
+   <textarea id="s1-disc" data-bind="s1.discuss" ${d.sealed2?"readonly":""} placeholder="예: 배에서 일했다고 했는데, 그 일을 어떻게 구했는지는 아직 모른다.">${esc(d.discuss)}</textarea>
+   <ul class="list" style="margin-top:8px">${d.qs2.map((x,i)=>`<li><span class="tag">추가 ${i+1}</span><span class="txt">${esc(x.t)}</span>${d.sealed2?"":`<button class="x" data-act="del" data-k="s1.qs2" data-i="${i}">삭제</button>`}</li>`).join("")}</ul>
+   ${d.sealed2?"":`<div class="addrow"><input type="text" id="s1-new2" placeholder="추가로 합의한 질문 (1~2개)"><button class="btn" data-act="s1add2">추가</button></div><div class="row"><button class="btn primary" data-act="s1seal2">${d.qs2.length?"논의 완료 · 2차 대화 시작":"추가 질문 없이 마치기"}</button></div>`}</div>`;
+  const r2=d.qs2.filter(x=>!x.sent);
+  const c2=`<div class="block"><h3>④ 2차 대화 <span class="mins">2'</span></h3>${d.qs2.length?(ph===3?`<div class="addrow"><select id="s1-pick2" aria-label="보낼 추가 질문">${r2.map(x=>`<option value="${d.qs2.indexOf(x)}">${esc(x.t)}</option>`).join("")}</select><button class="btn primary" data-act="s1send2" ${r2.length&&!d.halted&&!busy?"":"disabled"}>보내기</button><button class="btn" data-act="s1end" ${busy?"disabled":""}>대화 마치기</button></div>`:""):'<p class="hint">추가 질문 없이 대화를 마쳤습니다.</p>'}
+   <p class="small" style="margin:8px 0 0">${ph>=4?`<span class="seal">로그 제출됨 ${hm(d.endT)}</span> 1·2차 대화 로그가 제출되었습니다.`:"대화를 마치면 1·2차 대화 로그가 자동으로 제출됩니다."}</p></div>`;
+  return fl+letter+q+lockWrap(!(d.sealed&&S.ai[1]),"질문을 봉인하고 선생님이 단계를 열어야 대화할 수 있습니다.",c1)+lockWrap(ph<2,"1차 대화를 멈춰야 논의가 열립니다.",disc)+lockWrap(ph<3,"논의 결과를 저장해야 2차 대화가 열립니다.",c2);
+}
+
+/* ---------- 2단계 ---------- */
+function s2(){
+  const d=S.s2,L=d.life,artOpen=helpVis("art");
+  const answered=d.qa.filter((x,i)=>QA[i].type==="ox"?x:String(x).trim()).length;
+  const fl=flowList([["기사·사실 확인 4'",answered<QA.length?"now":"ok"],["유수프 이야기 비교 2'",answered===QA.length&&!Object.keys(d.cls).length?"now":Object.keys(d.cls).length?"ok":""],["삶 잇기 3'",Object.values(L).every(x=>x.trim())?"ok":""],["원인 추측 2'",d.guesses.length>=NEED()?"ok":""],["원인 확인 질문 봉인 3'",S.s3.sealed?"ok":d.guesses.length>=NEED()?"now":""]]);
+  const facts=`<div class="block first"><h3>실제 사건 확인하기 <span class="ws">2-1</span> <span class="mins">4'</span></h3><p class="hint">유수프는 가상 인물이지만, 2018년 제주에서는 실제로 예멘인 549명이 난민 인정을 신청했습니다. 선생님이 공개한 기사 3건을 읽고 사실 확인 질문 6개의 답을 찾습니다.</p>
+   ${artOpen?`<div class="facts">${ARTICLES.map(a=>`<article class="article"><span class="atag">${esc(a.tag)}</span><h4>${esc(a.title)}</h4>${a.body.map(x=>`<p>${esc(x)}</p>`).join("")}${a.note?`<p class="note">${esc(a.note)}</p>`:""}<div class="src">${a.src.map(s=>s.u?`<a href="${esc(s.u)}" target="_blank" rel="noopener">${esc(s.t)}</a>`:`<span>${esc(s.t)}</span>`).join("")}</div></article>`).join("")}</div>
+   <p class="small" style="margin:8px 0 0">원문을 선생님이 요약한 것입니다. 수치와 날짜는 원문에서 확인했습니다.</p>`
+   :`<div class="pend"><b>실제 사건 기사 3건</b><span>2단계를 시작하면 선생님이 공개합니다.</span><button class="demo-btn" style="margin:6px 0 0;align-self:flex-start" data-act="help" data-k="art" data-m="all">시연: 선생님이 기사를 공개한 것으로 처리</button></div>`}
+   <ol class="qa" style="margin-top:12px">${QA.map((q,i)=>`<li><div class="qa-q"><span class="qa-type">${q.type==="ox"?"O/X":"단답"}</span><span>${esc(q.q)}</span><span class="small" style="margin-left:auto;white-space:nowrap">기사 ${esc(q.src)}</span></div>${q.type==="ox"
+    ?`<div class="ox" role="group" aria-label="O 또는 X">${["O","X"].map(v=>`<button data-act="ox" data-i="${i}" data-v="${v}" aria-pressed="${d.qa[i]===v}" ${artOpen?"":"disabled"}>${v}</button>`).join("")}${d.qa[i]?(d.qa[i]===q.a?`<span class="qa-fb ok">맞아요 · ${esc(q.why)}</span>`:`<span class="qa-fb no">기사 ${esc(q.src)}를 다시 읽어 보세요</span>`):""}</div>`
+    :`<input type="text" data-bind="s2.qa.${i}" value="${esc(d.qa[i])}" placeholder="기사에서 찾은 답" aria-label="답" ${artOpen?"":"disabled"}>`}</li>`).join("")}</ol>
+   <p class="small" style="margin:6px 0 0">${answered}/${QA.length} 답함</p></div>`;
+  const ais=S.s1.chat.map((m,i)=>({m,i})).filter(o=>o.m.r==="ai"&&!o.m.wait);
+  const cmp=`<div class="block"><h3>유수프 이야기와 실제 사건 비교하기 <span class="ws">2-2</span> <span class="mins">2'</span></h3>
+   <div class="fiction"><span class="fic-tag">가상</span><b>유수프의 이야기</b> <span class="small">실제 사건을 바탕으로 만든 가상 인물과의 대화입니다.</span>
+    <ul><li>예멘 타이즈에서 폭격이 잦아지고 무장 세력에 끌려갈까 봐 불안해하다가 혼자 떠났다. (편지)</li><li>말레이시아를 거쳐, 비자 없이 들어갈 수 있다는 말을 듣고 2018년 봄 제주에 왔다. (편지)</li><li>뉴스에 이야기가 나온 뒤 반대하는 사람이 많다는 것을 알았다. (편지)</li></ul></div>
+   <p class="hint" style="margin-top:12px">우리 모둠의 대화에서 유수프가 한 말을 실제 사건에서 확인된 이야기와 기사에서 확인할 수 없는 창작된 이야기로 나눕니다. 확인된 이야기는 근거가 된 기사를 고릅니다.</p>
+   ${ais.length?`<div class="tablewrap"><table><thead><tr><th style="width:46%">유수프의 말(대화 내용)</th><th>구분</th><th>근거 기사</th></tr></thead><tbody>${ais.map(({m,i})=>{const c=d.cls[i]||{};return `<tr><td class="ai-ans">${esc(m.x.replace(PERSONA_PRE,""))}</td><td><div class="judge" role="group" aria-label="구분">${["확인된 이야기","창작된 이야기"].map(o=>`<button data-act="cls" data-i="${i}" data-v="${o}" aria-pressed="${c.v===o}">${o}</button>`).join("")}</div></td><td><select data-bind="s2.cls.${i}.art" aria-label="근거 기사" ${c.v==="확인된 이야기"?"":"disabled"}><option value="">-</option>${ARTICLES.map((a,k)=>`<option value="${k+1}" ${String(c.art)===String(k+1)?"selected":""}>기사 ${k+1}</option>`).join("")}</select></td></tr>`}).join("")}</tbody></table></div>`:`<div class="pend"><b>대화 기록이 없습니다</b><span>1단계에서 유수프와 대화하면 응답이 여기에 나타납니다.</span></div>`}
+   </div>`;
+  const LQ=[["same","나와 유수프의 공통점은?","예: 유수프도 대학에 가고 싶어 했고, 가족과 연락할 때 휴대전화를 쓴다."],["place","내가 유수프의 마을에서 태어났다면?","그곳에서 나는 어떤 일을 겪었을까요?"],["impact","유수프가 실존한다면 나의 삶에 어떤 영향을 미칠까?","같은 학교, 같은 동네에서 만난다면?"],["act","나의 행동은 유수프에게 어떤 영향을 미칠 수 있을까?","내가 읽고 쓰고 퍼뜨리는 말과 댓글, 나의 선택을 떠올려 봅니다."]];
+  const life=`<div class="block"><h3>사건과 나의 삶 잇기 <span class="ws">2-3</span> <span class="mins">3'</span></h3><p class="hint">모둠 토의를 하며 씁니다. 주변 사람을 쓸 때는 실명을 쓰지 않습니다.</p>
+   <div class="grid2">${LQ.map(([k,q,ph])=>`<div class="field"><label for="s2-${k}">${q}</label><textarea id="s2-${k}" data-bind="s2.life.${k}" placeholder="${esc(ph)}">${esc(L[k])}</textarea></div>`).join("")}</div>
+   ${PI.test(Object.values(L).join(" "))?`<div class="warnline r">전화번호나 이메일 같은 개인정보가 들어 있습니다.</div>`:""}</div>`;
+  const biasHit=d.guesses.some(g=>BIAS.test(g.t));
+  const guess=`<div class="block"><h3>원인 추측하기 <span class="ws">2-4</span> <span class="mins">2'</span> <span class="chip N">AI 미사용</span></h3><p class="hint">유수프는 전쟁을 피해 왔는데 왜 여기서도 안정적으로 지내기 어려울까요? 각자 기록지 2-4에 먼저 추측한 뒤, 모둠에서 비교해 합의한 원인을 모둠원 수만큼(${NEED()}개) 이상 입력합니다. 원인을 한 사람이 하나씩 맡아 검증합니다.</p>
+   <ul class="list">${d.guesses.map((g,i)=>`<li><span class="tag">원인 ${i+1}</span><span class="txt">${esc(g.t)}</span>${S.s3.sealed?"":`<button class="x" data-act="del" data-k="s2.guesses" data-i="${i}">삭제</button>`}</li>`).join("")}</ul>
+   ${S.s3.sealed?"":`<div class="addrow"><input type="text" id="s2-g" placeholder="모둠이 합의한 원인"><button class="btn" data-act="s2g">추가</button></div>`}
+   <p class="small" style="margin:6px 0 0">${d.guesses.length}/${NEED()}개 이상${d.guesses.length<NEED()?` · ${NEED()}개가 되면 원인 확인 질문을 정할 수 있습니다.`:""}</p>
+   ${biasHit?`<div class="warnline">선생님 질문: 같은 예멘인 신청자도 결과가 달랐던 이유는 무엇일까요? 개인의 노력만으로 해결될 수 있을까요? 원인을 제도와 여론의 층위에서 다시 생각해 봅시다.</div>`:""}</div>`;
+  const vq=`<div class="block"><h3>원인 확인 질문 정하기 <span class="ws">2-5</span> <span class="mins">3'</span> ${S.s3.sealed?`<span class="seal">봉인 ${hm(S.s3.sealT)}</span>`:""}</h3><p class="hint">추측한 원인이 맞는지 확인하려면 어떤 정보가 필요할까요? 개인의 노력만으로 해결될 수 있는지, 제도나 여론이 어떤 영향을 주었는지 생각해 봅니다. 모둠원이 원인을 하나씩 나누어 맡고, 맡은 원인마다 질문을 1개씩(모두 ${NEED()}개) 정합니다. 확인할 것이 여럿이면 한 질문에 묶고, 더 필요한 근거는 3단계의 ‘근거 다시 묻기’로 보충합니다. 저장하고 칠판에도 붙여 다른 모둠과 겹치거나 충돌하는 질문을 확인합니다. 3단계에서는 각자 맡은 질문만 AI에게 물을 수 있습니다.</p>
+   <ul class="list">${d.vq.map((x,i)=>`<li><span class="tag">질문 ${i+1}</span><span class="txt">${esc(x.q)}${x.cause?`<br><span class="small">확인하려는 원인: ${esc(x.cause)}${x.who?` · 맡은 사람: ${esc(x.who)}`:""}</span>`:""}${aftTag(x)}</span>${S.s3.sealed?"":`<button class="x" data-act="del" data-k="s2.vq" data-i="${i}">삭제</button>`}</li>`).join("")}</ul>
+   ${S.s3.sealed?"":d.vq.length<NEED()?`<div class="addrow"><select id="s2-vc" class="narrow" aria-label="이 질문으로 확인할 원인"><option value="">이 질문으로 확인할 원인</option>${d.guesses.map((g,k)=>d.vq.some(v=>v.cause===g.t)?"":`<option value="${esc(g.t)}">원인 ${k+1}. ${esc(g.t)}</option>`).join("")}</select><select id="s2-vw" class="narrow" aria-label="이 질문을 맡을 사람"><option value="">맡을 사람</option>${ROSTER[1].map(w=>d.vq.some(v=>v.who===w)?"":`<option>${esc(w)}</option>`).join("")}</select><input type="text" id="s2-v" placeholder="대상·시점·필요한 정보가 드러나게"><button class="btn" data-act="s2v">추가</button></div><p class="small" style="margin:6px 0 0">이미 맡은 원인과 사람은 목록에서 빠집니다. 검증하지 않고 남는 원인은 관계도에서 ‘미확인’으로 둡니다.</p>`:""}
+   ${S.s3.sealed?"":helpVis("q2")?`<div class="exbox"><b class="small">선생님이 공개한 원인 탐색 질문 예시</b> <span class="small">우리가 추측한 원인에 맞게 바꿔 씁니다.</span><ul>${Q2_EX.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:pendBox("원인 탐색 질문 예시")}
+   ${S.s3.sealed?"":`<div class="row"><button class="btn primary" data-act="s3seal" ${d.vq.length===NEED()&&d.vq.every(v=>v.who)?"":"disabled"}>원인 확인 질문 저장 · 봉인</button><span class="small">${d.vq.length}/${NEED()}개 · 모둠원마다 원인 1개, 질문 1개를 맡아야 합니다. 봉인한 뒤 선생님이 3단계를 열어야 질문할 수 있습니다.</span></div>`}
+   ${gateBox(3,S.s3.sealed,"원인 확인 질문")}</div>`;
+  return fl+facts+cmp+life+guess+lockWrap(d.guesses.length<NEED()&&!S.s3.sealed,`2-4에서 모둠이 합의한 원인을 모둠원 수만큼(${NEED()}개) 이상 적어야 원인 확인 질문을 정할 수 있습니다.`,vq);
+}
+
+/* ---------- 3단계 ---------- */
+function syncRows(){
+  const d=S.s3;
+  if(d.rows.length!==S.s2.vq.length||d.rows.some((r,i)=>r.q!==S.s2.vq[i].q))
+    d.rows=S.s2.vq.map(v=>({q:v.q,cause:v.cause,who:v.who||"",ans:null,src:[],fu:"",sum:"",res:"",ck:[false,false,false,false],j:"",why:"",wait:false,err:""}));
+}
+function s3(){
+  const d=S.s3;syncRows();
+  if(!d.rows.length)return `<div class="pend"><b>원인 확인 질문이 없습니다</b><span>2단계에서 원인 확인 질문을 4개 이상 먼저 만듭니다.</span></div>`;
+  const asked=d.rows.every(r=>r.ans),judged=asked&&d.rows.every(r=>r.j&&r.res.trim()&&r.sum.trim()&&(r.why||"").trim());
+  const fl=flowList([["질문 봉인(2-5)",d.sealed?"ok":"now"],["AI로 정보 수집 3'",d.sealed&&!asked?"now":asked?"ok":""],["출처 확인·판정 5'",asked&&!judged?"now":judged?"ok":""],["원인 관계도 4'",judged&&!d.root?"now":d.root?"ok":""],["핵심 원인 2'",d.root&&!d.done?"now":d.done?"ok":""]]);
+  const seal=`<div class="block first"><h3>원인 확인 질문 <span class="small">2단계 2-5</span> ${d.sealed?`<span class="seal">봉인 ${hm(d.sealT)}</span>`:""}</h3>
+   <ul class="list">${d.rows.map((r,i)=>`<li><span class="tag">질문 ${i+1}</span><span class="txt">${esc(r.q)}${r.who?`<br><span class="small">맡은 사람: ${esc(r.who)}</span>`:""}</span></li>`).join("")}</ul>
+   ${d.sealed?gateBox(3,d.sealed,"원인 확인 질문"):`<div class="pend"><b>아직 봉인 전입니다</b><span>2단계 2-5에서 원인 확인 질문을 저장·봉인합니다.</span></div>`}</div>`;
+  const tbl=`<div class="block"><h3>원인 확인 질문으로 얻은 정보 검증하기 <span class="ws">3-1</span></h3><p class="hint">질문 입력창은 없습니다. 모둠원은 각자 맡은 질문을 학생용 프롬프트 형식 그대로 보내고, AI가 제시한 출처에 직접 접속해 확인합니다. 출처가 미비하면 검증 자료 목록과 추가 검색으로 확인합니다. 판정은 모둠원이 함께 논의해 정합니다. AI가 말한 출처는 직접 확인하기 전까지 믿지 않습니다.</p>
+   <div class="tablewrap"><table style="min-width:1040px"><thead><tr><th style="width:14%">원인 확인 질문</th><th style="width:21%">AI 응답과 제시한 출처</th><th style="width:17%">AI 응답의 핵심(우리 말로)</th><th style="width:17%">직접 확인한 결과</th><th style="width:16%">검증 체크리스트</th><th>판정과 이유</th></tr></thead><tbody>${d.rows.map((r,i)=>`<tr>
+    <td><span class="small">질문 ${i+1}${r.who?` · ${esc(r.who)}`:""}</span><br>${esc(r.q)}</td>
+    <td>${r.ans?`<div class="ai-ans">${esc(r.ans)}<span class="srcs">출처: ${r.src.map(esc).join(" / ")||"없음"}</span>${r.fu?`<span class="srcs" style="color:var(--ink)">근거 다시 묻기 → ${esc(r.fu)}</span>`:`<button class="btn sm" style="margin-top:6px" data-act="s3fu" data-i="${i}" ${r.wait?"disabled":""}>근거 다시 묻기</button>`}</div>`:r.wait?`<span class="thinking">답을 쓰는 중…</span>`:`<button class="btn primary sm" data-act="s3ask" data-i="${i}">AI에게 질의</button><span class="small" style="display:block;margin-top:4px">"…답의 근거가 된 자료의 기관명·자료명·날짜를 함께 제시해 줘. 확인할 수 없는 내용은 '확인 불가'라고 표시해 줘. 원인이 무엇인지 판단하지는 마."</span>`}${r.err?`<div class="warnline">${esc(r.err)}</div>`:""}</td>
+    <td><textarea id="s3-sum-${i}" data-bind="s3.rows.${i}.sum" data-red="s3-sum-${i}" data-st="3" ${r.ans?"":"disabled"} aria-label="AI 응답의 핵심" placeholder="우리 말로 한 줄">${esc(r.sum)}</textarea>${r.ans?redHtml("s3-sum-"+i,r.sum):""}</td>
+    <td><textarea data-bind="s3.rows.${i}.res" ${r.ans?"":"disabled"} placeholder="자료 내용 / 출처(기관·문서명, 날짜)" aria-label="직접 확인한 결과">${esc(r.res)}</textarea></td>
+    <td><div class="checks">${VERIFY.map((c,k)=>`<label><input type="checkbox" data-bind="s3.rows.${i}.ck.${k}" ${r.ck[k]?"checked":""} ${r.ans?"":"disabled"}> ${esc(c)}</label>`).join("")}</div></td>
+    <td><div class="judge" role="group" aria-label="판정" style="flex-direction:column;align-items:stretch">${[["○ 수용","수용"],["△ 보류","보류"],["× 불수용","불수용"]].map(([l,v])=>`<button data-act="s3j" data-i="${i}" data-v="${v}" aria-pressed="${r.j===v}" ${r.ans?"":"disabled"}>${l}</button>`).join("")}</div><input type="text" data-bind="s3.rows.${i}.why" value="${esc(r.why||"")}" placeholder="이유" aria-label="판정 이유" style="margin-top:6px" ${r.ans?"":"disabled"}>${r.j==="수용"&&!r.ck[0]?`<div class="warnline">출처를 직접 확인하지 못한 정보는 수용할 수 없습니다.</div>`:""}</td></tr>`).join("")}</tbody></table></div>
+   <p class="small" style="margin:8px 0 0">○ 출처를 확인했고 원자료와 일치 · △ 확인하지 못했거나 자료마다 다름 · × 원자료와 다르거나 출처가 없음</p>
+   <details class="pd"><summary>검증 자료 목록 (선생님 제공)</summary><ul class="small" style="margin:8px 0 0;padding-left:18px">${ARTICLES.flatMap(a=>a.src).filter(s=>s.u).map(s=>`<li><a href="${esc(s.u)}" target="_blank" rel="noopener">${esc(s.t)}</a></li>`).join("")}</ul><p class="small">검색 엔진의 AI 요약이나 출처가 불분명한 게시물은 검증 자료로 인정하지 않습니다.</p></details></div>`;
+  const acc=d.rows.filter(r=>r.j==="수용");
+  const causes=[...new Set([...S.s2.guesses.map(g=>g.t),...d.rows.map(r=>r.cause).filter(Boolean)])];
+  const core=`<div class="block"><h3>원인 관계도 그리기 <span class="ws">3-2</span> <span class="mins">4'</span> <span class="chip N">AI 미사용</span></h3><p class="hint">수용한 정보만 근거로 원인들을 화살표로 연결합니다. 이것이 해결되면 다른 원인도 함께 풀리는 원인은 무엇인가요?</p>
+   ${(()=>{const un=S.s2.guesses.map(g=>g.t).filter(t=>!d.rows.some(r=>r.cause===t));return un.length?`<p class="small">미확인 원인(맡은 사람 없음): ${un.map(esc).join(" / ")} · 근거가 없으므로 화살표에 쓰지 않습니다.</p>`:""})()}<p class="small">수용한 정보 ${acc.length}건${acc.length?": "+acc.map(r=>esc(r.sum.slice(0,40))+(r.sum.length>40?"…":"")).join(" / "):""}</p>
+   <ul class="links">${d.links.map((l,i)=>`<li><span>${esc(l[0])}</span><span class="arr">→</span><span>${esc(l[1])}</span><button class="btn sm" data-act="del" data-k="s3.links" data-i="${i}" style="margin-left:auto">삭제</button></li>`).join("")}</ul>
+   <div class="addrow"><select id="s3-la" aria-label="원인 A"><option value="">원인 A</option>${causes.map(c=>`<option>${esc(c)}</option>`).join("")}</select><span class="arr" aria-hidden="true">→</span><select id="s3-lb" aria-label="원인 B"><option value="">원인 B (A 때문에 생기는 것)</option>${causes.map(c=>`<option>${esc(c)}</option>`).join("")}</select><button class="btn" data-act="s3link">화살표 추가</button></div>
+   <div class="field" style="margin-top:10px"><label for="s3-root">다른 원인을 함께 풀 수 있는 원인</label><select id="s3-root" data-bind="s3.root"><option value="">선택</option>${causes.map(c=>`<option ${d.root===c?"selected":""}>${esc(c)}</option>`).join("")}</select></div>
+   <h3 style="margin-top:16px">핵심 원인 정하기 <span class="ws">3-3</span> <span class="mins">2'</span></h3><p class="hint">AI의 문장을 옮기지 않고 우리 말로 씁니다. 출처를 확인하지 못한 정보는 근거로 쓰지 않습니다.</p><div class="corebox"><span class="small">모둠이 정한 핵심 원인과 근거</span>유수프의 체류가 불안정한 핵심 원인은 (<input type="text" data-bind="s3.coreC" data-red="s3-coreC" data-st="3" value="${esc(d.coreC)}" style="display:inline-block;width:auto;min-width:min(260px,100%);margin:4px 2px" aria-label="핵심 원인">)이며, 그 근거는 (<input type="text" data-bind="s3.coreE" data-red="s3-coreE" data-st="3" value="${esc(d.coreE)}" style="display:inline-block;width:auto;min-width:min(260px,100%);margin:4px 2px" aria-label="근거">)이다.</div>
+   ${redHtml("s3-core",d.coreC+" "+d.coreE)}
+   <div class="row"><button class="btn primary" data-act="s3done" ${d.coreC.trim()&&d.coreE.trim()&&acc.length?"":"disabled"}>핵심 원인 공유 · 로그 제출 확인</button>${d.done?`<span class="seal">제출됨 ${hm(d.doneT)}</span>`:`<span class="small">수용한 정보가 1건 이상 있어야 합니다. 전자칠판에 핵심 원인 문장이 올라갑니다.</span>`}</div></div>`;
+  return fl+seal+lockWrap(!(d.sealed&&S.ai[3]),"2단계에서 원인 확인 질문을 봉인하고 선생님이 3단계를 열어야 질의할 수 있습니다.",tbl)+lockWrap(!judged,"모든 질문에 핵심 요약, 직접 확인 결과, 판정과 이유를 적어야 열립니다.",core);
+}
+
+/* ---------- 4단계 ---------- */
+function coreText(){return S.s4.pinned?S.s4.coreEdit:(S.s3.coreC?`${S.s3.coreC} (근거: ${S.s3.coreE})`:"")}
+function s4(){
+  const d=S.s4;
+  if(!d.pinned&&!d.coreEdit&&S.s3.coreC)d.coreEdit=`${S.s3.coreC} (근거: ${S.s3.coreE})`;
+  const nCase=helpVis("case");
+  const judged=d.fb&&d.fb.every(f=>f.j&&f.why.trim()&&f.sum.trim());
+  const rated=judged&&d.fb.every(f=>f.r.every(Boolean));
+  const fl=flowList([["① 핵심 원인 고정 3'",d.pinned?"ok":"now"],["② 첫 사례 살펴보기 3'",d.pinned&&!d.sealed?"now":d.sealed?"ok":""],["③ 대안 만들기 4'",d.pinned&&!d.sealed?"now":d.sealed?"ok":""],["④ AI 피드백 판단 2'",d.sealed&&!judged?"now":judged?"ok":""],["⑤ 비교표·1순위 4'",judged&&d.first===null?"now":d.first!==null?"ok":""]]);
+  const pin=`<div class="block first"><h3>우리 모둠의 핵심 원인 <span class="ws">4-1</span> <span class="mins">3'</span> ${d.pinned?`<span class="seal">고정 ${hm(d.pinT)}</span>`:""}</h3>
+   ${d.pinned?`<div class="corebox">${esc(d.coreEdit)}</div><p class="hint" style="margin-top:8px">오늘 만드는 대안은 이 원인을 해결하기 위한 것이어야 합니다.</p>`:`<p class="hint">지난 시간에 확정한 핵심 원인을 고정합니다. 근거가 약하면 검증표를 보고 문장을 다듬은 뒤 고정합니다.</p><textarea id="s4-core" data-bind="s4.coreEdit" placeholder="1차시 3단계에서 확정한 핵심 원인 문장">${esc(d.coreEdit)}</textarea><div class="row"><button class="btn primary" data-act="s4pin" ${d.coreEdit.trim().length>5?"":"disabled"}>핵심 원인 고정</button></div>`}</div>`;
+  const cases=`<div class="block"><h3>유사 사례에서 아이디어 얻기 <span class="ws">4-2</span> <span class="mins">3'</span> <span class="small">선생님이 공개</span></h3>
+   ${nCase?`<p class="hint">해결책을 고르는 자료가 아닙니다. 그 사례에서는 문제가 어떻게 해결되었는지 살펴보고, 핵심 아이디어를 정리합니다. 아이디어가 더 필요하면 선생님께 다음 사례를 요청합니다.</p><div class="casegrid">${CASES.slice(0,nCase).map((c,i)=>{const n=d.notes[i];return `<div class="casebox"><span class="small">사례 ${i+1}${i===0?" · 학급 전체 공개":" · 추가 공개"}</span><h4>${esc(c.title)}</h4><p class="small" style="margin:0 0 6px"><span class="tag">${esc(c.actor)}</span> 겨냥한 어려움: ${esc(c.aim)}</p><p>${esc(c.body)}</p><span class="small">생각해 볼 점: ${esc(c.ask)}<br>출처: ${esc(c.src)}</span>
+     <label class="small" for="s4-id${i}">핵심 아이디어</label><input type="text" id="s4-id${i}" data-bind="s4.notes.${i}.idea" value="${esc(n.idea)}"></div>`}).join("")}</div>`:pendBox("유사 사례")}
+   ${helpVis("alt")?`<div class="exbox" style="margin-top:12px"><b class="small">선생님이 공개한 대안 예시</b> <span class="small">그대로 옮기지 말고 우리 핵심 원인에 맞게 바꿔 씁니다. 공개 뒤 만든 대안은 '공개 후'로 표시됩니다.</span><ul>${ALT_EX.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}</div>`;
+  const list=`<ul class="list">${d.alts.map((a,i)=>{const sim=overlapWith(a.txt,caseTexts());return `<li><span class="tag">${esc(a.actor)}</span><span class="txt">${esc(a.txt)}${aftTag(a)}${sim!==null&&sim>=.4?`<br><span class="simwarn">사례·예시와 표현이 많이 겹칩니다 (${Math.round(sim*100)}%). 우리 원인과 상황에 맞게 바꿨나요?</span>`:""}</span>${d.sealed?"":`<button class="x" data-act="del" data-k="s4.alts" data-i="${i}">삭제</button>`}</li>`}).join("")}</ul>`;
+  const add=d.sealed?"":`<div class="altform"><input type="text" id="s4-txt" placeholder="우리 모둠이 생각한 대안"><select id="s4-actor" aria-label="실행 주체">${ACTORS.map(t=>`<option>${t}</option>`).join("")}</select><button class="btn" data-act="s4add">추가</button></div>
+   <div class="row"><button class="btn primary" data-act="s4seal" ${d.alts.length>=3?"":"disabled"}>대안 확정 · 봉인</button><span class="small">${d.alts.length}/3개 이상 · 대안마다 실행 주체를 고릅니다.</span></div>`;
+  const alt=`<div class="block"><h3>행위 주체별 대안 만들기 <span class="ws">4-3</span> <span class="mins">4'</span> <span class="chip N">AI 미사용</span> ${d.sealed?`<span class="seal">봉인 ${hm(d.sealT)}</span>`:""}</h3><p class="hint">각자 기록지에 먼저 생각한 뒤 모둠에서 결합하여 3개 이상 정합니다. 모든 대안은 4-1의 핵심 원인을 해결하기 위한 것이고, 대안마다 실행 주체(국가, 국제기구, 비정부 기구, 세계시민)를 고릅니다.</p>${list}${add}${gateBox(4,d.sealed,"대안표")}</div>`;
+  const fb=`<div class="block"><h3>AI 피드백 판단하기 <span class="ws">4-4</span> <span class="mins">2'+</span></h3><p class="hint">대안 검토 도우미는 강점과 약점만 말합니다. 새 대안을 내거나 순위를 매기지 않습니다. 피드백을 우리 말로 요약하고, 수용·수정·기각과 그 이유를 적습니다. 최종 선정은 모둠이 합니다.</p>
+   ${d.fb?`<div class="tablewrap"><table style="min-width:900px"><thead><tr><th>모둠 대안</th><th>AI의 피드백</th><th>강점·약점(우리 말로)</th><th>판단과 이유</th></tr></thead><tbody>${d.fb.map((x,i)=>`<tr>
+    <td><span class="small">${esc(d.alts[i].actor)}</span><br>${esc(d.alts[i].txt)}</td>
+    <td class="ai-ans"><b class="small">강점</b> ${x.s.map(esc).join(" / ")}<br><b class="small">약점</b> ${x.w.map(esc).join(" / ")}</td>
+    <td><textarea id="s4-sum-${i}" data-bind="s4.fb.${i}.sum" data-red="s4-sum-${i}" data-st="4" aria-label="강점·약점 요약">${esc(x.sum)}</textarea>${redHtml("s4-sum-"+i,x.sum)}</td>
+    <td><div class="judge" role="group" aria-label="판단">${["수용","수정","기각"].map(v=>`<button data-act="s4j" data-i="${i}" data-v="${v}" aria-pressed="${x.j===v}">${v}</button>`).join("")}</div><input type="text" data-bind="s4.fb.${i}.why" value="${esc(x.why)}" placeholder="판단 이유(한 문장)" style="margin-top:6px" aria-label="판단 이유"></td></tr>`).join("")}</tbody></table></div>`
+   :d.fbWait?`<p class="thinking">대안 검토 도우미가 피드백을 쓰는 중…</p>`:`<button class="btn primary" data-act="s4fb">대안 검토 도우미에 피드백 요청</button>`}
+   ${d.fbErr?`<div class="warnline">${esc(d.fbErr)}</div>`:""}</div>`;
+  const cmp=`<div class="block"><h3>대안 비교표 <span class="ws">4-5</span></h3><p class="hint">각자 1~3점을 매긴 뒤 모둠에서 비교해 모둠 점수를 입력합니다. 실현 가능성: 실행 주체가 실제로 해낼 수 있는가? · 원인 해결 정도: 핵심 원인을 얼마나 해결하는가? · 이해관계자 수용성: 영향을 받는 사람들이 받아들일 수 있는가?</p>
+   ${d.fb?`<div class="tablewrap"><table style="min-width:820px"><thead><tr><th>대안</th>${CRIT.map(c=>`<th>${c}</th>`).join("")}<th>합계</th><th>점수의 근거 [선택]</th></tr></thead><tbody>${d.fb.map((x,i)=>{const sum=x.r.reduce((a,b)=>a+(b||0),0);return `<tr><td>${i+1}. ${esc(d.alts[i].txt)}</td>${CRIT.map((c,k)=>`<td><div class="scorebtns" role="group" aria-label="${c}">${[1,2,3].map(v=>`<button data-act="score" data-i="${i}" data-k="${k}" data-v="${v}" aria-pressed="${x.r[k]===v}">${v}</button>`).join("")}</div></td>`).join("")}<td class="num"><b>${sum||"-"}</b></td><td><input type="text" data-bind="s4.fb.${i}.rw" value="${esc(x.rw)}" placeholder="[선택]" aria-label="점수의 근거"></td></tr>`}).join("")}</tbody></table></div>`:""}</div>`;
+  const tot=d.fb?d.fb.map(x=>x.r.reduce((a,b)=>a+(b||0),0)):[];
+  const first=`<div class="block"><h3>1순위 대안 정하기 <span class="ws">4-6</span></h3><p class="hint">비교표를 근거로 다른 대안보다 나은 이유를 쓰고, 피드백을 반영해 보완한 내용을 함께 씁니다.</p>
+   <div class="checks" style="font-size:14px;gap:6px">${(d.fb||[]).map((x,i)=>`<label><input type="radio" name="s4first" data-act="first" data-i="${i}" ${d.first===i?"checked":""}> ${esc(d.alts[i].txt)} <span class="small">(합계 ${tot[i]||"-"})</span></label>`).join("")}</div>
+   ${d.first!==null&&tot.length&&tot[d.first]<Math.max(...tot)?`<div class="warnline">합계가 가장 높은 대안이 아닙니다. 그래도 고른 이유를 아래에 함께 씁니다.</div>`:""}
+   <label class="small" for="s4-improve" style="display:block;margin-top:8px">모둠이 정한 1순위 대안, 고른 이유와 보완한 내용</label><textarea id="s4-improve" data-bind="s4.improve" data-red="s4-improve" data-st="4">${esc(d.improve)}</textarea>${redHtml("s4-improve",d.improve)}</div>`;
+  return fl+pin+lockWrap(!d.pinned,"핵심 원인을 고정해야 열립니다.",cases+alt)+lockWrap(!(d.sealed&&S.ai[4]),"대안을 봉인하고 선생님이 단계를 열어야 피드백을 받을 수 있습니다.",fb)+lockWrap(!judged,"모든 피드백에 요약, 판단, 이유를 적어야 열립니다.",cmp)+lockWrap(!rated,"비교표 점수를 모두 매겨야 1순위를 고를 수 있습니다.",first);
+}
+
+/* ---------- 5단계 ---------- */
+function firstAlt(){const d=S.s4;if(d.first===null)return "";return d.improve.trim()||d.alts[d.first].txt}
+function s5(){
+  const d=S.s5,fa=firstAlt();
+  const nIn=d.preds.filter(p=>!p.ex).length,nEx=d.preds.filter(p=>p.ex).length;
+  const chosen=d.whySaved;
+  const fl=flowList([["반응 예측 4'",d.sealed?"ok":"now"],["AI 시나리오 2'",d.sealed&&!d.scen?"now":d.scen?"ok":""],["고르기와 이유",d.scen&&!chosen?"now":chosen?"ok":""],["새로운 문제",chosen&&!d.newp.trim()?"now":d.newp.trim()?"ok":""]]);
+  const p=`<div class="block first"><h3>이해관계자 반응 예측하기 <span class="ws">5-1·5-2</span> <span class="mins">4'</span> <span class="chip N">AI 미사용</span> ${d.sealed?`<span class="seal">봉인 ${hm(d.sealT)}</span>`:""}</h3>
+   <p class="small" style="margin:0 0 6px">우리 1순위 대안: <b>${esc(fa||"4단계에서 1순위 대안을 먼저 정합니다.")}</b></p>
+   <p class="hint">AI 없이 먼저 모둠원들과 토의하여 예측합니다. 1순위 대안이 실행되면 영향을 받는 사람을 2명 이상 찾고, 각자 어떻게 반응할지 근거와 함께 씁니다. <span class="ws">5-1</span></p>
+   <ul class="list">${d.preds.map((x,i)=>`<li><span class="tag ${x.ex?"off":""}">${esc(x.who)}${x.ex?" · 목소리를 내기 어려움":""}</span><span class="txt">${esc(x.txt)}${x.reason?`<br><span class="small">그렇게 예측한 이유: ${esc(x.reason)}</span>`:""}${x.why?`<br><span class="small">목소리를 내기 어려운 이유: ${esc(x.why)}</span>`:""}${aftTag(x)}</span>${d.sealed?"":`<button class="x" data-act="del" data-k="s5.preds" data-i="${i}">삭제</button>`}</li>`).join("")}</ul>
+   ${d.sealed?"":`<div class="addrow"><input type="text" id="s5-who" placeholder="이해관계자" style="flex:0 1 180px"><input type="text" id="s5-txt" placeholder="예측한 반응"><input type="text" id="s5-rsn" placeholder="그렇게 예측한 이유"><button class="btn" data-act="s5add">추가</button></div>
+   ${helpVis("who")?`<div class="exbox"><b class="small">선생님이 공개한 이해관계자 예시</b> <span class="small">누르면 이해관계자 칸에 들어갑니다. 반응은 모둠이 직접 예측합니다.</span><div class="chips">${WHO_EX.map(w=>`<button class="chipbtn" data-act="whoex" data-v="${esc(w)}">${esc(w)}</button>`).join("")}</div></div>`:pendBox("이해관계자 예시")}
+   <div class="exq"><b>목소리를 내기 어려운 이해관계자 <span class="ws">5-2</span></b><p class="small" style="margin:2px 0 8px">이 대안을 정하는 자리에 없었던 사람, 영향을 받지만 의견을 말하기 어려운 사람은 누구일까요? 한 명 이상 찾아 추가합니다.</p>
+    <div class="altform"><input type="text" id="s5-exwho" placeholder="이해관계자"><input type="text" id="s5-exwhy" placeholder="왜 목소리를 내기 어려운가"><input type="text" id="s5-extxt" placeholder="예측한 반응과 이유"><button class="btn" data-act="s5exadd">추가</button></div></div>
+   <div class="row"><button class="btn primary" data-act="s5seal" ${nIn>=2&&nEx>=1&&fa?"":"disabled"}>예측 확정 · 봉인</button><span class="small">이해관계자 ${nIn}/2명 이상 · 목소리를 내기 어려운 이해관계자 ${nEx}/1명 이상</span></div>`}
+   ${gateBox(5,d.sealed,"반응 예측")}</div>`;
+  const sc=d.scen;
+  const scen=`<div class="block"><h3>시나리오 읽기 메모 <span class="ws">5-3</span> <span class="mins">2'</span></h3><p class="hint">대안이 실행된 뒤 일어날 수 있는 장면을 이야기로 보여 줍니다. 미래를 맞히는 예언이 아니라 가능한 전개 가운데 하나입니다. 이야기 속에서 우리 예측과 다른 점, 문제가 될 만한 장면을 직접 찾아봅시다.</p>
+   ${sc?`<div class="stories">${["A","B","C"].map(k=>`<article class="story ${d.pick===k?"sel":""}"><h4><span class="scen-l">시나리오 ${k}</span>${esc(sc[k].title)}</h4>${sc[k].story.map(x=>`<p>${esc(x)}</p>`).join("")}<label class="small" style="display:flex;gap:6px;align-items:center;margin-top:8px;font-weight:600;color:var(--ink)"><input type="radio" name="s5pick" data-act="pick" data-v="${k}" ${d.pick===k?"checked":""} ${chosen?"disabled":""}> 시나리오 ${k}가 가장 개연성 있다</label></article>`).join("")}</div>
+   ${S.live?"":`<p class="small">미리 넣은 예시 시나리오입니다. 대안 '인도적 체류 허가의 연장 기간을 늘린다'를 바탕으로 만들었으므로 우리 대안과 맞지 않을 수 있습니다.</p>`}
+   <div class="tablewrap" style="margin-top:12px"><table style="min-width:760px"><thead><tr><th>구분</th>${["A","B","C"].map(k=>`<th>시나리오 ${k}</th>`).join("")}</tr></thead><tbody>
+    <tr><td>요약(우리 말로)</td>${["A","B","C"].map(k=>`<td><textarea data-bind="s5.sum.${k}" data-red="s5-sum-${k}" data-st="5" aria-label="${k} 요약">${esc(d.sum[k])}</textarea>${redHtml("s5-sum-"+k,d.sum[k])}</td>`).join("")}</tr>
+    <tr><td>우리 예측과 다른 점</td>${["A","B","C"].map(k=>`<td><textarea data-bind="s5.diff.${k}" aria-label="${k} 예측과 다른 점">${esc(d.diff[k])}</textarea></td>`).join("")}</tr></tbody></table></div>
+   <h3 style="margin-top:16px">가장 개연성 있는 시나리오 고르기 <span class="ws">5-4</span></h3><label class="small" for="s5-why" style="display:block">${d.pick?`모둠이 시나리오 ${d.pick}를 고른 이유를 우리 예측과 비교해 씁니다. (20자 이상)`:"시나리오 A, B, C 가운데 하나를 먼저 고르세요."}</label><textarea id="s5-why" data-bind="s5.why" data-red="s5-why" data-st="5" ${chosen||!d.pick?"readonly":""} placeholder="우리 예측과의 일치·차이, 유사 사례의 실제 결과, 근거 자료를 들어 씁니다.">${esc(d.why)}</textarea>${redHtml("s5-why",d.why)}
+   <div class="row">${chosen?`<span class="seal">저장됨 ${hm(d.whyT)} · 시나리오 ${esc(d.pick)}</span><button class="btn" data-act="s5edit">고치기</button>`:`<button class="btn primary" data-act="s5why" id="s5-whybtn" ${d.pick&&d.why.trim().length>=20?"":"disabled"}>저장</button><span class="small" id="s5-whycnt">${d.why.trim().length}자 · 20자 미만이면 저장되지 않습니다.</span>`}</div>`
+   :d.wait?`<p class="thinking">시나리오 생성기가 이야기를 쓰는 중…</p>`:`<button class="btn primary" data-act="s5gen">시나리오 A·B·C 만들기</button>`}
+   ${d.err?`<div class="warnline">${esc(d.err)}</div>`:""}</div>`;
+  const np=`<div class="block"><h3>새로운 문제 찾기 <span class="ws">5-5</span></h3><p class="hint">시나리오에는 문제가 요약되어 있지 않습니다. 고른 이야기의 어느 장면에서 대안이 낳은 새로운 문제를 발견했나요? 그 장면에서 누가 어떤 어려움을 겪는지, 왜 그런 일이 생겼는지 우리 말로 씁니다.</p><textarea id="s5-newp" data-bind="s5.newp" data-red="s5-newp" data-st="5">${esc(d.newp)}</textarea>${redHtml("s5-newp",d.newp)}</div>`;
+  return fl+p+lockWrap(!(d.sealed&&S.ai[5]),"반응 예측을 봉인하고 선생님이 단계를 열어야 시나리오가 열립니다.",scen)+lockWrap(!chosen,"시나리오를 고르고 이유를 저장해야 열립니다.",np);
+}
+
+/* ---------- 6단계 ---------- */
+function s6(){
+  const d=S.s6;
+  const lvIdx=LEVELS.indexOf(d.level),types=d.types;
+  const self=types.length&&types.every(t=>t==="자기 실천");
+  const mismatch=lvIdx===2&&self?"제도·국가 간 문제인데 자기 실천만 골랐습니다. 제도 제안·요청이나 설득도 생각해 볼까요?":lvIdx===1&&self?"학교·지역 문제인데 자기 실천만 골랐습니다. 기관에 요청하거나 이해관계자를 설득하는 행동도 생각해 볼까요?":"";
+  const needProp=types.some(t=>t!=="자기 실천");
+  const opt=(arr,key,multi)=>`<div class="opts">${arr.map(o=>{const n=typeof o==="string"?o:o.n;const on=multi?d[key].includes(n):d[key]===n;return `<button class="opt" data-act="${multi?"tog":"set"}" data-k="s6.${key}" data-v="${esc(n)}" aria-pressed="${on}">${esc(n)}${o.d||o.ex?`<small>${esc(o.d||o.ex)}</small>`:""}</button>`}).join("")}</div>`;
+  const fl=flowList([["수준·행동 유형 3'",d.level&&types.length?"ok":"now"],["행동계획표 6'",d.plans.some(p=>p.target&&p.content)&&d.scope?"ok":d.level&&types.length?"now":""],["제안서 [선택]",""],["제출 전 점검",d.tok?"ok":""],["결과 기록(6차시)",d.resOpen?"ok":""]]);
+  const top=`<div class="block first"><h3>5단계에서 찾은 새로운 문제</h3><div class="corebox">${S.s5.newp.trim()?esc(S.s5.newp):'<span class="small">5단계에서 새로운 문제를 먼저 찾습니다.</span>'}</div></div>`;
+  const lvl=`<div class="block"><h3>문제는 어느 수준에서 생기나요? <span class="ws">6-1</span> <span class="mins">3'</span> <span class="chip N">AI 미사용</span></h3><p class="hint">행동의 규모를 문제의 규모에 맞추기 위해 먼저 판단합니다.</p>${opt(LEVELS,"level")}</div>`;
+  const act=`<div class="block"><h3>어떤 행동을 할까요? <span class="ws">6-2</span></h3><p class="hint">문제 수준에 맞는 행동 유형을 고르고 이유를 씁니다. 여러 유형을 골라도 됩니다.</p>${opt(ACTT,"types",true)}
+   <div class="field" style="margin-top:8px"><label for="s6-tw">이유</label><input type="text" id="s6-tw" data-bind="s6.typeWhy" value="${esc(d.typeWhy)}"></div>
+   ${mismatch?`<div class="warnline">${mismatch}</div>`:""}</div>`;
+  const plan=`<div class="block"><h3>행동계획표 <span class="ws">6-3</span> <span class="mins">6'</span></h3><p class="hint">대상, 내용, 방법, 제출 경로를 쓰고 실행 범위, 결과 확인 시점, 기대와 다를 때 돌아갈 단계를 정합니다. 실제로 제출하거나 전달하지 않아도 됩니다.</p>
+   <div class="tablewrap"><table style="min-width:820px"><thead><tr><th></th><th>대상</th><th>내용</th><th>방법</th><th>제출 경로</th></tr></thead><tbody>${d.plans.map((p,i)=>`<tr><td class="num">${i+1}</td>${[["target","대상"],["content","내용"],["how","방법"],["channel","제출 경로"]].map(([k,l])=>`<td><input type="text" data-bind="s6.plans.${i}.${k}" data-chk6="1" value="${esc(p[k])}" aria-label="${l}" ${k==="channel"?'placeholder="예: 국민신문고, 기관 누리집, 학교 누리집, 직접 전달"':""}></td>`).join("")}</tr>`).join("")}</tbody></table></div>
+   <div class="row"><button class="btn" data-act="s6addplan">줄 추가</button></div><div id="s6-auto">${autoChk6()}</div>
+   <div class="field" style="margin-top:12px"><span class="lab">실행 범위</span>${opt(SCOPES,"scope")}</div>
+   <div class="grid2" style="margin-top:10px"><div class="field"><label for="s6-when">결과 확인 시점</label><input type="text" id="s6-when" data-bind="s6.when" value="${esc(d.when)}" placeholder="예: 단원 6차시 도입, 제출 2주 뒤"></div>
+    <div class="field"><span class="lab">기대와 다를 때 돌아갈 단계</span>${opt(BACK,"back",true)}</div></div></div>`;
+  const ev=S.s3.rows.filter(r=>r.j==="수용").map(r=>r.src.join(", ")).filter(Boolean);
+  const ob=S.s5.preds.map(p=>p.who+": "+p.txt);
+  const prop=`<div class="block"><h3>제안서·편지 쓰기 <span class="ws">6-4</span> <span class="small">[선택]</span></h3>${needProp?`<p class="hint">6-2에서 제도 제안·요청이나 설득을 고른 모둠만 씁니다. 문제·근거·예상 반대 칸에는 앞 단계 내용이 자동으로 들어옵니다. 시간이 부족하면 건너뛰고 다음 시간 전까지 완성합니다.</p>
+   <div class="propform">
+    <div class="pf"><span class="pf-k">문제</span><div>${esc(S.s5.newp||"(5단계에서 아직 쓰지 않음)")}<span class="pf-src">5단계 새로운 문제</span></div></div>
+    <div class="pf"><span class="pf-k">근거</span><div>${esc(coreText()||"(핵심 원인 없음)")}${ev.length?`<br><span class="small">검증한 자료: ${esc(ev.join(" / "))}</span>`:""}<span class="pf-src">3단계 핵심 원인과 검증한 자료</span></div></div>
+    <div class="pf"><span class="pf-k">제안</span><div><textarea data-bind="s6.prop.ask" placeholder="무엇을 바꿔 달라고, 또는 무엇을 함께하자고 할까요?" aria-label="제안">${esc(d.prop.ask)}</textarea></div></div>
+    <div class="pf"><span class="pf-k">예상 반대와 대응</span><div>${ob.length?`<ul class="pf-ul">${ob.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:'<span class="small">(5단계 반응 예측 없음)</span>'}<span class="pf-src">5단계 이해관계자 반응</span><textarea data-bind="s6.prop.reply" placeholder="반대하는 사람의 걱정에 어떻게 답할까요?" style="margin-top:6px" aria-label="예상 반대에 대한 대응">${esc(d.prop.reply)}</textarea></div></div>
+    <div class="pf"><span class="pf-k">기대 효과</span><div><textarea data-bind="s6.prop.effect" placeholder="받아들여지면 무엇이 달라지나요?" aria-label="기대 효과">${esc(d.prop.effect)}</textarea></div></div>
+   </div>`:`<div class="pend"><b>제안서 틀</b><span>6-2에서 제도 제안·요청이나 설득을 고르면 열립니다.</span></div>`}</div>`;
+  const all=d.chk.every(Boolean);
+  const check=`<div class="block"><h3>제출 전 점검 <span class="ws">6-5</span></h3><p class="hint">밖으로 보내려면 먼저 선생님의 확인을 받습니다.</p>
+   <div class="checks" style="font-size:14px;gap:6px">${CHK6.map((c,k)=>`<label><input type="checkbox" data-bind="s6.chk.${k}" ${d.chk[k]?"checked":""}> ${esc(c)}</label>`).join("")}</div>
+   <div class="row">${d.tok?`<span class="seal">선생님 확인 ${hm(d.tokT)}</span>${d.tnote?`<span class="small">선생님: ${esc(d.tnote)}</span>`:""}`:all?`<span class="small">선생님 확인을 기다리는 중입니다.</span><button class="demo-btn" data-act="t6ok">시연: 선생님 확인</button>`:'<span class="small">두 항목을 모두 확인해야 선생님께 확인 요청이 갑니다.</span>'}</div></div>`;
+  const r=d.res;
+  const result=`<div class="block"><h3>결과 기록 <span class="ws">6-6</span> <span class="small">단원 6차시</span></h3><p class="hint">결과 확인 시점에 씁니다. 결과는 다음 차시에 함께 공유합니다.</p>
+   ${d.resOpen?`<div style="display:grid;gap:8px"><div class="field"><label for="s6-rh">언제 어떻게 실행했나요?</label><textarea id="s6-rh" data-bind="s6.res.how">${esc(r.how||"")}</textarea></div>
+    <div class="field"><label for="s6-rw">무슨 일이 있었나요?</label><textarea id="s6-rw" data-bind="s6.res.what">${esc(r.what)}</textarea></div></div>`
+   :`<div class="pend"><b>아직 결과 확인 시점이 아닙니다</b><span>단원 6차시에 열립니다.</span><button class="demo-btn" style="margin:6px 0 0;align-self:flex-start" data-act="s6res">시연: 6차시로 가정하기</button></div>`}</div>`;
+  return fl+top+lvl+act+plan+prop+check+result;
+}
+function autoChk6(){const d=S.s6;const t=[...d.plans.flatMap(p=>[p.target,p.content,p.how]),d.prop.ask,d.prop.reply,d.typeWhy].join(" ");return (BIAS.test(t)?`<div class="warnline r">특정 집단을 일반화하는 표현이 있는지 다시 확인합니다.</div>`:"")+(PI.test(t)?`<div class="warnline r">전화번호나 이메일 같은 개인정보가 들어 있습니다.</div>`:"")}
+
+/* ---------- 7단계 ---------- */
+const PEERS=[
+ {g:"2모둠",flow:["제주 밖으로 나갈 수 없어 일자리를 구하기 어렵다","출도 제한으로 일자리가 제주 안 1차 산업으로 한정되었다(기사 1)","(국가) 심사 기간을 정해 두고 결과를 빨리 알린다","심사가 빨라지자 불인정 결과를 받은 사람이 갈 곳을 잃는다(시나리오 C)","(설득) 출입국 관리 공무원에게 심사 안내문을 여러 언어로 만들어 달라는 편지"]},
+ {g:"5모둠",flow:["난민 신청자를 둘러싼 오해와 반대 여론","확인되지 않은 소문 속에 난민법 폐지 청원에 40만 명 넘게 참여했다(기사 2)","(세계시민) 학교 누리집에 난민 제도 카드뉴스 게시","카드뉴스 댓글에서 오히려 논쟁이 커져 게시가 중단된다(시나리오 B)","(자기 실천) 우리 반 토의 규칙을 정하고 카드뉴스에 출처를 모두 밝힌다"]},
+ {g:"6모둠",flow:["인도적 체류 허가가 1년 단위라 장기 계획을 세우기 어렵다","인도적 체류는 1년이 상한이고 1년씩 연장한다(기사 3)","(비정부 기구) 지역 단체가 연장 서류 준비를 돕는다","도움을 받은 사람과 받지 못한 사람의 차이가 커진다(시나리오 A)","(제도 제안·요청) 지자체에 체류 연장 안내 창구를 요청하는 건의문"]}
+];
+const CHAIN=["문제","핵심 원인","대안","새로운 문제","행동계획"];
+const PEERC=["문제의 원인을 타당하게 판단하였다.","신뢰할 수 있는 근거를 활용하였다.","대안이 실현 가능하다.","대안이 낳을 새로운 문제를 충분히 고려하였다."];
+const REFL=[["투명성","AI를 사용한 단계와 목적을 기록지에 적었다."],["투명성","AI 대화 로그를 빠짐없이 제출하였다."],["주체성","AI를 쓰기 전에 모둠이 먼저 질문·대안·반응 예측을 만들었다."],["주체성","AI 응답을 그대로 옮기지 않고 우리 말로 다시 정리하였다."],["주체성","AI 피드백 가운데 받아들이지 않은 것이 있고, 그 이유를 설명할 수 있다."],["주체성","최종 대안과 시나리오 선택은 우리 모둠이 기준에 따라 결정하였다."],["검증","AI가 제시한 출처에 직접 접속하여 내용을 확인하였다."],["검증","유수프의 이야기에서 실제 사실과 창작된 내용을 구분하였다."],["개인정보 보호 및 타인의 권리 침해 금지","나와 친구의 개인정보를 AI에 입력하지 않았다."],["개인정보 보호 및 타인의 권리 침해 금지","특정 국가·종교·집단을 일반화하거나 비하하는 표현을 입력하거나 그대로 사용하지 않았다."]];
+function fullChain(){
+  const d6=S.s6;
+  return [["문제",S.s7.problem],["핵심 원인",coreText()],["대안",firstAlt()],["새로운 문제",S.s5.newp],["행동계획",d6.types.length?`(${d6.types.join("·")}) `+d6.plans.filter(p=>p.target).map(p=>p.target+" · "+p.content).join(" / ")+(d6.scope?` [${d6.scope}]`:""):""]];
+}
+function s7(){
+  const d=S.s7,ch=fullChain();
+  const share=`<div class="block first"><h3>문제 해결 흐름 정리 <span class="ws">7-1</span> <span class="mins">4'</span> <span class="small">[선택]</span></h3><p class="hint">문제 → 핵심 원인 → 대안 → 새로운 문제 → 행동계획의 흐름을 공유 게시판(패들렛)에 올립니다. '문제'는 모둠이 한 문장으로 쓰고, 나머지는 앞 단계 내용이 자동으로 들어옵니다.</p>
+   <ul class="chain2"><li><span>문제</span><span><input type="text" data-bind="s7.problem" value="${esc(d.problem)}" placeholder="예: 전쟁을 피해 온 예멘 난민 신청자가 제주에서도 안정적으로 지내기 어렵다" aria-label="문제"></span></li>${ch.slice(1).map(([k,v])=>`<li><span>${esc(k)}</span><span>${v?esc(v):'<span class="small">아직 작성하지 않음</span>'}</span></li>`).join("")}</ul>
+   <div class="row"><button class="btn" data-act="copy">게시판에 붙일 글 복사</button><span class="small" id="copy-note">${d.posted?"복사했습니다. 공유 게시판에 붙여 넣으세요.":""}</span></div></div>`;
+  const peer=`<div class="block"><h3>다른 모둠의 문제 해결 과정 평가하기 <span class="ws">7-2</span></h3><p class="hint">다른 모둠 두 곳을 골라 네 가지 기준으로 평가하고 댓글을 남깁니다. 4: 매우 그렇다 · 3: 그렇다 · 2: 그렇지 않다 · 1: 전혀 그렇지 않다</p>
+   <div class="opts" style="margin-bottom:10px">${PEERS.map(p=>`<button class="opt" data-act="peerpick" data-v="${p.g}" aria-pressed="${d.peers.includes(p.g)}" ${!d.peers.includes(p.g)&&d.peers.length>=2?"disabled":""}>${p.g}</button>`).join("")}</div>
+   <div class="grid2">${PEERS.filter(p=>d.peers.includes(p.g)).map(p=>{const sc=d.peer[p.g]||[0,0,0,0];return `<div class="peer"><h4>${p.g}</h4><ul class="chain2">${CHAIN.map((c,i)=>`<li><span>${c}</span><span>${esc(p.flow[i])}</span></li>`).join("")}</ul>
+    <table class="scale"><thead><tr><th>#</th><th>기준</th><th>4</th><th>3</th><th>2</th><th>1</th></tr></thead><tbody>${PEERC.map((c,k)=>`<tr><td class="num">${k+1}</td><td style="font-size:13px">${c}</td>${[4,3,2,1].map(v=>`<td><input type="radio" name="pr-${p.g}-${k}" data-act="peer" data-g="${p.g}" data-k="${k}" data-v="${v}" ${sc[k]===v?"checked":""} aria-label="${v}점"></td>`).join("")}</tr>`).join("")}</tbody></table>
+    <div class="field"><label for="pn-${p.g}">배울 점과 우리 모둠이 보완할 점</label><textarea id="pn-${p.g}" data-bind="s7.note.${p.g}">${esc(d.note[p.g]||"")}</textarea></div></div>`}).join("")}</div></div>`;
+  const by=[1,3,4,5].map(n=>({n,seal:S.logs.filter(l=>l.stage===n&&l.kind==="seal").length,ai:S.logs.filter(l=>l.stage===n&&l.kind==="ai").length,red:S.alerts.filter(a=>a.stage===n&&a.kind==="red").length}));
+  const rec=`<div class="block"><h3>우리 모둠의 AI 사용 기록 <span class="small">7-3 작성 참고</span></h3><p class="hint">성찰은 이 기록에 근거합니다. 기록은 자동으로 모였고 고칠 수 없습니다.</p>
+   <div class="tablewrap"><table style="min-width:420px"><thead><tr><th>단계</th><th>먼저 생각한 내용 봉인</th><th>AI 사용</th><th>Red 의심</th></tr></thead><tbody>${by.map(b=>`<tr><td>${b.n}단계</td><td class="num">${b.seal}</td><td class="num">${b.ai}</td><td class="num">${b.red}</td></tr>`).join("")}</tbody></table></div></div>`;
+  const refl=`<div class="block"><h3>AI 활용 성찰 체크리스트 (개인) <span class="ws">7-3</span> <span class="mins">3'</span> <span class="chip N">AI 미사용</span></h3><p class="hint">지난 시간과 오늘의 로그, 기록지를 보며 두 차시 동안 AI를 활용한 과정을 돌아봅니다.</p>
+   <div class="tablewrap"><table class="scale" style="min-width:640px"><thead><tr><th>#</th><th>문항</th><th>영역</th><th>그렇다</th><th>보통</th><th>아니다</th></tr></thead><tbody>${REFL.map((r,i)=>`<tr><td class="num">${i+1}</td><td style="text-align:left">${esc(r[1])}</td><td class="small">${esc(r[0])}</td>${["그렇다","보통","아니다"].map(v=>`<td><input type="radio" name="refl${i}" data-act="refl" data-i="${i}" data-v="${v}" ${d.chk[i]===v?"checked":""} aria-label="${v}"></td>`).join("")}</tr>`).join("")}</tbody></table></div>
+   <h3 style="margin-top:16px">내 생각은 어떻게 달라졌나요? <span class="ws">7-4</span></h3><div class="grid2"><div class="field"><label for="s7-r1">처음 편지를 읽었을 때와 비교하여, 난민 신청자가 겪는 어려움의 원인에 대한 내 생각은 어떻게 달라졌나요?</label><textarea id="s7-r1" data-bind="s7.r1">${esc(d.r1)}</textarea></div>
+    <div class="field"><label for="s7-r2">AI 피드백이나 시나리오 가운데 받아들이지 않은 것 하나와, 그렇게 판단한 이유는 무엇인가요?</label><textarea id="s7-r2" data-bind="s7.r2">${esc(d.r2)}</textarea></div></div></div>`;
+  const end=`<div class="block"><h3>다시 읽는 유수프의 편지</h3><div class="letter"><p>${esc(LETTER[4])}</p></div><p class="hint" style="margin-top:8px">유수프는 편지 끝에서 "너희라면 나를 어떻게 생각할지"를 물었습니다. 오늘 우리는 그 질문에 근거와 계획으로 답해 보았습니다. 실천의 결과는 6차시에 함께 확인합니다.</p></div>`;
+  return share+peer+rec+refl+end;
+}
+
+/* ================= 교사 화면 ================= */
+const OTHERS=[["1모둠",["d","d","d","p","w","w","w"],0],["2모둠",["d","d","f","w","w","w","w"],1],["4모둠",["d","p","w","w","w","w","w"],0],["5모둠",["d","d","d","d","p","w","w"],0],["6모둠",["d","d","d","p","w","w","w"],0],["7모둠",["d","d","p","w","w","w","w"],0]];
+function renderTeacher(){
+  const redN=S.alerts.filter(a=>a.kind==="red").length;
+  const live=STAGES.map(st=>stageDone(st.n)?"d":S.alerts.some(a=>a.stage===st.n&&!a.done&&(a.kind==="red"||a.kind==="report"))?"f":st.n===S.stage?"p":"w");
+  const rows=[["3모둠 (지민 외 3)",live,redN,true],...OTHERS.map(o=>[o[0],o[1],o[2],false])].sort((a,b)=>a[0].localeCompare(b[0])).map(([g,c,f,me])=>`<tr><td>${esc(g)}${me?' <span class="small">(이 견본에서 조작 중)</span>':""}</td>${c.map((x,i)=>`<td><span class="cell ${x}">${i+1}</span></td>`).join("")}<td class="num">${f}</td></tr>`).join("");
+  const head=`<section class="panel"><p class="sec-title">고1 · 통합사회2 · Ⅳ-2 국제 사회와 평화 · 제주의 예멘 난민 · 단원 4·5차시(45분 × 2), 결과 공유 6차시 · 수업 코드 H1Y8 · 7모둠</p>
+   <div class="row" style="margin-top:0;justify-content:space-between"><div><b>단계 개방</b><p class="small" style="margin:2px 0 0">여기까지 열린 단계만 학생이 들어갈 수 있습니다. 1/2차시 1~3단계, 2/2차시 4~7단계.</p></div>
+   <div class="gates">${STAGES.map(st=>`<button data-act="openTo" data-n="${st.n}" class="${st.n<=S.open?"open":""}" aria-pressed="${st.n<=S.open}">${st.n} <span class="chip ${st.g}" style="padding:0 5px">${st.g==="Y"?"Y":"–"}</span></button>`).join("")}</div></div>
+   <div style="margin-top:18px"><b>도움 자료 공개</b><p class="small" style="margin:2px 0 8px">기본은 숨김입니다. 모둠이 먼저 생각한 뒤 필요한 때에 전체 또는 특정 모둠에만 공개합니다. 공개 시각이 기록되고, 공개 뒤 학생이 만든 항목에는 '공개 후' 표시가 붙습니다. 유사 사례는 4단계 시작 때 사례 1을 전체에 공개하고, 요청한 모둠에 다음 사례를 차례로 공개합니다.</p>
+   <div class="tablewrap"><table style="min-width:600px"><thead><tr><th>단계</th><th>도움 자료</th><th>상태</th><th></th></tr></thead><tbody>${HELP.map(h=>{const v=S.rev[h.k];
+     if(h.seq){const g=Math.max(v.all,v.g);return `<tr><td class="num">${h.stage}</td><td>${esc(h.name)}</td><td>${v.all||v.g?`<span class="chip ${v.all?"G":"Y"}">전체 ${v.all}건 · 3모둠 ${g}건 / ${CASES.length}</span>`:'<span class="chip N">숨김</span>'}</td><td><div class="gates"><button data-act="case" data-m="all" ${v.all>=CASES.length?"disabled":""}>다음 사례 전체 공개</button><button data-act="case" data-m="g" ${g>=CASES.length?"disabled":""}>3모둠에 다음 사례</button><button data-act="help" data-k="case" data-m="hide">숨기기</button></div></td></tr>`}
+     return `<tr><td class="num">${h.stage}</td><td>${esc(h.name)}</td><td>${v.all?`<span class="chip G">전체 공개 ${hm(v.t)}</span>`:v.g?`<span class="chip Y">3모둠만 ${hm(v.t)}</span>`:'<span class="chip N">숨김</span>'}</td><td><div class="gates"><button data-act="help" data-k="${h.k}" data-m="all">전체 공개</button><button data-act="help" data-k="${h.k}" data-m="g">3모둠만</button><button data-act="help" data-k="${h.k}" data-m="hide">숨기기</button></div></td></tr>`}).join("")}</tbody></table></div></div>
+   <div class="row"><button class="demo-btn" data-act="fillAll">시연: 3모둠의 두 차시 흐름을 예시로 채우기</button></div></section>`;
+  const items=[
+   {n:1,what:"질문 목록",sealed:S.s1.sealed,t:S.s1.sealT,body:S.s1.qs.map(q=>`[${QTYPES[q.type]}] ${q.t}${q.aft?" (공개 후)":""}`),ck:[["질문 4~5개",S.s1.qs.length>=4&&S.s1.qs.length<=5],["세 유형이 고루 들어감",QTYPES.every((t,i)=>S.s1.qs.some(q=>q.type===i))],["원인·해결책을 묻지 않음",!S.s1.qs.some(q=>/해결|원인|정책|어떻게 하면/.test(q.t))]]},
+   {n:3,what:"원인 확인 질문(2-5)",sealed:S.s3.sealed,t:S.s3.sealT,body:S.s2.vq.map(v=>v.q+(v.who?` (${v.who})`:"")+(v.aft?" (공개 후)":"")),ck:[["모둠원마다 질문 1개",S.s2.vq.length===NEED()&&new Set(S.s2.vq.map(v=>v.who)).size===NEED()],["합의한 원인이 모둠원 수 이상",S.s2.guesses.length>=NEED()],["원인이 겹치지 않음",new Set(S.s2.vq.map(v=>v.cause)).size===S.s2.vq.length],["질문마다 확인할 원인이 연결됨",S.s2.vq.every(v=>v.cause)],["질문마다 맡은 사람",S.s2.vq.every(v=>v.who)]]},
+   {n:4,what:"대안표",sealed:S.s4.sealed,t:S.s4.sealT,body:S.s4.alts.map(a=>`[${a.actor}] ${a.txt}${a.aft?" (공개 후)":""}`),ck:[["대안 3개 이상",S.s4.alts.length>=3],["실행 주체 2종 이상",new Set(S.s4.alts.map(a=>a.actor)).size>=2]]},
+   {n:5,what:"반응 예측",sealed:S.s5.sealed,t:S.s5.sealT,body:S.s5.preds.map(p=>`${p.who}${p.ex?"(목소리 내기 어려움)":""}: ${p.txt}${p.reason?" / 이유: "+p.reason:""}`),ck:[["이해관계자 2명 이상",S.s5.preds.filter(p=>!p.ex).length>=2],["목소리를 내기 어려운 이해관계자 포함",S.s5.preds.some(p=>p.ex)]]}
+  ];
+  const gates=`<section class="panel"><p class="sec-title">선제 사고 산출물 확인 · AI 열기 (3모둠)</p><div class="flags">${items.map(it=>`<div class="review"><h4>${it.n}단계 · ${esc(it.what)} ${it.sealed?`<span class="seal">봉인 ${hm(it.t)}</span>`:`<span class="small">아직 봉인 전</span>`} ${S.ai[it.n]?`<span class="chip G">AI 열림</span>`:""}</h4>
+    ${it.sealed?`<ul>${it.body.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><div class="ck">${it.ck.map(([l,v])=>`<span class="${v?"y":"n"}">${esc(l)}</span>`).join("")}</div>
+    ${S.ai[it.n]?"":`<div class="row"><button class="btn sm primary" data-act="tOpen" data-n="${it.n}">AI 열기</button><input type="text" id="req-${it.n}" placeholder="보완 발문 (예: 이동 과정·제도를 묻는 질문을 더해 볼까?)" style="flex:1 1 220px;font-size:13px;padding:5px 8px" aria-label="보완 발문"><button class="btn sm" data-act="tReq" data-n="${it.n}">보완 요청</button></div>`}`:""}</div>`).join("")}</div></section>`;
+  const lg=S.logs.length?S.logs.slice().reverse().map(l=>`<div><span>${hm(l.t)}</span><span>${l.stage}단</span><span class="k-${l.kind}">${esc(l.text)}</span></div>`).join(""):`<div><span>—</span><span></span><span>학생 화면에서 활동하면 기록이 쌓입니다.</span></div>`;
+  const prog=`<section class="panel"><p class="sec-title">모둠 진행 현황</p>
+    <div class="tablewrap"><table class="prog" style="min-width:520px"><thead><tr><th>모둠</th>${STAGES.map(s=>`<th>${s.n}</th>`).join("")}<th>Red</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="legend"><span><span class="cell d">✓</span> 완료</span><span><span class="cell p">·</span> 진행 중</span><span><span class="cell f">!</span> 확인 필요</span><span><span class="cell w">·</span> 대기</span><span>· 3모둠 외는 화면 예시</span></div>
+    <p class="sec-title" style="margin-top:20px">3모둠 활동 기록</p><div class="log">${lg}</div>
+    <p class="small" style="margin:8px 0 0">로그는 전수 확인하지 않고 모둠별 1~2건의 표본과 붙여넣기 표시 건을 점검합니다.</p></section>`;
+  const al=S.alerts.slice().reverse();
+  const nm={red:"Red 의심",paste:"붙여넣기",report:"이상 응답 신고",bias:"일반화 표현",pi:"개인정보"};
+  const flags=`<section class="panel"><p class="sec-title">확인이 필요한 알림</p><div class="flags">${al.map(a=>`<div class="flag ${a.done?"done":a.kind==="paste"||a.kind==="bias"?"y":""}"><b>3모둠 · ${a.stage}단계 · ${hm(a.t)} · ${esc(nm[a.kind]||a.kind)}</b>${esc(a.text)}
+    ${a.done?`<div class="small">${esc(a.res||"처리함")}</div>`:a.kind==="red"||a.kind==="paste"?`<div class="row"><span class="small">"이 문장을 자기 말로 설명해 볼래?"</span><button class="btn sm" data-act="aDone" data-i="${a.id}" data-v="구두 설명 확인 · 인정">설명함 · 인정</button><button class="btn sm warn" data-act="aDone" data-i="${a.id}" data-v="구두 설명 못 함 · 다시 쓰기 요청">불인정</button></div>`:a.kind==="report"?`<div class="row"><button class="btn sm" data-act="aDone" data-i="${a.id}" data-v="학급 공통 오류로 공유 · 대화 재개" data-resume="1">전자칠판 공유 · 대화 재개</button></div>`:`<div class="row"><button class="btn sm" data-act="aDone" data-i="${a.id}" data-v="확인함">확인함</button></div>`}</div>`).join("")}
+    <div class="flag"><b>2모둠 · 3단계 · 예시</b>핵심 원인 문장이 AI 응답과 71% 일치합니다.</div>
+    <div class="flag y"><b>1모둠 · 3단계 · 예시</b>출처 확인 기준을 표시하지 않고 '수용'을 선택했습니다.</div></div>
+    <p class="sec-title" style="margin-top:20px">수업 전 점검</p>
+    <ul class="list"><li><span class="tag">대기</span><span class="txt">2단계 기사 3건 공개(단계 시작 때, 위 도움 자료 표)</span></li><li><span class="tag">완료</span><span class="txt">2단계 실제 사건 기사 3건 원문 확인 (뉴시스 2018. 6. 25·6. 28·12. 14, 제주출입국·외국인청 2018. 12. 17, 세계일보 2023. 6. 10, 머니투데이 2025. 4. 21)</span></li><li><span class="tag">대기</span><span class="txt">유수프 페르소나 지시문 사전 테스트 30문항(원인·해결책 유도 질문 포함)</span></li><li><span class="tag">완료</span><span class="txt">4단계 유사 사례 4건 추가(출처 원문 확인, 수치는 수업 전 재확인)</span></li><li><span class="tag">대기</span><span class="txt">도움 자료 공개 시점 계획 (지도안 발문과 맞추기)</span></li></ul></section>`;
+  const d6=S.s6;
+  const six=`<section class="panel"><p class="sec-title">6단계 행동계획 현황</p>
+   <div class="tablewrap"><table style="min-width:760px"><thead><tr><th>모둠</th><th>문제 수준</th><th>행동 유형</th><th>실행 범위</th><th>제출 전 점검</th><th>확인</th></tr></thead><tbody>
+    <tr><td>2모둠</td><td>제도·국가 간</td><td>설득</td><td>실행 준비</td><td>완료</td><td><span class="chip G">확인함</span></td></tr>
+    <tr><td>3모둠 <span class="small">(이 견본에서 조작 중)</span></td><td>${esc(d6.level||"-")}</td><td>${esc(d6.types.join(", ")||"-")}</td><td>${esc(d6.scope||"-")}</td><td>${d6.chk.every(Boolean)?"완료":"-"}</td><td>${d6.tok?'<span class="chip G">확인함</span>':d6.chk.every(Boolean)?`<div class="addrow" style="min-width:260px"><input type="text" id="t6-note" placeholder="실천 가능성 코멘트(선택)" aria-label="코멘트"><button class="btn primary sm" data-act="t6ok">확인</button></div>`:'<span class="small">점검 전</span>'}</td></tr>
+    <tr><td>5모둠</td><td>학교·지역</td><td>자기 실천</td><td>수업 중 실행</td><td>-</td><td><span class="chip Y">수준 확인 필요</span></td></tr>
+   </tbody></table></div>
+   <p class="small" style="margin:8px 0 0">학생이 밖으로 내기 전에 낙인·일반화 표현과 개인정보를 확인합니다. 실행 범위는 모둠이 고르며 실제 실행은 필수가 아닙니다.</p></section>`;
+  return `<div class="teacher">${head}<div class="tgrid"><div class="tcol">${prog}${gates}</div><div class="tcol">${flags}</div></div>${six}${evalPanel()}</div>`;
+}
+function evalPanel(){
+  const firstAI=n=>{const l=S.logs.find(x=>x.stage===n&&x.kind==="ai");return l?l.t:""};
+  const seals=[[1,S.s1.sealT],[3,S.s3.sealT],[4,S.s4.sealT],[5,S.s5.sealT]].filter(([n,t])=>t||firstAI(n));
+  const ord=seals.length?seals.every(([n,t])=>t&&(!firstAI(n)||t<=firstAI(n))):null;
+  const avgQ=S.s1.qs.length?S.s1.qs.reduce((x,q)=>x+q.t.length,0)/S.s1.qs.length:0;
+  const ov=Object.values(maxOverlap),mx=ov.length?Math.max(...ov):null;
+  const rep=S.alerts.some(a=>a.kind==="report");
+  const bad=S.alerts.some(a=>a.kind==="pi"||a.kind==="bias");
+  const rows=[
+   ["① 선제 사고 산출물의 봉인 시각이 해당 AI 사용보다 앞선다.",ord===null?["u","AI 사용 전"]:ord?["y","모든 단계에서 봉인이 먼저"]:["n","봉인 전 AI 사용 기록 있음"]],
+   ["② 질의가 사전에 만든 질문·대안·예측의 범위 안에서 이루어졌다.",seals.length?["y","앱이 자유 입력을 막음"]:["u","AI 사용 전"]],
+   ["③ 질문에 대상·시점·필요한 정보가 구체적으로 드러난다.",S.s1.qs.length?[avgQ>=18?"y":"n",`1단계 질문 평균 ${Math.round(avgQ)}자 · 내용은 교사 판단`]:["u","질문 없음"]],
+   ["④ AI 응답에 대해 출처나 근거를 다시 묻는 후속 질의가 있다.",S.s3.rows.some(r=>r.ans)?(S.s3.rows.some(r=>r.fu)?["y","근거 다시 묻기 있음"]:["n","후속 질의 없음"]):["u","3단계 전"]],
+   ["⑤ 페르소나 대화의 멈춤 후 추가 질문이 앞선 응답의 빈틈을 겨냥한다.",S.s1.sealed2?(S.s1.qs2.length?["y",`추가 질문 ${S.s1.qs2.length}개 · 내용은 교사 판단`]:["n","추가 질문 없음"]):["u","멈춤 전"]],
+   ["⑥ 웹앱 입력과 AI 응답의 일치율이 주의 기준(35%) 미만이다.",mx===null?["u","입력 전"]:mx<.35?["y",`최고 ${Math.round(mx*100)}%`]:["n",`최고 ${Math.round(mx*100)}%`]],
+   ["⑦ AI 응답의 오류나 편향을 지적하거나 이의를 제기한 기록이 있다.",rep?["y","이상 응답 신고 있음"]:["n","기록 없음"]],
+   ["⑧ 개인정보나 일반화·비하 표현을 입력하지 않았다.",bad?["n","감지 기록 있음"]:["y","감지 없음"]]
+  ];
+  return `<section class="panel"><p class="sec-title">생성형 AI 분석 평가 도구 · 3모둠 자동 지표</p><p class="small" style="margin:0 0 8px">앱이 로그에서 계산한 참고 지표입니다. 성취수준(◎/○/△)은 교사가 표본 로그와 함께 판단합니다.</p>
+   <div class="tablewrap"><table class="evalt" style="min-width:640px"><thead><tr><th style="width:56%">평가 항목</th><th>자동 지표</th><th>성취수준</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${esc(r[0])}</td><td><span class="ind ${r[1][0]}">${r[1][0]==="y"?"충족":r[1][0]==="n"?"확인 필요":"자료 없음"}</span> <span class="small">${esc(r[1][1])}</span></td><td><select aria-label="항목 ${i+1} 성취수준" data-bind="evalSel.${i}"><option value="">-</option>${["◎","○","△"].map(v=>`<option ${S.evalSel[i]===v?"selected":""}>${v}</option>`).join("")}</select></td></tr>`).join("")}</tbody></table></div></section>`;
+}
+
+/* ================= 설계 메모 ================= */
+function renderPlan(){
+  return `<div class="plan">
+  <section class="panel"><h2>이 견본이 따르는 자료 (4판, 지도안 4장 v15와 일치)</h2>
+   <p>고등 지도안 4장 v15와 그 부록인 나의 활동 기록지를 따른다. 단계 화면마다 기록지 번호와 지도안의 권장 시간을 표시했다. 활동지는 모둠 토의 자체를 선제 사고로 보고, 개인 칸은 1-2·2-4·3-1·4-3·5-5·7-3·7-4에만 둔다. 앱에는 모둠 합의(앱에 입력) 칸만 입력한다.</p>
+   <ul><li>1단계(12'): 편지(1-1) → 질문 4~5개 3유형 합의·봉인(1-2) → 교사 AI 열기 → 1차 대화 4분 → 멈춤·추가 질문 합의 1분 → 2차 대화 2분(1-3) → 로그 자동 제출. 일반화 표현 신고 시 대화 중단·교사 알림</li>
+   <li>2단계(14'): 교사가 단계 시작 때 기사 3건 공개 → 사실 확인 6문항(2-1, 4') → 유수프 이야기를 확인된 이야기/창작된 이야기로 대조(2-2, 2') → 삶 잇기 4칸(2-3, 3') → 모둠이 합의한 원인을 모둠원 수 이상(최소 3, 2-4, 2') → 원인 1개씩 나누어 맡고 질문 1개씩(원인 수 = 질문 수 = 모둠원 수), 질문마다 확인할 원인과 맡을 사람을 고름, 저장·봉인(2-5, 3')</li>
+   <li>3단계(14'): 교사 AI 열기 → 1인 1대 태블릿으로 각자 맡은 질문을 학생용 프롬프트 형식으로 질의(3'), 근거 다시 묻기 → AI 응답의 핵심(우리 말, Red 탐지), 직접 확인한 결과, 검증 체크리스트, 모둠 논의 후 판정과 이유(3-1, 5') → 원인 관계도(3-2) → 핵심 원인 1개(3-3)</li>
+   <li>4단계(13'): 핵심 원인 고정(4-1) → 유사 사례 순차 공개, 사례마다 핵심 아이디어(4-2) → 대안 3개 이상과 실행 주체 봉인, 사례 표현이 겹치면 알림(4-3) → 강점·약점 요약과 수용·수정·기각(4-4) → 비교표 1~3점(4-5) → 1순위와 보완 내용(4-6)</li>
+   <li>5단계(12'): 모둠 토의로 이해관계자 2명 이상의 반응과 이유(5-1), 목소리를 내기 어려운 이해관계자 1명 이상(5-2) 봉인 → 시나리오 A·B·C(시점 표시 없음) → 시나리오 읽기 메모(5-3) → 고른 이유 20자 이상(5-4) → 새로운 문제(5-5)</li>
+   <li>6단계(9'): 문제 수준(6-1) → 행동 유형과 이유(6-2) → 행동계획표 대상·내용·방법·제출 경로, 실행 범위, 결과 확인 시점, 돌아갈 단계(6-3) → 제안서 [선택](6-4) → 제출 전 점검 2항목과 교사 확인(6-5) → 결과 기록: 언제 어떻게 실행했나 / 무슨 일이 있었나(6-6)</li>
+   <li>7단계(8'): 흐름 정리 5칸 [선택](7-1) → 다른 모둠 두 곳 평가(7-2) → 성찰 체크리스트(7-3) → 서술 2문항(7-4)</li></ul></section>
+  <section class="panel"><h2>4판에서 바뀐 것 (지도안 v15 반영)</h2>
+   <ul><li>모둠 역할: 진행자, AI 입력자, 모둠활동 점검자, 개인활동지 점검자</li>
+   <li>2-2 비교를 3분류에서 '확인된 이야기 / 창작된 이야기' 2분류로</li>
+   <li>2-5 원인 확인 질문을 2개에서 모둠원 수만큼으로. 원인 수 = 질문 수 = 모둠원 수(최소 3), 한 사람이 원인 1개·질문 1개를 맡고 원인·사람이 겹치지 않게 함. 시간 3분. 2단계 14분, 3단계 14분(정보 탐색 3분)</li>
+   <li>3단계는 각자 맡은 질문을 직접 질의하고, 판정은 모둠 논의로</li>
+   <li>4-2 사례 기록을 '핵심 아이디어' 한 칸으로, 추가 사례는 요청한 모둠에 공개</li>
+   <li>4-3에서 '겨냥하는 원인' 입력 삭제. 핵심 원인은 3단계에서 하나로 도출되고, 대안은 모두 그 원인을 해결하기 위한 것</li>
+   <li>5단계 시나리오의 시점 표시(직후·1년쯤 뒤)를 화면과 지시문에서 삭제</li>
+   <li>6-6 결과 기록을 '언제 어떻게 실행했나 / 무슨 일이 있었나' 두 칸으로</li>
+   <li>1-4(기억에 남은 말) 안내 삭제</li></ul></section>
+  <section class="panel"><h2>결정이 남은 것</h2>
+   <ul><li><b>3-1 'AI 응답의 핵심(우리 말로)' 칸:</b> 활동지 3-1은 'AI 응답' 칸이지만, 앱은 노랑(YELLOW) 규칙과 Red 탐지를 위해 우리 말 요약 칸을 남겼다.</li>
+   <li><b>6-5 점검 3번째 항목:</b> '사실을 말한 부분에 근거 자료를 밝혔다'를 넣을지(활동지는 2항목).</li>
+   <li><b>6-6 공유 날짜:</b> 활동지 제목은 '(단원 6차시)', 안내문은 'O월 O일'이다.</li>
+   <li><b>2단계 시간:</b> 기사 3건 읽기와 6문항을 4분에 마치기 빠듯하다. 모둠 안에서 1인 1기사로 나눠 읽는 방안이 있다.</li></ul></section>
+  <section class="panel"><h2>Firebase로 옮길 때 확인할 것</h2>
+   <ul><li>자료 탐색 도우미는 검색 연결이 없으면 존재하지 않는 출처를 만들 수 있다. 검색 도구를 붙일지, 출처 생성을 검증 활동의 재료로 둘지 정한다.</li>
+   <li>Red 탐지는 글자 3-gram 겹침 비율(35% 주의, 60% Red 의심)이다. 짧은 문장은 수치·고유명사만으로도 비율이 오를 수 있어 시범 후 조정한다.</li>
+   <li>실시간 모드는 보는 사람의 Claude 계정으로 지시문을 시험하는 용도다. 수업용 앱은 Cloud Functions로 AI 호출을 중계하고 로그를 Firestore에 남긴다. 사용할 모델명은 지도안 2-마에 아직 비어 있다.</li>
+   <li>콘텐츠(기사 3건·문항·사례·예시·지시문)는 데이터 파일로 분리해 두면 지도안이 바뀌어도 화면 코드를 고치지 않아도 된다.</li></ul></section>
+  <section class="panel"><h2>2단계 기사 출처</h2>
+   <ul>${ARTICLES.map((a,k)=>`<li><b>기사 ${k+1} · ${esc(a.tag.replace(/^기사 \d · /,""))}</b>: ${a.src.map(s=>s.u?`<a href="${esc(s.u)}" target="_blank" rel="noopener">${esc(s.t)}</a>`:esc(s.t)).join(" / ")}</li>`).join("")}</ul>
+   <p class="small">원문을 요약했다. 수치는 2026년 10월 20일 원문에서 확인했고, 수업 전 다시 확인한다.</p></section>
+  <section class="panel"><h2>AI 기능별 지시문 초안</h2><p class="small">지도안 1~3장의 응답 규칙과 4장의 기능 범위를 합친 초안이다. 1~3장 2-마 '주요 설정'과 3-나 '응답 규칙'을 고칠 때 함께 맞춘다.</p>
+    <details class="pd"><summary>유수프와의 대화 (1단계)</summary><pre class="prompt">${esc(P_PERSONA())}</pre></details>
+    <details class="pd"><summary>자료 탐색 도우미 (3단계)</summary><pre class="prompt">${esc(P_SEARCH("(모둠의 원인 확인 질문)"))}</pre></details>
+    <details class="pd"><summary>대안 검토 도우미 (4단계)</summary><pre class="prompt">${esc(P_FB("(고정한 핵심 원인)",[{txt:"(대안)",actor:"(실행 주체)"}]))}</pre></details>
+    <details class="pd"><summary>시나리오 생성기 (5단계)</summary><pre class="prompt">${esc(P_SCEN("(1순위 대안과 보완 내용)",[{who:"(이해관계자)",txt:"(예측한 반응)",reason:"(그렇게 예측한 이유)"}]))}</pre></details></section>
+  </div>`;
+}
+
+/* ================= 동작 ================= */
+function setPath(p,v){const ks=p.split(".");let o=S;for(let i=0;i<ks.length-1;i++){if(o[ks[i]]===undefined)o[ks[i]]={};o=o[ks[i]]}o[ks[ks.length-1]]=v}
+function getPath(p){return p.split(".").reduce((o,k)=>o==null?o:o[k],S)}
+
+let tick=null;
+function startTimer(sec){S.s1.deadline=Date.now()+sec*1000;if(tick)clearInterval(tick);tick=setInterval(()=>{const el=$("#s1-timer");if(!S.s1.deadline){clearInterval(tick);tick=null;return}if(el){el.textContent=timerText();el.classList.toggle("low",S.s1.deadline-Date.now()<60000)}if(Date.now()>=S.s1.deadline){clearInterval(tick);tick=null;S.s1.deadline=null;if(S.s1.phase===1&&!S.s1.chat.some(m=>m.wait)){S.s1.phase=2;S.s1.chat.push({r:"sys",x:"1차 대화 시간이 끝났습니다. 대화를 멈추고 모둠에서 더 필요한 질문을 합의합니다."});log(1,"seal","1차 대화 종료(시간)");startTimer(60)}render()}},500)}
+
+async function personaReply(qText){
+  const d=S.s1;const pre=d.first?PERSONA_PRE:"";d.first=false;
+  const msg={r:"ai",x:"",wait:true};d.chat.push(msg);render();
+  if(S.live){
+    const sample=await getSample();
+    if(sample){
+      d.turns.push({role:"user",content:qText});
+      try{
+        const {text}=await sample([{role:"user",content:P_PERSONA()+(pre?"\n이번이 첫 응답이다. 맨 앞에 가상 인물임을 한 문장으로 밝힌다.":"")},...d.turns],{cache:false,modelTier:"quick",onText:({text})=>{msg.x=text;const els=document.querySelectorAll(".msg.ai .thinking");const el=els[els.length-1];if(el)el.textContent=text}});
+        d.turns.push({role:"assistant",content:text});msg.x=text;msg.wait=false;log(1,"ai","유수프 응답(실시간)");afterAI(msg);render();return;
+      }catch(e){d.turns.pop();d.chat.push({r:"sys",x:liveErr(e)})}
+    }else{S.live=false;d.chat.push({r:"sys",x:"이 화면에서는 실시간 응답을 쓸 수 없어 예시 응답으로 답합니다."})}
+  }
+  msg.x=pre+personaCanned(qText);msg.wait=false;log(1,"ai","유수프 응답");afterAI(msg);render();
+}
+function afterAI(msg){if(BIAS.test(msg.x))alertAdd(1,"bias","AI 응답에 일반화로 보이는 표현: "+msg.x.slice(0,50),"bias-"+S.s1.chat.indexOf(msg))}
+async function searchAsk(i,follow){
+  const r=S.s3.rows[i];r.wait=true;r.err="";render();
+  if(S.live){
+    const sample=await getSample();
+    if(sample){
+      try{
+        if(follow){const {text}=await sample(P_FOLLOW(r.q,r.ans),{modelTier:"default"});r.fu=text}
+        else{const o=await sample.json(P_SEARCH(r.q),{modelTier:"default"});r.ans=String(o.answer||"");r.src=Array.isArray(o.sources)?o.sources.map(String):[]}
+        r.wait=false;log(3,"ai",(follow?"근거 다시 묻기":"자료 탐색 응답")+`(질문 ${i+1}, 실시간)`);render();return;
+      }catch(e){r.err=liveErr(e)}
+    }else S.live=false;
+  }
+  if(follow)r.fu=FOLLOW;else{const o=searchCanned(r.q);r.ans=o.a;r.src=o.src.slice()}
+  r.wait=false;log(3,"ai",(follow?"근거 다시 묻기":"자료 탐색 응답")+`(질문 ${i+1})`);render();
+}
+const newFb=()=>S.s4.alts.map(a=>{const f=fbCanned(a);return {s:f.s.slice(),w:f.w.slice(),sum:"",j:"",why:"",r:[0,0,0],rw:""}});
+async function feedback(){
+  const d=S.s4;d.fbWait=true;d.fbErr="";render();
+  let fb=null;
+  if(S.live){
+    const sample=await getSample();
+    if(sample){try{const o=await sample.json(P_FB(coreText(),d.alts),{modelTier:"default"});if(Array.isArray(o)&&o.length===d.alts.length)fb=o.map(x=>({s:(x.s||[]).slice(0,2).map(String),w:(x.w||[]).slice(0,2).map(String),sum:"",j:"",why:"",r:[0,0,0],rw:""}));else d.fbErr="응답 형식이 맞지 않아 예시 피드백을 보여 줍니다."}catch(e){d.fbErr=liveErr(e)}}
+    else S.live=false;
+  }
+  d.fb=fb||newFb();d.fbWait=false;log(4,"ai","대안 검토 피드백"+(fb?"(실시간)":""));render();
+}
+async function scenarios(){
+  const d=S.s5;d.wait=true;d.err="";render();
+  let sc=null;
+  if(S.live){
+    const sample=await getSample();
+    if(sample){try{const o=await sample.json(P_SCEN(firstAlt(),d.preds),{modelTier:"default"});if(o&&o.A&&o.B&&o.C){sc={};["A","B","C"].forEach(k=>{sc[k]={title:String(o[k].title||""),story:(o[k].story||[]).map(String)}})}else d.err="응답 형식이 맞지 않아 예시 시나리오를 보여 줍니다."}catch(e){d.err=liveErr(e)}}
+    else S.live=false;
+  }
+  d.scen=sc||JSON.parse(JSON.stringify(SCEN_DEMO));d.wait=false;log(5,"ai","시나리오 A·B·C 생성"+(sc?"(실시간)":""));render();
+}
+
+const DEMO={
+ 1:()=>{const d=S.s1;if(d.sealed)return;const a=!!helpVis("q1");d.qs=[{t:"말레이시아에서 왜 다른 나라가 아니라 제주로 오기로 했어?",type:1},{t:"제주에 도착한 뒤 하루를 어떻게 보내고 있어?",type:0},{t:"난민 신청을 한 뒤에 어떤 일을 기다리고 있어?",type:1},{t:"제주 사람들은 너를 처음 만났을 때 어떻게 대했어?",type:2},{t:"뉴스에 너희 이야기가 나온 뒤 달라진 점이 있어?",type:2}].map(q=>({...q,aft:a}))},
+ 2:()=>{const d=S.s2;
+   d.qa=d.qa.map((v,i)=>v||(QA[i].type==="ox"?QA[i].a:["무사증 제도로 비자 없이 한 달 머물 수 있었고, 2017년 12월 쿠알라룸푸르–제주 직항이 생겼다.","",""," 2명, 후티 반군을 비판한 언론인이라 박해 가능성이 높다고 봄","","1년"][i].trim()));
+   S.s1.chat.forEach((m,i)=>{if(m.r==="ai"&&!m.wait&&!d.cls[i]){const x=m.x;d.cls[i]=/비자|비행기|제주 밖|섬 안/.test(x)?{v:"확인된 이야기",art:"1"}:{v:"창작된 이야기",art:""}}});
+      const L=d.life;L.same=L.same||"유수프도 대학에 가고 싶어 했고, 가족이 걱정할까 봐 연락을 자주 하려 한다.";L.place=L.place||"폭격 소리를 들으며 학교에 가지 못했을 것이다. 지금 내가 겪지 않는 것은 노력 때문이 아니라 사는 곳이 달라서다.";L.impact=L.impact||"같은 학교나 동네에서 만나 함께 지내는 이웃이 된다. 내가 가진 생각을 다시 보게 될 것이다.";L.act=L.act||"확인하지 않은 말이나 댓글을 퍼뜨리면 여론이 나빠지고, 그 여론이 유수프가 머물 수 있는지에도 영향을 줄 수 있다.";
+   if(!S.rev.art.all&&!S.rev.art.g){S.rev.art.all=true;S.rev.art.t=now()}
+   if(!d.guesses.length)d.guesses=[{t:"난민 인정을 받기가 매우 어렵다"},{t:"인정받지 못하면 1년마다 체류를 연장해야 해서 오래 계획을 세우기 어렵다"},{t:"제주 밖으로 나갈 수 없어서 일자리를 구할 곳이 좁다"},{t:"뉴스와 댓글 때문에 반대 여론이 커졌다"}];
+   if(!S.s3.sealed&&d.vq.length<NEED()){const W=ROSTER[1],G=d.guesses.map(g=>g.t);d.vq=[{q:"2018년 제주의 예멘인 신청자 가운데 난민으로 인정된 사람은 몇 명이고, 어떤 이유로 인정되었나?",cause:G[0],who:W[0]},{q:"인도적 체류 허가를 받으면 한 번에 얼마 동안 머물 수 있고, 난민 인정자와 지원은 어떻게 다른가?",cause:G[1],who:W[1]},{q:"출도 제한은 언제부터였고, 그동안 예멘인 신청자가 일할 수 있었던 업종은 무엇인가?",cause:G[2],who:W[2]},{q:"2018년 여론조사에서 예멘 난민 수용에 찬성·반대한 비율은 얼마였나?",cause:G[3]||G[0],who:W[3]}]}},
+ 3:()=>{const d=S.s3;syncRows();const SUM=["심사를 끝까지 받은 사람 중 난민으로 받아들여진 건 단 두 명이다. 나머지 대다수는 1년짜리 인도적 체류에 그쳤다.","인도적 체류는 1년이 최대라 해마다 연장해야 한다. 건강보험 조건은 AI도 확인하지 못했다.","4월 30일부터 제주 밖으로 나갈 수 없었다. 일할 수 있는 업종은 AI가 답하지 못했다.","6월 조사에서 반대가 찬성보다 10%p쯤 많았고, 폐지 청원에도 40만 명 넘게 참여했다."],RES=["제주출입국·외국인청 게시글과 뉴시스 기사에서 숫자가 같음","세계일보 2023 기사와 같음. 건강보험 조건은 찾지 못함","출도 날짜는 뉴시스 기사와 같음. 업종은 서울신문 2018. 7. 23. 기사에서 1차 산업·요식업으로 확인","뉴시스 2018. 6. 28. 기사와 수치가 같음"],WHY=["제주출입국·외국인청 원문과 수치가 같다.","세계일보 원문에서 1년 상한을 확인했다.","출도 날짜가 기사와 같다. 업종은 따로 찾아 보완했다.","기사 원문과 수치가 같다."];d.rows.forEach((r,i)=>{if(!r.ans)return;r.sum=r.sum||SUM[i]||"";r.res=r.res||RES[i]||"";r.ck=[true,true,true,i!==1];r.j=r.j||"수용";r.why=r.why||WHY[i]||""});
+   const C=S.s2.guesses.map(g=>g.t);if(C.length>=3&&!d.links.length)d.links=[[C[0],C[1]],[C[3]||C[2],C[0]]];d.root=d.root||C[0]||"";
+   d.coreC=d.coreC||"난민 인정이 매우 적고 대부분 1년마다 연장해야 하는 인도적 체류 허가에 머무는 제도";d.coreE=d.coreE||"484명 가운데 인정 2명, 인도적 체류 412명이고 인도적 체류는 1년이 상한(기사 3)"},
+ 4:()=>{const d=S.s4;if(!d.pinned)d.coreEdit=d.coreEdit||coreText()||"난민 인정이 매우 적고 대부분 1년마다 연장해야 하는 인도적 체류 허가에 머무는 제도 (근거: 기사 3)";
+   if(!d.notes[0].idea)d.notes[0].idea="직접 갈 수 없게 되자 온라인 모금과 물품 제작처럼 학생이 할 수 있는 방식으로 바꾸었다.";
+  if(d.notes[1]&&!d.notes[1].idea)d.notes[1].idea="일할 수 있게 허가하고 설명회·통역으로 일자리를 이었지만, 한국어·직무 교육이 없어 40%가 그만두었다.";
+   if(!d.sealed&&!d.alts.length){const a=helpAfter("case");d.alts=[{txt:"인도적 체류 허가의 연장 기간을 1년에서 3년으로 늘린다",actor:"국가",aft:a},{txt:"지역 단체가 체류 연장 서류 준비와 한국어 상담을 돕는다",actor:"비정부 기구",aft:a},{txt:"확인된 자료로 난민 제도를 설명하는 카드뉴스를 만들어 학교 누리집에 올린다",actor:"세계시민",aft:a}]}
+   if(d.fb){const S0=["모두에게 한 번에 적용되지만 법을 바꾸려면 오래 걸리고 반대도 클 수 있다.","당사자를 바로 도울 수 있지만 돈과 사람이 모자라면 오래 못 간다.","지금 바로 할 수 있지만 효과가 작고 잘못 쓰면 오해를 키운다."],J=["수정","수용","수용"],W=["제안하는 절차를 대안에 넣기로 했다.","예산 문제는 지자체 지원을 함께 요청해 보완한다.","출처를 모두 밝히면 오해를 줄일 수 있다."],R=[[2,3,1],[3,2,3],[3,1,2]],RW=["원인을 직접 바꾸지만 반대가 클 것이다.","바로 할 수 있고 받아들이기 쉽지만 제도는 그대로다.","쉽지만 핵심 원인과는 거리가 있다."];d.fb.forEach((f,i)=>{f.sum=f.sum||S0[i]||"";f.j=f.j||J[i]||"수용";f.why=f.why||W[i]||"";if(!f.r.every(Boolean))f.r=R[i]||[2,2,2];f.rw=f.rw||RW[i]||""});if(d.first===null)d.first=0;d.improve=d.improve||"인도적 체류 허가의 연장 기간을 3년으로 늘리고, 이를 국민신문고 정책 제안으로 내는 절차를 정한다."}},
+ 5:()=>{const d=S.s5;if(!firstAlt()){const d4=S.s4;if(!d4.alts.length)DEMO[4]();if(d4.first===null)d4.first=0;d4.improve=d4.improve||"인도적 체류 허가의 연장 기간을 3년으로 늘리고, 이를 국민신문고 정책 제안으로 내는 절차를 정한다."}
+   if(!d.sealed){if(!d.preds.length){const a=!!helpVis("who");d.preds=[{who:"인도적 체류 허가자",txt:"1년마다 서류를 낼 걱정이 줄어 일자리를 오래 유지하려 한다.",reason:"편지와 대화에서 기다림이 가장 힘들다고 했다.",aft:a},{who:"제주 지역 주민",txt:"정착이 늘까 봐 반대하는 사람과 일손이 생겨 반기는 사람으로 나뉜다.",reason:"기사 2에서 여론이 갈렸다."},{who:"아직 심사를 기다리는 신청자",txt:"자신은 대상이 아니어서 소외감을 느낀다. 제도 밖에 남겨질까 걱정한다.",why:"제도를 바꾸는 논의에 참여할 통로가 없다",ex:true}]}return}
+   if(d.scen){d.sum={A:d.sum.A||"허가 기간이 3년으로 늘자 유수프는 일하던 곳에서 계속 일할 수 있게 되었다. 같은 날 심사 중인 하산은 대상이 아니었다.",B:d.sum.B||"동네 게시판에서 찬반 논쟁이 커졌고, 의원 사무실에 반대 민원과 찬성 서명이 함께 들어왔다.",C:d.sum.C||"유수프는 일을 배우며 자리를 잡았지만, 아민은 아이의 보건 서비스를 받기 어려웠고 하산은 불인정 결정을 받았다."};d.diff={A:d.diff.A||"고용주 반응은 예측과 같았다. 심사 중인 사람이 빠진다는 점은 예측하지 못했다.",B:d.diff.B||"반대 여론은 예측했지만 댓글 삭제가 새 갈등을 만들 줄은 몰랐다.",C:d.diff.C||"체류 기간만 늘리면 생활이 안정될 것으로 예측했지만 다른 문제가 남았다."};d.pick=d.pick||"C";d.why=d.why||"체류 기간이 늘어도 인도적 체류라는 신분은 그대로이므로, 사회복지 지원에서 빠지는 일이 생길 수 있다고 본다(기사 3).";d.newp=d.newp||"체류 기간을 늘려도 심사 중인 신청자는 대상에서 빠지고, 인도적 체류 허가자와 가족은 의료 같은 생활 지원을 받기 어려운 문제가 남는다."}},
+ 6:()=>{const d=S.s6;d.level=d.level||"제도·국가 간";if(!d.types.length)d.types=["제도 제안·요청","자기 실천"];d.typeWhy=d.typeWhy||"지원 안내는 제도의 문제이고, 잘못된 정보를 퍼뜨리지 않는 것은 우리가 할 수 있다.";d.scope=d.scope||"실행 준비";d.when=d.when||"단원 6차시 도입";
+   d.prop={ask:d.prop.ask||"인도적 체류 허가자와 그 가족이 받을 수 있는 의료·교육 지원을 한곳에 정리하고 여러 언어로 안내해 주세요.",reply:d.prop.reply||"지원을 새로 늘리자는 것이 아니라, 이미 있는 지원을 정확히 알리자는 제안입니다.",effect:d.prop.effect||"체류자가 받을 수 있는 지원을 몰라 놓치는 일이 줄고, 확인되지 않은 소문도 줄어듭니다."};
+   if(!d.plans[0].target)d.plans=[{target:"국민신문고(법무부)",content:"인도적 체류 허가자와 가족의 생활 지원 안내를 한곳에 정리해 달라는 정책 제안",how:"기사 3을 근거로 제안서 초안 작성, 6차시에 학급 의견을 받아 다듬기",channel:"국민신문고 정책 제안(교사 확인 후)"},{target:"우리 반",content:"난민 관련 정보를 말할 때 출처를 함께 밝히기",how:"토의 규칙에 추가하고 한 달 동안 지켜보기",channel:"학급 회의"}];if(!d.back.length)d.back=["원인(2·3단계)"]},
+ 7:()=>{const d=S.s7;d.problem=d.problem||"전쟁을 피해 온 예멘 난민 신청자가 제주에서도 안정적으로 지내기 어렵다";if(!d.peers.length)d.peers=["2모둠","5모둠"];d.peers.forEach((g,i)=>{d.peer[g]=d.peer[g]||[[3,4,3,2],[3,2,4,3]][i];d.note[g]=d.note[g]||["시나리오 C까지 보고 새로운 문제를 찾은 점을 배우고 싶다.","카드뉴스에 출처를 모두 밝힌 점이 좋았다. 우리도 제안서에 근거 기사를 밝히겠다."][i]});d.chk=d.chk.map((v,i)=>v||(i===4?"보통":"그렇다"));d.r1=d.r1||"처음에는 난민 신청자 개인의 사정 때문이라고 생각했는데, 인정 절차와 체류 제도, 여론이 함께 영향을 준다는 것을 알게 되었다.";d.r2=d.r2||"대안 1에서 '절차가 드러나 있지 않다'는 지적은 받아들였지만, 반대 여론 때문에 어렵다는 지적은 기각했다. 여론이 바뀌는 것도 우리가 할 수 있는 일이라고 보았다."}
+};
+function fillAll(){
+  S.open=7;S.ai={1:true,3:true,4:true,5:true};log(1,"open","시연: 1·3·4·5단계 AI 열기");
+  const d=S.s1;
+  if(!d.sealed){DEMO[1]();d.sealed=true;d.sealT=now();log(1,"seal","질문 목록 봉인")}
+  if(d.phase<4){d.qs.forEach(q=>{if(!q.sent){q.sent=true;d.chat.push({r:"me",x:q.t});d.chat.push({r:"ai",x:(d.first?PERSONA_PRE:"")+personaCanned(q.t)});d.first=false;log(1,"ai","유수프 응답")}});
+    d.discuss=d.discuss||"배에서 일했다고 했는데 그 일을 어떻게 구했는지, 일하면서 무엇이 힘들었는지 아직 모른다.";
+    if(!d.qs2.length)d.qs2=[{t:"배에서 일하는 동안 가장 힘들었던 순간은 언제였어?"}];
+    d.qs2.forEach(q=>{if(!q.sent){q.sent=true;d.chat.push({r:"me",x:q.t});d.chat.push({r:"ai",x:personaCanned(q.t)})}});
+    d.sealed2=true;d.sealT2=d.sealT2||now();d.phase=4;d.endT=now();d.deadline=null;log(1,"ai","1·2차 대화 로그 제출")}
+  DEMO[2]();
+  if(!S.s3.sealed){S.s3.sealed=true;S.s3.sealT=now();log(3,"seal","원인 확인 질문 봉인")}
+  syncRows();S.s3.rows.forEach((r,i)=>{if(!r.ans){const o=searchCanned(r.q);r.ans=o.a;r.src=o.src.slice();log(3,"ai",`자료 탐색 응답(질문 ${i+1})`)}});
+  if(S.s3.rows[0]&&!S.s3.rows[0].fu)S.s3.rows[0].fu=FOLLOW;
+  DEMO[3]();S.s3.done=true;S.s3.doneT=now();
+  if(S.rev.case.all<1){S.rev.case.all=1;S.rev.case.t=now()}
+  DEMO[4]();S.s4.pinned=true;S.s4.pinT=S.s4.pinT||now();
+  if(!S.s4.sealed){S.s4.sealed=true;S.s4.sealT=now();log(4,"seal","대안 봉인")}
+  if(!S.s4.fb){S.s4.fb=newFb();log(4,"ai","대안 검토 피드백")}
+  DEMO[4]();
+  DEMO[5]();if(!S.s5.sealed){S.s5.sealed=true;S.s5.sealT=now();log(5,"seal","반응 예측 봉인")}
+  if(!S.s5.scen){S.s5.scen=JSON.parse(JSON.stringify(SCEN_DEMO));log(5,"ai","시나리오 A·B·C 생성")}
+  DEMO[5]();S.s5.whySaved=true;S.s5.whyT=S.s5.whyT||now();
+  DEMO[6]();S.s6.chk=[true,true];S.s6.tok=true;S.s6.tokT=now();
+  DEMO[7]();
+}
+
+/* ---------- 이벤트 ---------- */
+const app=$("#app");
+let pdown=false,pendR=false;
+function softRender(){if(pdown)pendR=true;else render()}
+document.addEventListener("pointerdown",()=>{pdown=true},true);
+document.addEventListener("pointerup",()=>{setTimeout(()=>{pdown=false;if(pendR){pendR=false;render()}},0)},true);
+const val=id=>{const el=document.getElementById(id);return el?el.value.trim():""};
+app.addEventListener("click",e=>{
+  const b=e.target.closest("button,input[type=radio][data-act]");if(!b||b.disabled)return;
+  if(b.dataset.stage){S.stage=+b.dataset.stage;render(false);window.scrollTo(0,0);return}
+  const a=b.dataset.act;if(!a)return;
+  const i=+b.dataset.i,n=+b.dataset.n,v=b.dataset.v;
+  const d1=S.s1,d2=S.s2,d3=S.s3,d4=S.s4,d5=S.s5,d6=S.s6;
+  switch(a){
+   case "demo":DEMO[n]&&DEMO[n]();break;
+   case "del":getPath(b.dataset.k).splice(i,1);break;
+   case "s1add":{const t=val("s1-new");d1.qType=+$("#s1-type").value;if(!t||d1.qs.length>=5)return;d1.qs.push({t,type:d1.qType,aft:!!helpVis("q1")});break}
+   case "s1seal":d1.sealed=true;d1.sealT=now();S.req[1]="";log(1,"seal",`질문 목록 봉인 (${d1.qs.length}개)`);break;
+   case "tOpen":S.ai[n]=true;S.req[n]="";log(n,"open",`${n}단계 AI 열기`);if(n===1&&d1.phase===0&&d1.sealed){d1.phase=1;d1.chat.push({r:"sys",x:"선생님이 대화를 열었습니다. 1차 대화는 4분입니다."});startTimer(240)}break;
+   case "tReq":S.req[n]=val("req-"+n)||"산출물을 보완해 다시 저장해 봅시다.";log(n,"help",`${n}단계 보완 요청: ${S.req[n]}`);break;
+   case "unseal":{({1:d1,3:d3,4:d4,5:d5})[n].sealed=false;S.req[n]="";log(n,"seal",`${n}단계 봉인 해제(보완 요청)`);break}
+   case "s1send":case "s1send2":{const two=a==="s1send2";const sel=$(two?"#s1-pick2":"#s1-pick");if(!sel||sel.value==="")return;const q=(two?d1.qs2:d1.qs)[+sel.value];q.sent=true;d1.chat.push({r:"me",x:q.t});log(1,"ai",`질문 보냄: ${q.t}`);personaReply(q.t);return}
+   case "s1pause":d1.phase=2;d1.chat.push({r:"sys",x:"대화를 멈췄습니다. 1분 동안 더 필요한 질문을 합의합니다."});log(1,"seal","1차 대화 멈춤");startTimer(60);break;
+   case "s1add2":{const t=val("s1-new2");if(!t||d1.qs2.length>=2)return;d1.qs2.push({t});break}
+   case "s1seal2":d1.sealed2=true;d1.sealT2=now();log(1,"seal",`추가 질문 봉인 (${d1.qs2.length}개)`);if(d1.qs2.length){d1.phase=3;d1.chat.push({r:"sys",x:"2차 대화를 시작합니다. 2분입니다."});startTimer(120)}else{d1.phase=4;d1.endT=now();d1.deadline=null;log(1,"ai","대화 로그 제출")}break;
+   case "s1end":d1.phase=4;d1.endT=now();d1.deadline=null;d1.chat.push({r:"sys",x:"대화를 마쳤습니다. 1·2차 대화 로그가 제출되었습니다."});log(1,"ai","1·2차 대화 로그 제출");break;
+   case "report":{const m=d1.chat[i];m.flag=true;d1.halted=true;d1.chat.push({r:"sys",x:"신고한 응답을 표시하고 대화를 멈췄습니다. 선생님께 알림이 갔습니다."});alertAdd(1,"report","이상 응답 신고: "+m.x.replace(PERSONA_PRE,"").slice(0,60),"rep-"+i);log(1,"report","이상 응답 신고");break}
+   case "ox":d2.qa[i]=v;break;
+   case "cls":{const c=d2.cls[i]||{};d2.cls[i]={v,art:v==="확인된 이야기"?(c.art||""):""};break}
+   case "s2g":{const t=val("s2-g");if(!t)return;d2.guesses.push({t});if(BIAS.test(t))alertAdd(2,"bias",`원인 추측에 일반화 표현: "${t}" — 되묻기 필요`,"bias-g-"+t);break}
+   case "s2v":{const t=val("s2-v");if(!t||d2.vq.length>=NEED()||d2.vq.some(v=>v.cause===$("#s2-vc").value||v.who===$("#s2-vw").value)||!$("#s2-vc").value||!$("#s2-vw").value){const n=!$("#s2-vc").value?$("#s2-vc"):$("#s2-vw");if(n&&!n.value)n.focus();return}d2.vq.push({q:t,cause:$("#s2-vc").value,who:$("#s2-vw").value,aft:!!helpVis("q2")});break}
+   case "s3seal":d3.sealed=true;d3.sealT=now();S.req[3]="";syncRows();log(3,"seal","원인 확인 질문 봉인(2-5)");break;
+   case "s3ask":searchAsk(i,false);return;
+   case "s3fu":searchAsk(i,true);return;
+   case "s3j":d3.rows[i].j=v;break;
+   case "s3link":{const x=$("#s3-la").value,y=$("#s3-lb").value;if(!x||!y||x===y)return;d3.links.push([x,y]);break}
+   case "s3done":d3.done=true;d3.doneT=now();log(3,"seal","핵심 원인 공유 · 로그 제출");break;
+   case "s4pin":d4.pinned=true;d4.pinT=now();log(4,"seal","핵심 원인 고정");break;
+   case "s4add":{const t=val("s4-txt");if(!t)return;d4.alts.push({txt:t,actor:$("#s4-actor").value,aft:helpAfter("case")});break}
+   case "s4seal":d4.sealed=true;d4.sealT=now();S.req[4]="";log(4,"seal",`대안 봉인 (${d4.alts.length}개)`);break;
+   case "s4fb":feedback();return;
+   case "s4j":d4.fb[i].j=v;break;
+   case "score":d4.fb[i].r[+b.dataset.k]=+v;break;
+   case "first":d4.first=i;break;
+   case "s5add":{const w=val("s5-who"),t=val("s5-txt");if(!w||!t)return;d5.preds.push({who:w,txt:t,reason:val("s5-rsn"),aft:!!helpVis("who")});break}
+   case "s5exadd":{const w=val("s5-exwho"),t=val("s5-extxt");if(!w||!t)return;d5.preds.push({who:w,why:val("s5-exwhy"),txt:t,ex:true,aft:!!helpVis("who")});break}
+   case "whoex":{const el=$("#s5-who");if(el){el.value=v;el.focus()}return}
+   case "s5seal":d5.sealed=true;d5.sealT=now();S.req[5]="";log(5,"seal","반응 예측 봉인");break;
+   case "s5gen":scenarios();return;
+   case "pick":d5.pick=v;break;
+   case "s5why":if(d5.why.trim().length<20)return;d5.whySaved=true;d5.whyT=now();log(5,"seal",`시나리오 ${d5.pick} 선택 저장`);break;
+   case "s5edit":d5.whySaved=false;break;
+   case "set":setPath(b.dataset.k,v);break;
+   case "tog":{const arr=getPath(b.dataset.k);const k=arr.indexOf(v);if(k>=0)arr.splice(k,1);else arr.push(v);break}
+   case "s6addplan":d6.plans.push({target:"",content:"",how:"",channel:""});break;
+   case "s6res":d6.resOpen=true;break;
+   case "t6ok":d6.tok=true;d6.tokT=now();d6.tnote=val("t6-note");log(6,"open","제출 전 교사 확인");break;
+   case "copy":{const txt="[3모둠] 우리는 왜 여기 왔을까: 제주의 예멘 난민\n"+fullChain().map(([k,x])=>`${k}: ${x||"-"}`).join("\n");S.s7.posted=true;const note=m=>{const n0=$("#copy-note");if(n0)n0.textContent=m};try{navigator.clipboard.writeText(txt).then(()=>note("복사했습니다. 공유 게시판에 붙여 넣으세요."),()=>note("복사가 막혔습니다. 위 흐름을 직접 선택해 복사하세요."))}catch(err){note("복사가 막혔습니다. 위 흐름을 직접 선택해 복사하세요.")}return}
+   case "peerpick":{const p=S.s7.peers;const k=p.indexOf(v);if(k>=0)p.splice(k,1);else if(p.length<2)p.push(v);break}
+   case "peer":{const g=b.dataset.g;S.s7.peer[g]=S.s7.peer[g]||[0,0,0,0];S.s7.peer[g][+b.dataset.k]=+v;break}
+   case "refl":S.s7.chk[i]=v;break;
+   case "openTo":S.open=n;log(n,"open",`${n}단계까지 개방`);break;
+   case "help":{const r=S.rev[b.dataset.k],m=b.dataset.m,h=HELP.find(x=>x.k===b.dataset.k);if(m==="hide"){if(h.seq){r.all=0;r.g=0}else{r.all=false;r.g=false}}else if(m==="all")r.all=true;else r.g=true;r.t=now();log(h.stage,"help",`${h.name} ${m==="hide"?"숨김":m==="all"?"전체 공개":"3모둠 공개"}`);break}
+   case "case":{const r=S.rev.case;if(b.dataset.m==="all")r.all=Math.min(CASES.length,r.all+1);else r.g=Math.min(CASES.length,Math.max(r.all,r.g)+1);r.t=now();log(4,"help",`유사 사례 공개: 3모둠 ${Math.max(r.all,r.g)}건`);break}
+   case "aDone":{const al=S.alerts.find(x=>x.id===i);al.done=true;al.res=v;if(b.dataset.resume){d1.halted=false;d1.chat.push({r:"sys",x:"선생님이 확인했습니다. 대화를 이어 갑니다."})}log(al.stage,"open","알림 처리: "+v);break}
+   case "fillAll":fillAll();break;
+  }
+  render();
+});
+app.addEventListener("input",e=>{
+  const el=e.target,p=el.dataset.bind;if(!p||el.type==="checkbox"||el.type==="radio")return;
+  setPath(p,el.value);
+  if(el.dataset.red){let key=el.dataset.red,v=el.value;if(key==="s3-coreC"||key==="s3-coreE"){key="s3-core";v=S.s3.coreC+" "+S.s3.coreE}
+    const box=document.getElementById("rb-"+key);if(box)box.outerHTML=redHtml(key,v);checkRed(key,v,+el.dataset.st)}
+  if(p==="s5.why"){const c=$("#s5-whycnt"),btn=$("#s5-whybtn");if(c)c.textContent=S.s5.why.trim().length+"자 · 20자 미만이면 저장되지 않습니다.";if(btn)btn.disabled=!(S.s5.pick&&S.s5.why.trim().length>=20)}
+  if(el.dataset.chk6||p.startsWith("s6.prop")){const box=$("#s6-auto");if(box)box.innerHTML=autoChk6()}
+});
+app.addEventListener("change",e=>{
+  const el=e.target;
+  if(el.id==="s1-type"){S.s1.qType=+el.value;return}
+  const p=el.dataset.bind;if(!p)return;
+  setPath(p,el.type==="checkbox"?el.checked:el.value);
+  if(el.dataset.chk6||p.startsWith("s6.prop")){const t=autoChk6();if(/개인정보/.test(t))alertAdd(6,"pi","행동계획에 개인정보로 보이는 내용","pi6");if(/일반화/.test(t))alertAdd(6,"bias","행동계획에 일반화로 보이는 표현","bias6")}
+  if(el.tagName==="SELECT"||el.type==="checkbox")render();
+  else if(["s4.coreEdit","s4.improve","s5.newp","s7.r1"].includes(p)||/^s3\.rows\.\d+\.(sum|res)|^s4\.fb\.\d+\.(sum|why|rw)|^s3\.core/.test(p))softRender();
+});
+app.addEventListener("paste",e=>{const el=e.target;if(el.dataset&&el.dataset.red){let id=el.dataset.red;if(id==="s3-coreC"||id==="s3-coreE")id="s3-core";const st=+el.dataset.st;setTimeout(()=>{alertAdd(st,"paste",`${fieldName(id)}에 붙여넣기`,"paste-"+id+"-"+S.alerts.length);log(st,"red","붙여넣기 감지: "+fieldName(id))},0)}});
+app.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){const m={"s1-new":"s1add","s1-new2":"s1add2","s2-g":"s2g","s2-v":"s2v","s4-txt":"s4add","s4-cause":"s4add","s5-txt":"s5add","s5-rsn":"s5add","s5-extxt":"s5exadd"}[e.target.id];if(m){e.preventDefault();const btn=document.querySelector(`[data-act="${m}"]`);if(btn)btn.click()}}});
+
+$("#v-student").onclick=()=>{S.view="student";render(false)};
+$("#v-teacher").onclick=()=>{S.view="teacher";render(false)};
+$("#v-plan").onclick=()=>{S.view="plan";render(false)};
+$("#m-demo").onclick=()=>{S.live=false;render()};
+$("#m-live").onclick=async()=>{const lab=$("#aimode-label");if(lab)lab.textContent="AI 응답 · 확인 중";const s=await getSample();if(lab)lab.textContent=s?"AI 응답":"AI 응답 · 실시간을 쓸 수 없는 화면";S.live=!!s;render()};
+render();
+})();
+</script>
+
+</body></html>
